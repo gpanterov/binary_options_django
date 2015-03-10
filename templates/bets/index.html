@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+
+    $('button1').click(function(){
+var text = $('#betsize').find('input[name="betsize"]').val();
+$('h1').html(text);
+
+    });
+});
+</script>
+        <title>Binary Options</title>
+    </head>
+<a href="/bets/login/">Login</a>
+<a href="/bets/register/">Register</a>
+
+    <body>
+        <h1>Hello World</h1>
+	<form id='betsize' name='betsize' method='post' action='/bets/place_bets/'>
+		{% csrf_token %}
+		{{ bets_form.as_p }}
+	<input type="submit" name="submit" value="UP" />
+	<input type="submit" name="submit" value="Down" />
+
+
+
+	</form>	
+    </body>
+
+</html>
+
+
