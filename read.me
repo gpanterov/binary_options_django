@@ -1,0 +1,24 @@
+The app should have the following models (tables):
+	1) PlacedBets model with the betting history of the user
+		-user
+		-bet size
+		-bet time
+		-bet type
+		-bet payout
+		-bet outcome
+		-bet strike price
+	2) A table with the evolution of the payouts for each asset
+		i.e. what is the payout for each bet/each asset at each point in time
+		This will be determined asynchronously with a seperate parallel script
+	3) A table with all asset prices (every second). This is another async. script from scraping and
+		writing to the model
+
+There will be an ajax script that updates the numbers on the website every second (prices, charts, payouts, strikes)
+
+Betting will happen with a form with bet size input. Each button (submit) will have a different value and this will 
+determine the type of the bet (+5 pips, +10 pips etc.). There also will be hidden fields which will be updated by
+the ajax script so that we can exactly match the submission of the bet with the prices which the user sees.
+(see the view place_bets in bets/views.py for an example)
+
+
+For a very good template see https://exchange.coinbase.com/trade
