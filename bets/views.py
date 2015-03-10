@@ -2,7 +2,7 @@
 
 
 from bets.forms import UserForm, UserProfileForm, BetForm
-
+from bets.models import PlacedBets
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -116,6 +116,7 @@ def place_bets(request):
 			new_bet.bet_time = int(time.time()	)
 		
 			new_bet.bet_type = request.POST['submit']
+			print request.POST['submit2']
 			new_bet.user = current_user.username
 			new_bet.bet_payout = 1.5
 			new_bet.bet_outcome = "Pending"
@@ -126,3 +127,12 @@ def place_bets(request):
 			return HttpResponse(bet_form.errors)
 	else:
 		return HttpResponse(current_user.username)
+
+import random
+def test_view(request):
+	if request.method == 'GET':
+		cat_id = request.GET['category_id']
+		last = PlacedBets.objects.latest('bet_time')
+		return HttpResponse(last.bet_time+random.randint(0,100))
+	else:
+		return HttpResponse('else')

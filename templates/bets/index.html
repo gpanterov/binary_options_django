@@ -4,31 +4,39 @@
     <head>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script>
-$(document).ready(function(){
-
-    $('button1').click(function(){
-var text = $('#betsize').find('input[name="betsize"]').val();
-$('h1').html(text);
-
-    });
-});
+	$('document').ready(function(){
+    $('#main_button').click(function(){
+	var value = $('#id_bet_size').val();	
+    $.get('/bets/test_view/',{category_id:value}, function(data){$('h1').html(data); } );
+}) });
 </script>
+
+ <script>
+	$('document').ready(function(){
+    $('#test_button').click(function(){
+	var value = $('#test_id').val();	
+    $('#test_id').val('zz');
+}) });
+</script> 
         <title>Binary Options</title>
     </head>
 <a href="/bets/login/">Login</a>
 <a href="/bets/register/">Register</a>
 
     <body>
-        <h1>Hello World</h1>
+        <h1>Hello World !!!</h1>
 	<form id='betsize' name='betsize' method='post' action='/bets/place_bets/'>
 		{% csrf_token %}
 		{{ bets_form.as_p }}
 	<input type="submit" name="submit" value="UP" />
 	<input type="submit" name="submit" value="Down" />
+	<input id="test_id" type="hidden" name="submit2" value="UP 5" />
 
 
 
 	</form>	
+<button id="main_button"> click me </button>
+<button id="test_button">second test </button>
     </body>
 
 </html>
