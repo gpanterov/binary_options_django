@@ -9,5 +9,7 @@ urlpatterns = patterns('',
 	 url(r'^login/$', views.user_login, name='login'),
 	url(r'^place_bets/$', views.place_bets, name='place_bets'),
 	url(r'^test_view/$', views.test_view, name='test_view'),
+	url(r'^place_bets2/$', views.place_bets2, name='place_bets2'),
+	url(r'^logout/$', views.user_logout, name='logout'),
 
 	)

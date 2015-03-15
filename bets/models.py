@@ -16,4 +16,11 @@ class PlacedBets(models.Model):
 	bet_outcome = models.CharField(max_length=10, null=True)
 	def __unicode__(self):
 		return self.user
+
+class AssetPrices(models.Model):
+	time = models.IntegerField(default=0)
+	eurusd = models.FloatField(default=0, null=True)
+	usdjpy = models.FloatField(default=0, null=True)
+
+
 # Create your models here.

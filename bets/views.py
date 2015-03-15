@@ -2,14 +2,18 @@
 
 
 from bets.forms import UserForm, UserProfileForm, BetForm
-from bets.models import PlacedBets
+from bets.models import PlacedBets, AssetPrices
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+
 import time
+
+import json
 
 def index(request):
     context = RequestContext(request)
@@ -106,6 +110,13 @@ def user_login(request):
         return render_to_response('bets/login.html', {}, context)
 
 @login_required
+def user_logout(request):
+	logout(request)
+	return HttpResponseRedirect('/bets/')
+
+
+
+@login_required
 def place_bets(request):
 	current_user = request.user
 	if request.method == 'POST':
@@ -115,24 +126,53 @@ def place_bets(request):
 
 			new_bet.bet_time = int(time.time()	)
 		
-			new_bet.bet_type = request.POST['submit']
-			print request.POST['submit2']
+			#new_bet.bet_type = request.POST['submit']
+			new_bet.bet_type=request.POST['submit2']
 			new_bet.user = current_user.username
 			new_bet.bet_payout = 1.5
 			new_bet.bet_outcome = "Pending"
 			new_bet.save()
-			print type(new_bet.bet_size)
+			print request.POST
 			return  HttpResponse("Bet Successful")
 		else:
 			return HttpResponse(bet_form.errors)
 	else:
 		return HttpResponse(current_user.username)
 
+
+
+def place_bets2(request):
+	current_user = request.user
+	if not request.user.is_authenticated():
+		return HttpResponse("Please Log in")
+	
+	if request.method == 'GET':
+		new_bet = PlacedBets()
+
+		new_bet.bet_time = int(time.time())
+	
+		new_bet.bet_type = request.GET['bet_type']
+		new_bet.bet_size = request.GET['bet_size']
+		new_bet.user = current_user.username
+		new_bet.bet_payout = 1.5
+		new_bet.bet_outcome = "Pending"
+		print new_bet.bet_size
+
+		new_bet.save()
+		print "here"
+		return  HttpResponse("Bet Successful")
+	else:
+		return HttpResponse(current_user.username)
+
+
+
 import random
 def test_view(request):
 	if request.method == 'GET':
 		cat_id = request.GET['category_id']
-		last = PlacedBets.objects.latest('bet_time')
-		return HttpResponse(last.bet_time+random.randint(0,100))
+		last = AssetPrices.objects.latest('time')
+		res = json.dumps({"time":last.time, "eurusd":last.eurusd,})
+		print cat_id
+		return HttpResponse(res, mimetype='application/json')
 	else:
 		return HttpResponse('else')
