@@ -171,7 +171,8 @@ def test_view(request):
 	if request.method == 'GET':
 		cat_id = request.GET['category_id']
 		last = AssetPrices.objects.latest('time')
-		res = json.dumps({"time":last.time, "eurusd":last.eurusd,})
+		asset_price = random.normalvariate(last.eurusd, 0.001)
+		res = json.dumps({"time":last.time, "eurusd":asset_price,})
 		print cat_id
 		return HttpResponse(res, mimetype='application/json')
 	else:
