@@ -139,8 +139,9 @@ def place_bets(request):
 			new_bet.bet_payout = request.POST['bet_payout'] 
 			new_bet.bet_outcome = "Pending"
 			new_bet.save()
-			return  HttpResponse("Succesfully purchased a %s option with strike %s and a payout of %s" \
-							%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout))
+			option_time = datetime.datetime.fromtimestamp(new_bet.bet_time)
+			return  HttpResponse("Succesfully purchased a %s option with strike %s and a payout of %s at %s" \
+							%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout, str(option_time)))
 		else:
 			return HttpResponse(bet_form.errors)
 	else:
