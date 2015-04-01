@@ -192,6 +192,8 @@ def update(request):
 
 	# Settle Bets
 	if last.time % 300 < 25: # only check in the beginning of the period (efficiency)
+		# Add a check for not running this too often (another table in the db with the last check)
+		
 		pending = PlacedBets.objects.filter(bet_outcome="Pending")
 
 		for bet in pending:
@@ -208,6 +210,10 @@ def update(request):
 				else:
 					print "Error"
 			bet.save()
+
+		# Update Funds
+		# ------------ code here ---------------
+
 
 
 	# Update remaining prices, payous etc.
