@@ -191,12 +191,12 @@ def update(request):
 	lid = current_option.id
 
 	# Update prices in the OfferedOptions table
-	if lid > 1:
-		prev_option = OfferedOptions.objects.get(id=lid-1)
-		if last.time >= prev_option.expire_time and prev_option.eurusd_close is None:
-			prev_option.eurusd_close = tools.get_price(prev_option.expire_time)
-			prev_option.save()
-			print "Updated Previous Option Close Price ", prev_option.eurusd_close
+#	if lid > 1:
+#		prev_option = OfferedOptions.objects.get(id=lid-1)
+#		if last.time >= prev_option.expire_time and prev_option.eurusd_close is None:
+#			prev_option.eurusd_close = tools.get_price(prev_option.expire_time)
+#			prev_option.save()
+#			print "Updated Previous Option Close Price ", prev_option.eurusd_close
 
 
 	# Settle Bets
@@ -206,7 +206,8 @@ def update(request):
 		pending = PlacedBets.objects.filter(bet_outcome="Pending")
 
 		for bet in pending:
-			eurusd_close = OfferedOptions.objects.get(expire_time=bet.option_expire).eurusd_close
+			#eurusd_close = OfferedOptions.objects.get(expire_time=bet.option_expire).eurusd_close
+			eurusd_close = tools.get_price(bet.option_expire)
 			if eurusd_close is not None:
 				if bet.bet_type == "CALL" and eurusd_close > bet.bet_strike:
 					bet.bet_outcome = "Success"
@@ -248,7 +249,22 @@ def update(request):
 
 		balance = Balances.objects.get(username = request.user.username).balance
 
-		res = json.dumps({"time":latest_time, "eurusd":round(asset_price,4), "balance":balance,
+
+		# Get the last 10 bets of the trader and return them for a table in the website
+		recent_bets = PlacedBets.objects.filter(user = request.user.username)
+		recent_bets = recent_bets[len(recent_bets) - 5:]
+		tb = ""
+		for bet in recent_bets[::-1]:
+			size = bet.bet_size
+			payout = bet.bet_payout
+			strike = bet.bet_strike
+			expiration = str(datetime.datetime.fromtimestamp(bet.option_expire))
+			outcome = bet.bet_outcome
+			tb += "<tr><td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td></tr>" % (size, payout, strike, expiration, outcome)  
+
+
+
+		res = json.dumps({"time":latest_time, "eurusd":round(asset_price,4), "balance":balance, "tb":tb,
 				"call_strike1":call_strike1, "call_strike2":call_strike2,"call_strike3":call_strike3,
 				"call_strike4":call_strike4,"call_strike5":call_strike5,
 				"expire":str(datetime.datetime.fromtimestamp(expire)), 

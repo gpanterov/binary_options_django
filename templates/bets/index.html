@@ -44,6 +44,7 @@
 		$('#put_payout5').html(data['put_payout5']);
 
 		$('#balance').html(data['balance']);
+		$('#recent_bets').html(data['tb']);
 		interval = setTimeout(update, 1000);
 			}
 		});
@@ -377,6 +378,23 @@
 
 <h3> Status of last action </h3>
 <p id="status"> <p>
+</div>
+
+<div class="row">
+<h3> Most Recent bets </h3>
+<table>
+		<thead>
+			<tr>
+				<th>Size</th>
+				<th>Payout</th>
+				<th>Strike</th>
+				<th>Expiration</th>
+				<th>Outcome</th>
+										</tr>
+
+		</thead>
+		<tbody id="recent_bets">
+		</tbody>
 </div>	
 
     </body>
