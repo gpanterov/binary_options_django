@@ -2,7 +2,7 @@
 
 
 from bets.forms import UserForm, UserProfileForm, BetForm
-from bets.models import PlacedBets, AssetPrices, OfferedOptions
+from bets.models import PlacedBets, AssetPrices, OfferedOptions, Deposits, Balances
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -10,6 +10,8 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
+
 import OptionTools as tools
 reload(tools)
 
@@ -145,6 +147,7 @@ def place_bets2(request):
 
 
 
+# Must modify the payouts -- should be recalculated every time. Not taken from the html (possible fraud)
 def place_bets(request):
 	if not request.user.is_authenticated():
 		return HttpResponse("Please log in")
@@ -234,3 +237,25 @@ def update(request):
 		return HttpResponse(res, mimetype='application/json')
 	else:
 		return HttpResponse('else')
+
+
+@login_required
+def deposit(request):
+	current_user = request.user
+	timestamp = int(time.time())
+	entry = Deposits()
+	entry.username = current_user.username
+	entry.time = timestamp
+	entry.size = 100
+	entry.save()
+	try: # Update balance
+		bal = Balances.objects.get(username = request.user.username)
+		bal.balance = bal.balance + entry.size
+		bal.save()
+	except: # If it doesn't exist (new user - create entry)
+		bal = Balances()
+		bal.username = request.user.username
+		bal.balance = entry.size
+		bal.save()
+		
+	return HttpResponse("Deposit Successful")

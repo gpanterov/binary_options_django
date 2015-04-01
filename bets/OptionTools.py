@@ -1,5 +1,5 @@
 import numpy as np
-
+import random
 from bets.models import PlacedBets, AssetPrices, OfferedOptions
 def option_params(option_start_time, expire, option_start_price, current_time, current_price):
 	"""

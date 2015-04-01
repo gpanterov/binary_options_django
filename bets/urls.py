@@ -11,5 +11,6 @@ urlpatterns = patterns('',
 	url(r'^update/$', views.update, name='update'),
 	url(r'^place_bets2/$', views.place_bets2, name='place_bets2'),
 	url(r'^logout/$', views.user_logout, name='logout'),
+	url(r'^deposit/$', views.deposit, name='deposit'),
 
 	)

@@ -34,4 +34,19 @@ class OfferedOptions(models.Model):
 	eurusd_close = models.FloatField(null=True)
 	usdjpy_close = models.FloatField(null=True)
 
-# Create your models here.
+
+# Add Deposit/Funds model
+class Deposits(models.Model):
+	username = models.CharField(max_length=30,null=True)
+	time = models.IntegerField(default=0)
+	size = models.IntegerField(default=0, null=True)  # Size of bet in satoshis
+	def __unicode__(self):
+		return self.username
+
+class Balances(models.Model):
+	username = models.CharField(max_length=30,null=True)
+	balance = models.IntegerField(default=0)
+	def __unicode__(self):
+		return self.username
+
+# Add Last time checked for settled transactions
