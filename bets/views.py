@@ -181,7 +181,7 @@ def update(request):
 	current_option = OfferedOptions.objects.latest('open_time')
 	lid = current_option.id
 
-
+	# Update prices in the OfferedOptions table
 	if lid > 1:
 		prev_option = OfferedOptions.objects.get(id=lid-1)
 		if last.time >= prev_option.expire_time and prev_option.eurusd_close is None:
@@ -189,10 +189,28 @@ def update(request):
 			prev_option.save()
 			print "Updated Previous Option Close Price ", prev_option.eurusd_close
 
-	pending = PlacedBets.objects.filter(bet_outcome="Pending")
 
-	for bet in pending:
-		pass
+	# Settle Bets
+	if last.time % 300 < 25: # only check in the beginning of the period (efficiency)
+		pending = PlacedBets.objects.filter(bet_outcome="Pending")
+
+		for bet in pending:
+			eurusd_close = OfferedOptions.objects.get(expire_time=bet.option_expire).eurusd_close
+			if eurusd_close is not None:
+				if bet.bet_type == "CALL" and eurusd_close > bet.bet_strike:
+					bet.bet_outcome = "Success"
+				elif bet.bet_type == "CALL" and eurusd_close < bet.bet_strike:
+					bet.bet_outcome = "Loss"
+				elif bet.bet_type == "PUT" and eurusd_close < bet.bet_strike:
+					bet.bet_outcome = "Success"
+				elif bet.bet_type == "PUT" and eurusd_close > bet.bet_strike:
+					bet.bet_outcome = "Loss"
+				else:
+					print "Error"
+			bet.save()
+
+
+	# Update remaining prices, payous etc.
 	if request.method == 'GET':
 
 		latest_time = str(datetime.datetime.fromtimestamp(last.time))

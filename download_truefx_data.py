@@ -6,6 +6,12 @@ import sqlite3 as lite
 import random
 
 con = lite.connect('bets.db')
+with con:
+	cur = con.cursor()
+	cur.execute("SELECT * FROM bets_assetprices;")
+	data = cur.fetchall()
+
+lid=len(data)
 old_residual = 2
 while True:
 	t = time.time()
@@ -56,9 +62,24 @@ while True:
 		# Write to file #
 		#price_eurusd += random.randint(1,9) / 10000.
 		#price_usdjpy += random.randint(1,9)/100.
+
+
+		# Attempt to forward fill the database. Leave for now.
+#		if lid > 0:
+#			with con:
+#				cur = con.cursor()
+#				cur.execute("SELECT time, eurusd, usdjpy FROM bets_assetprices WHERE Id = %s" % (lid))
+#				old_timestamp, _eurusd, _usdjpy = cur.fetchone()
+#			for t in range(old_timestamp + 1, timestamp):
+#				print "Forward fill ", datetime.datetime.fromtimestamp(t), _eurusd
+#				with con:
+#					cur = con.cursor()
+#					cur.execute("INSERT INTO bets_assetprices(time, eurusd, usdjpy) VALUES (%s, %s, %s);" % (t, _eurusd, _usdjpy))
+#
 		with con:
 			cur = con.cursor()
 			cur.execute("INSERT INTO bets_assetprices(time, eurusd, usdjpy) VALUES (%s, %s, %s);" % (timestamp, price_eurusd, price_usdjpy))
+			lid = cur.lastrowid
 			new_residual = timestamp % 300
 			if new_residual < old_residual: # If we passed the 5 minute
 				print "New Option ", datetime.datetime.fromtimestamp(timestamp)
@@ -66,14 +87,7 @@ while True:
 				expire = timestamp + 300 - (timestamp % 300)
 				cur.execute("INSERT INTO bets_offeredoptions(open_time, expire_time, eurusd_open, usdjpy_open) VALUES (%s, %s, %s, %s);" \
 														% (timestamp, expire, price_eurusd, price_usdjpy))
-#				lid = cur.lastrowid
-#				if lid-1>0:
-#					print "Updated Previous Entry"
-#					cur.execute("UPDATE bets_offeredoptions SET eurusd_close = ?, usdjpy_close = ? WHERE Id = ?", (old_eurusd, old_usdjpy, lid-1))
-#					con.commit()
 			old_residual = new_residual
-			old_eurusd = price_eurusd
-			old_usdjpy = price_usdjpy
 
 		print "Time: ", datetime.datetime.fromtimestamp(timestamp), " Price: ", price_eurusd
 	except KeyboardInterrupt:
