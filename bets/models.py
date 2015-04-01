@@ -9,9 +9,10 @@ class UserProfile(models.Model):
 
 class PlacedBets(models.Model):
 	user = models.CharField(max_length=30,null=True)
+	bet_type = models.CharField(max_length=10,null=True)
 	bet_time = models.IntegerField(default=0, null=True)  # Unix time for the bet
 	bet_size = models.IntegerField(default=0, null=True)  # Size of bet in satoshis
-	bet_type = models.CharField(max_length=10,null=True)
+	bet_strike = models.FloatField(default=0, null=True)
 	bet_payout = models.FloatField(default=0, null=True)
 	bet_outcome = models.CharField(max_length=10, null=True)
 	def __unicode__(self):
@@ -22,5 +23,9 @@ class AssetPrices(models.Model):
 	eurusd = models.FloatField(default=0, null=True)
 	usdjpy = models.FloatField(default=0, null=True)
 
+class OfferedOptions(models.Model):
+	time = models.IntegerField(default=0)
+	price_eurusd = models.FloatField()
+	price_usdjpy =  models.FloatField()
 
 # Create your models here.

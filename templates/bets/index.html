@@ -3,29 +3,31 @@
 
     <head>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script>
-	$('document').ready(function(){
-    $('#main_button').click(function(){
-	var value = $('#id_bet_size').val();	
-    $.getJSON('/bets/test_view/',{category_id:value,zzz:5 }, function(data){
-		$('h1').html(data['time']);
-		$('h2').html(data['eurusd']); } );
-}) });
-</script>
 
 
 <script>
 	var interval;
 	function update(){
-	$('h3').html('Update Runs');
     $.ajax({
 		type: "GET",
-		url:'/bets/test_view/',
+		url:'/bets/update/',
 		data: {category_id:5,zzz:5 },
 		datatype: 'json',
 		success: function(data){
-		$('h1').html(data['time']);
-		$('h2').html(data['eurusd']);
+
+		var asset_price = data['eurusd'];
+		$('#current_price').html(asset_price);
+		$('#current_time').html(data['time']);
+		$('#expire').html(data['expire']);
+		$('#call_strike1').html(data['call_strike1']);
+		$('#call_strike2').html(data['call_strike2']);
+		$('#call_payout1').html(data['call_payout1']);
+		$('#call_payout2').html(data['call_payout2']);
+		$('#put_strike1').html(data['put_strike1']);
+		$('#put_strike2').html(data['put_strike2']);
+		$('#put_payout1').html(data['put_payout1']);
+		$('#put_payout2').html(data['put_payout2']);
+
 		interval = setTimeout(update, 1000);
 			}
 		});
@@ -36,48 +38,78 @@
 	update();})
 </script>
 
-<script>
-	$('document').ready(function(){
-    $('#newformup').click(function(){
-	var value = $('#newformtext').val();	
-    $.get('/bets/place_bets2/', {bet_size:value, bet_type:"UP"}, function(data){alert(data)}) }) });
-</script>
-
-<script>
-	$('document').ready(function(){
-
-    $('#newformdown').click(function(){
-
-	$('h1').html('works');
-	var value = $('#newformtext').val();	
-    $.ajax( {
-		type: "GET",
-		url: '/bets/place_bets2/',
-		data: {bet_size:value, bet_type:"DOWN"},
-		success: function(response){alert(response);}
-		});
-	});
-	});
-</script>
 
 
 
 <script>
 	$('document').ready(function(){
-
     var form = $('#betsize');
-	$("#ajaxsubmit").click(function(){
-	var value = $('#id_bet_size').val();	
-	$('#test_id').val('zzz');
-    $.ajax( 
-		{type: "POST",
-		url:'/bets/place_bets/',
-		data: form.serialize(),
-		success: function(response) {
-		alert(response);
-		}
+	var user = $('#user').html();
+	$("#call_strike1_place").click(function(){
+		var payout = $('#call_payout1').html();	
+		var strike = $('#call_strike1').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+			alert(response);
+			}
+			});
+		
 		});
-});
+		$("#call_strike2_place").click(function(){
+		var payout = $('#call_payout2').html();	
+		var strike = $('#call_strike2').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+			alert(response);
+			}
+			});
+		});
+
+	$("#put_strike1_place").click(function(){
+		var payout = $('#put_payout1').html();	
+		var strike = $('#put_strike1').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+			alert(response);
+			}
+			});
+		
+		});
+		$("#put_strike2_place").click(function(){
+		var payout = $('#put_payout2').html();	
+		var strike = $('#put_strike2').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+			alert(response);
+			}
+			});
+		});
+
+	
 });
 </script>
 
@@ -88,34 +120,89 @@
 <a href="/bets/login/">Login</a>
 <a href="/bets/register/">Register</a>
 <a href="/bets/logout/">Logout</a>
+<p> Welcome  {{ user }}  </p>
     <body>
-        <h1>Time</h1>
-		<h2>Price</h2>
-		<h3>Bet</h3>
+        <h1>Binary Options</h1>
+
+<table>
+		<thead>
+			<tr>
+				<th>Current Time</th>
+				<th>Current Price</th>
+				<th>Expires on</th>
+											</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td id="current_time"> Time </td>
+				<td id="current_price"> Price </td>
+				<td id="expire"> Expire </td>
+				</tr>
+			</tbody>
+		</table>
+
 	<form id='betsize' name='betsize' method='post' action='/bets/place_bets/'>
 		{% csrf_token %}
 		{{ bets_form.as_p }}
-	<input type="submit" name="submit" value="UP"/>
-	<input type="submit" name="submit" value="Down" />
-	<input id="test_id" type="hidden" name="submit2" value="UP 5" />
-
+	<input id="bet_strike" type="hidden" name="bet_strike" value="" />
+	<input id="bet_type" type="hidden" name="bet_type" value="" />
+	<input id="bet_payout" type="hidden" name="bet_payout" value="" />
 
 
 	</form>	
 
-<p> New Bets </p>
-<form id='newform'>
+<div style="width: 600px; float: left;">
+<h2>Call Options </h2>
+<table>
+		<thead>
+			<tr>
+				<th>Strike</th>
+				<th>Payout</th>
+				<th></th>
+											</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td id="call_strike1"> Strike 1 </td>
+				<td id="call_payout1">2</td>
+				<td><button id="call_strike1_place"> Bet </button></td>
+				</tr>
+			<tr>
+				<td id="call_strike2"> Strike 2 </td>
+				<td id = "call_payout2">3</td>
+				<td><button id="call_strike2_place"> Bet </button></td>
+			</tr>
+			</tbody>
+		</table>
+</div>
 
-<input id='newformtext' type="text"/>
+<div  style="width: 600px; float: left;">
+<h2>Put Options </h2>
+<table>
+		<thead>
+			<tr>
+				<th>Strike</th>
+				<th>Payout</th>
+				<th></th>
+											</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td id="put_strike1"> Strike 1 </td>
+				<td id="put_payout1">2</td>
+				<td><button id="put_strike1_place"> Bet </button></td>
+				</tr>
+			<tr>
+				<td id="put_strike2"> Strike 2 </td>
+				<td id = "put_payout2">3</td>
+				<td><button id="put_strike2_place"> Bet </button></td>
+			</tr>
+			</tbody>
+		</table>
+</div>
 
-</form>
-<button id='newformup'>New UP </button>
-<button id='newformdown'> New Down</button>
 
-<button id="main_button"> click me </button>
-<button id="test_button">second test </button>
 
-<button id="ajaxsubmit"> ajax submit </button>
     </body>
 
 </html>

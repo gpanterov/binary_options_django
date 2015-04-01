@@ -2,7 +2,7 @@
 
 
 from bets.forms import UserForm, UserProfileForm, BetForm
-from bets.models import PlacedBets, AssetPrices
+from bets.models import PlacedBets, AssetPrices, OfferedOptions
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -10,15 +10,19 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+import OptionTools as tools
+reload(tools)
 
 import time
-
+import datetime
+import random
 import json
 
 def index(request):
+    current_user = request.user
     context = RequestContext(request)
     bets_form = BetForm()
-    context_dict = {'bets_form': bets_form} 
+    context_dict = {'bets_form': bets_form, 'user':current_user} 
     return render_to_response('bets/index.html', context_dict, context)
 
 
@@ -116,8 +120,10 @@ def user_logout(request):
 
 
 
-@login_required
+
 def place_bets(request):
+	if not request.user.is_authenticated():
+		return HttpResponse("Please log in")
 	current_user = request.user
 	if request.method == 'POST':
 		bet_form = BetForm(request.POST)
@@ -127,20 +133,21 @@ def place_bets(request):
 			new_bet.bet_time = int(time.time()	)
 		
 			#new_bet.bet_type = request.POST['submit']
-			new_bet.bet_type=request.POST['submit2']
+			new_bet.bet_strike=request.POST['bet_strike']
+			new_bet.bet_type=request.POST['bet_type']
 			new_bet.user = current_user.username
-			new_bet.bet_payout = 1.5
+			new_bet.bet_payout = request.POST['bet_payout'] 
 			new_bet.bet_outcome = "Pending"
 			new_bet.save()
-			print request.POST
-			return  HttpResponse("Bet Successful")
+			return  HttpResponse("Succesfully purchased a %s option with strike %s and a payout of %s" \
+							%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout))
 		else:
 			return HttpResponse(bet_form.errors)
 	else:
 		return HttpResponse(current_user.username)
 
 
-
+# For GET requests (probably not very safe)
 def place_bets2(request):
 	current_user = request.user
 	if not request.user.is_authenticated():
@@ -166,14 +173,20 @@ def place_bets2(request):
 
 
 
-import random
-def test_view(request):
+def update(request):
 	if request.method == 'GET':
-		cat_id = request.GET['category_id']
 		last = AssetPrices.objects.latest('time')
-		asset_price = random.normalvariate(last.eurusd, 0.001)
-		res = json.dumps({"time":last.time, "eurusd":asset_price,})
-		print cat_id
+		latest_time = str(datetime.datetime.fromtimestamp(last.time))
+		asset_price = last.eurusd
+		#asset_price = random.normalvariate(last.eurusd, 0.01)
+		current_option = OfferedOptions.objects.latest('time')
+		call_strike1, call_strike2, expire, call_payout1, call_payout2, \
+		put_strike1, put_strike2, put_payout1, put_payout2 = \
+				tools.option_params(current_option.time, current_option.price_eurusd, last.time, asset_price)
+		res = json.dumps({"time":latest_time, "eurusd":round(asset_price,4), 
+					"call_strike1":call_strike1, "call_strike2":call_strike2, 
+					"expire":str(datetime.datetime.fromtimestamp(expire)), "call_payout1":call_payout1, "call_payout2":call_payout2,
+					"put_strike1":put_strike1, "put_strike2":put_strike2, "put_payout1":put_payout1, "put_payout2":put_payout2})
 		return HttpResponse(res, mimetype='application/json')
 	else:
 		return HttpResponse('else')
