@@ -73,6 +73,8 @@
 			url:'/bets/place_bets/',
 			data: form.serialize(),
 			success: function(response) {
+
+			$('#status').html(response);
 		<!--	alert(response); -->
 			}
 			});
@@ -89,6 +91,8 @@
 			url:'/bets/place_bets/',
 			data: form.serialize(),
 			success: function(response) {
+
+			$('#status').html(response);
 		<!--	alert(response); -->
 			}
 			});
@@ -105,6 +109,8 @@
 			url:'/bets/place_bets/',
 			data: form.serialize(),
 			success: function(response) {
+
+			$('#status').html(response);
 		<!--	alert(response); -->
 			}
 			});
@@ -148,7 +154,7 @@
 	<input id="bet_strike" type="hidden" name="bet_strike" value="" />
 	<input id="bet_type" type="hidden" name="bet_type" value="" />
 	<input id="bet_payout" type="hidden" name="bet_payout" value="" />
-
+	<input id="asset" type="hidden" name="asset" value="eurusd" />
 
 	</form>	
 
@@ -195,13 +201,12 @@
 				</tr>
 			<tr>
 				<td id="put_strike2"> Strike 2 </td>
-				<td id = "put_payout2">3</td>
+				<td id = "put_payout2">30</td>
 				<td><button id="put_strike2_place"> Bet </button></td>
 			</tr>
 			</tbody>
 		</table>
-</div>
-<div>
+<div class="row">
 <h3> Status of last action </h3>
 <p id="status"> <p>
 </div>	

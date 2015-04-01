@@ -119,35 +119,6 @@ def user_logout(request):
 	return HttpResponseRedirect('/bets/')
 
 
-
-
-def place_bets(request):
-	if not request.user.is_authenticated():
-		return HttpResponse("Please log in")
-	current_user = request.user
-	if request.method == 'POST':
-		bet_form = BetForm(request.POST)
-		if bet_form.is_valid():
-			new_bet = bet_form.save(commit=False)
-
-			new_bet.bet_time = int(time.time()	)
-		
-			#new_bet.bet_type = request.POST['submit']
-			new_bet.bet_strike=request.POST['bet_strike']
-			new_bet.bet_type=request.POST['bet_type']
-			new_bet.user = current_user.username
-			new_bet.bet_payout = request.POST['bet_payout'] 
-			new_bet.bet_outcome = "Pending"
-			new_bet.save()
-			option_time = datetime.datetime.fromtimestamp(new_bet.bet_time)
-			return  HttpResponse("Succesfully purchased a %s option with strike %s and a payout of %s at %s" \
-							%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout, str(option_time)))
-		else:
-			return HttpResponse(bet_form.errors)
-	else:
-		return HttpResponse(current_user.username)
-
-
 # For GET requests (probably not very safe)
 def place_bets2(request):
 	current_user = request.user
@@ -174,16 +145,64 @@ def place_bets2(request):
 
 
 
+def place_bets(request):
+	if not request.user.is_authenticated():
+		return HttpResponse("Please log in")
+	current_user = request.user
+	if request.method == 'POST':
+		bet_form = BetForm(request.POST)
+		if bet_form.is_valid():
+			new_bet = bet_form.save(commit=False)
+
+			new_bet.bet_time = int(time.time()	)
+		
+			new_bet.option_asset = request.POST['asset']
+			new_bet.bet_strike=request.POST['bet_strike']
+			new_bet.bet_type=request.POST['bet_type']
+			new_bet.user = current_user.username
+			new_bet.bet_payout = request.POST['bet_payout'] 
+			new_bet.option_expire = OfferedOptions.objects.latest('open_time').expire_time
+			new_bet.bet_outcome = "Pending"
+			new_bet.save()
+			option_time = datetime.datetime.fromtimestamp(new_bet.bet_time)
+			return  HttpResponse("Succesfully purchased a %s option with strike %s and a payout of %s at %s" \
+							%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout, str(option_time)))
+		else:
+			return HttpResponse(bet_form.errors)
+	else:
+		return HttpResponse(current_user.username)
+
+
+
+
 def update(request):
+
+	last = AssetPrices.objects.latest('time')
+	current_option = OfferedOptions.objects.latest('open_time')
+	lid = current_option.id
+
+
+	if lid > 1:
+		prev_option = OfferedOptions.objects.get(id=lid-1)
+		if last.time >= prev_option.expire_time and prev_option.eurusd_close is None:
+			prev_option.eurusd_close = tools.get_price(prev_option.expire_time)
+			prev_option.save()
+			print "Updated Previous Option Close Price ", prev_option.eurusd_close
+
+	pending = PlacedBets.objects.filter(bet_outcome="Pending")
+
+	for bet in pending:
+		pass
 	if request.method == 'GET':
-		last = AssetPrices.objects.latest('time')
+
 		latest_time = str(datetime.datetime.fromtimestamp(last.time))
 		asset_price = last.eurusd
 		#asset_price = random.normalvariate(last.eurusd, 0.01)
-		current_option = OfferedOptions.objects.latest('time')
-		call_strike1, call_strike2, expire, call_payout1, call_payout2, \
+		expire = current_option.expire_time
+
+		call_strike1, call_strike2, call_payout1, call_payout2, \
 		put_strike1, put_strike2, put_payout1, put_payout2 = \
-				tools.option_params(current_option.time, current_option.price_eurusd, last.time, asset_price)
+				tools.option_params(current_option.open_time, expire, current_option.eurusd_open, last.time, asset_price)
 		res = json.dumps({"time":latest_time, "eurusd":round(asset_price,4), 
 					"call_strike1":call_strike1, "call_strike2":call_strike2, 
 					"expire":str(datetime.datetime.fromtimestamp(expire)), "call_payout1":call_payout1, "call_payout2":call_payout2,

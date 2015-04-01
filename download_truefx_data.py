@@ -28,7 +28,7 @@ while True:
 		usdjpy = tr[1].find_all('td')
 		eurjpy = tr[5].find_all('td')
 
-		# EUR/USD
+		#  1.0772        119.9      EUR/USD
 		bid_eurusd = eurusd[2].get_text() + eurusd[3].get_text()
 		ask_eurusd = eurusd[4].get_text() + eurusd[5].get_text()
 		mid_eurusd =float(bid_eurusd) + (float(ask_eurusd) - float(bid_eurusd))/2.
@@ -46,7 +46,7 @@ while True:
 		mid_usdjpy =float(bid_usdjpy) + (float(ask_usdjpy) - float(bid_usdjpy))/2.
 		price_usdjpy = round(float(bid_usdjpy), 2)
 
-		# EUR/JPY
+		# EUR/JP  1.0772        119.9     Y
 		bid_eurjpy = eurjpy[2].get_text() + eurjpy[3].get_text()
 		ask_eurjpy = eurjpy[4].get_text() + eurjpy[5].get_text()
 		mid_eurjpy =float(bid_eurjpy) + (float(ask_eurjpy) - float(bid_eurjpy))/2.
@@ -63,13 +63,20 @@ while True:
 			if new_residual < old_residual: # If we passed the 5 minute
 				print "New Option ", datetime.datetime.fromtimestamp(timestamp)
 				cur = con.cursor()
-				cur.execute("INSERT INTO bets_offeredoptions(time, price_eurusd, price_usdjpy) VALUES (%s, %s, %s);" \
-														% (timestamp, price_eurusd, price_usdjpy))
-
+				expire = timestamp + 300 - (timestamp % 300)
+				cur.execute("INSERT INTO bets_offeredoptions(open_time, expire_time, eurusd_open, usdjpy_open) VALUES (%s, %s, %s, %s);" \
+														% (timestamp, expire, price_eurusd, price_usdjpy))
+#				lid = cur.lastrowid
+#				if lid-1>0:
+#					print "Updated Previous Entry"
+#					cur.execute("UPDATE bets_offeredoptions SET eurusd_close = ?, usdjpy_close = ? WHERE Id = ?", (old_eurusd, old_usdjpy, lid-1))
+#					con.commit()
 			old_residual = new_residual
+			old_eurusd = price_eurusd
+			old_usdjpy = price_usdjpy
+
 		print "Time: ", datetime.datetime.fromtimestamp(timestamp), " Price: ", price_eurusd
 	except KeyboardInterrupt:
 		raise
-	except:
-		print "Error"
-
+#	except:
+#		print "Error"
