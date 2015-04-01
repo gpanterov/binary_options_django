@@ -15,7 +15,7 @@ def option_params(expire, option_start_price, current_time, current_price):
 	call_strike4 = round(option_start_price + 0.0005, 4)
 	call_strike5 = round(option_start_price + 0.0010, 4)
 
-	call_payout1 = round(random.random(),2)
+	call_payout1 = round(1 + random.random(),2)
 	call_payout2 = round(random.random() + call_payout1,2)
 	call_payout3 = round(random.random() + call_payout2,2)
 	call_payout4 = round(random.random() + call_payout3,2)
@@ -28,7 +28,7 @@ def option_params(expire, option_start_price, current_time, current_price):
 	put_strike5 = round(option_start_price - 0.0010, 4)
 
 
-	put_payout1 = round(random.random(),2)
+	put_payout1 = round(1 + random.random(),2)
 	put_payout2 = round(random.random() + put_payout1,2)
 	put_payout3 = round(random.random() + put_payout2,2)
 	put_payout4 = round(random.random() + put_payout3,2)

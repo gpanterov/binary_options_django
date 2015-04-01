@@ -218,10 +218,16 @@ def update(request):
 					bet.bet_outcome = "Loss"
 				else:
 					print "Error"
-			bet.save()
+				bet.save()
 
-		# Update Funds
-		# ------------ code here ---------------
+				# Update Funds
+				if bet.bet_outcome == "Success":
+					profit = bet.bet_size * bet.bet_payout
+					# Update the balance of the trader
+					bal = Balances.objects.get(username = bet.user)
+					bal.balance = bal.balance + profit
+					bal.save()
+					print "Updated balance due to succesful bet"
 
 
 
