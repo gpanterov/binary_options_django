@@ -168,6 +168,12 @@ def place_bets(request):
 			new_bet.bet_outcome = "Pending"
 			new_bet.save()
 			option_time = datetime.datetime.fromtimestamp(new_bet.bet_time)
+
+			# Update the balance of the trader
+			bal = Balances.objects.get(username = request.user.username)
+			bal.balance = bal.balance - new_bet.bet_size
+			bal.save()
+
 			return  HttpResponse("Succesfully purchased a %s option with strike %s and a payout of %s at %s" \
 							%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout, str(option_time)))
 		else:
