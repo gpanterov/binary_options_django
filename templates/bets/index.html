@@ -43,6 +43,7 @@
 		$('#put_payout4').html(data['put_payout4']);
 		$('#put_payout5').html(data['put_payout5']);
 
+		$('#balance').html(data['balance']);
 		interval = setTimeout(update, 1000);
 			}
 		});
@@ -253,6 +254,15 @@
 
 <p> Welcome  {{ user }}  </p>
     <body>
+<table>
+		<thead>
+			<tr>
+				<th>Balance</th>
+				<th id='balance'> 0 </th>
+											</tr>
+		</thead>
+	</table>
+
         <h1>Binary Options</h1>
 
 <table>

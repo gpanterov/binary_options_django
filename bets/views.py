@@ -234,8 +234,9 @@ def update(request):
 			put_payout1, put_payout2,put_payout3,put_payout4,put_payout5 = \
 				tools.option_params(expire, current_option.eurusd_open, last.time, asset_price)
 
+		balance = Balances.objects.get(username = request.user.username).balance
 
-		res = json.dumps({"time":latest_time, "eurusd":round(asset_price,4), 
+		res = json.dumps({"time":latest_time, "eurusd":round(asset_price,4), "balance":balance,
 				"call_strike1":call_strike1, "call_strike2":call_strike2,"call_strike3":call_strike3,
 				"call_strike4":call_strike4,"call_strike5":call_strike5,
 				"expire":str(datetime.datetime.fromtimestamp(expire)), 
