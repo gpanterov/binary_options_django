@@ -21,12 +21,27 @@
 		$('#expire').html(data['expire']);
 		$('#call_strike1').html(data['call_strike1']);
 		$('#call_strike2').html(data['call_strike2']);
+		$('#call_strike3').html(data['call_strike3']);
+		$('#call_strike4').html(data['call_strike4']);
+		$('#call_strike5').html(data['call_strike5']);
+
 		$('#call_payout1').html(data['call_payout1']);
 		$('#call_payout2').html(data['call_payout2']);
+		$('#call_payout3').html(data['call_payout3']);
+		$('#call_payout4').html(data['call_payout4']);
+		$('#call_payout5').html(data['call_payout5']);
+
 		$('#put_strike1').html(data['put_strike1']);
 		$('#put_strike2').html(data['put_strike2']);
+		$('#put_strike3').html(data['put_strike3']);
+		$('#put_strike4').html(data['put_strike4']);
+		$('#put_strike5').html(data['put_strike5']);
+
 		$('#put_payout1').html(data['put_payout1']);
 		$('#put_payout2').html(data['put_payout2']);
+		$('#put_payout3').html(data['put_payout3']);
+		$('#put_payout4').html(data['put_payout4']);
+		$('#put_payout5').html(data['put_payout5']);
 
 		interval = setTimeout(update, 1000);
 			}
@@ -80,6 +95,60 @@
 			});
 		});
 
+		$("#call_strike3_place").click(function(){
+		var payout = $('#call_payout3').html();	
+		var strike = $('#call_strike3').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#call_strike4_place").click(function(){
+		var payout = $('#call_payout4').html();	
+		var strike = $('#call_strike4').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#call_strike5_place").click(function(){
+		var payout = $('#call_payout5').html();	
+		var strike = $('#call_strike5').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
 	$("#put_strike1_place").click(function(){
 		var payout = $('#put_payout1').html();	
 		var strike = $('#put_strike1').html();
@@ -101,6 +170,59 @@
 		$("#put_strike2_place").click(function(){
 		var payout = $('#put_payout2').html();	
 		var strike = $('#put_strike2').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#put_strike3_place").click(function(){
+		var payout = $('#put_payout3').html();	
+		var strike = $('#put_strike3').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#put_strike4_place").click(function(){
+		var payout = $('#put_payout4').html();	
+		var strike = $('#put_strike4').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+		$("#put_strike5_place").click(function(){
+		var payout = $('#put_payout5').html();	
+		var strike = $('#put_strike5').html();
 		$('#bet_payout').val(payout);
 		$('#bet_strike').val(strike);
 		$('#bet_type').val("PUT");
@@ -181,6 +303,22 @@
 				<td id = "call_payout2">3</td>
 				<td><button id="call_strike2_place"> Bet </button></td>
 			</tr>
+			<tr>
+				<td id="call_strike3"> Strike 2 </td>
+				<td id = "call_payout3">3</td>
+				<td><button id="call_strike3_place"> Bet </button></td>
+			</tr>
+			<tr>
+				<td id="call_strike4"> Strike 2 </td>
+				<td id = "call_payout4">3</td>
+				<td><button id="call_strike4_place"> Bet </button></td>
+			</tr>
+			<tr>
+				<td id="call_strike5"> Strike 2 </td>
+				<td id = "call_payout5">3</td>
+				<td><button id="call_strike5_place"> Bet </button></td>
+			</tr>
+
 			</tbody>
 		</table>
 </div>
@@ -206,6 +344,23 @@
 				<td id = "put_payout2">30</td>
 				<td><button id="put_strike2_place"> Bet </button></td>
 			</tr>
+			<tr>
+				<td id="put_strike3"> Strike 2 </td>
+				<td id = "put_payout3">30</td>
+				<td><button id="put_strike3_place"> Bet </button></td>
+			</tr>
+			<tr>
+				<td id="put_strike4"> Strike 2 </td>
+				<td id = "put_payout4">30</td>
+				<td><button id="put_strike4_place"> Bet </button></td>
+			</tr>
+
+			<tr>
+				<td id="put_strike5"> Strike 2 </td>
+				<td id = "put_payout5">30</td>
+				<td><button id="put_strike5_place"> Bet </button></td>
+			</tr>
+
 			</tbody>
 		</table>
 <div class="row">

@@ -227,13 +227,25 @@ def update(request):
 		#asset_price = random.normalvariate(last.eurusd, 0.01)
 		expire = current_option.expire_time
 
-		call_strike1, call_strike2, call_payout1, call_payout2, \
-		put_strike1, put_strike2, put_payout1, put_payout2 = \
-				tools.option_params(current_option.open_time, expire, current_option.eurusd_open, last.time, asset_price)
+		# Calculate payouts and strikes
+		call_strike1, call_strike2,  call_strike3, call_strike4, call_strike5, \
+			call_payout1, call_payout2, call_payout3,call_payout4,call_payout5,\
+			put_strike1, put_strike2, put_strike3,put_strike4,put_strike5,\
+			put_payout1, put_payout2,put_payout3,put_payout4,put_payout5 = \
+				tools.option_params(expire, current_option.eurusd_open, last.time, asset_price)
+
+
 		res = json.dumps({"time":latest_time, "eurusd":round(asset_price,4), 
-					"call_strike1":call_strike1, "call_strike2":call_strike2, 
-					"expire":str(datetime.datetime.fromtimestamp(expire)), "call_payout1":call_payout1, "call_payout2":call_payout2,
-					"put_strike1":put_strike1, "put_strike2":put_strike2, "put_payout1":put_payout1, "put_payout2":put_payout2})
+				"call_strike1":call_strike1, "call_strike2":call_strike2,"call_strike3":call_strike3,
+				"call_strike4":call_strike4,"call_strike5":call_strike5,
+				"expire":str(datetime.datetime.fromtimestamp(expire)), 
+				"call_payout1":call_payout1, "call_payout2":call_payout2,
+				"call_payout3":call_payout3, "call_payout4":call_payout4,"call_payout5":call_payout5,
+					"put_strike1":put_strike1, "put_strike2":put_strike2, 
+					"put_strike3":put_strike3, "put_strike4":put_strike4, "put_strike5":put_strike5,
+					"put_payout1":put_payout1, "put_payout2":put_payout2,
+					"put_payout3":put_payout3, "put_payout4":put_payout4, "put_payout5":put_payout5}
+				)
 		return HttpResponse(res, mimetype='application/json')
 	else:
 		return HttpResponse('else')
