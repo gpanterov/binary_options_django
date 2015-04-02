@@ -1,6 +1,8 @@
 import numpy as np
 import random
-from bets.models import PlacedBets, AssetPrices, OfferedOptions
+from bets.models import PlacedBets, AssetPrices
+
+
 def option_params(expire, option_start_price, current_time, current_price):
 	"""
 	Calculates and returns some useful parameters of the options like strike prices (fixed for the life of the option)
@@ -8,7 +10,12 @@ def option_params(expire, option_start_price, current_time, current_price):
 	"""
 
 	time_remaining = expire - current_time
+	if option_start_price == 0 or option_start_price is None:
+		print "Problem with Option Price", option_start_price
+		option_start_price = current_price
 
+
+	print "Option Start Price is: ", option_start_price
 	call_strike1 = round(option_start_price - 0.0002, 4)
 	call_strike2 = round(option_start_price, 4)
 	call_strike3 = round(option_start_price + 0.0002, 4)
@@ -50,7 +57,7 @@ def get_price(timestamp):
 
 	if AssetPrices.objects.latest('time').time < timestamp:
 		# Attempting to find the price of a future date	
-		print "You must wait a bit"
+		print "You must wait a bit ", AssetPrices.objects.latest('time').time - timestamp
 		return None
 
 	while not found_price:

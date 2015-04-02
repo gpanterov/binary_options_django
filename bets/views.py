@@ -2,7 +2,7 @@
 
 
 from bets.forms import UserForm, UserProfileForm, BetForm
-from bets.models import PlacedBets, AssetPrices, OfferedOptions, Deposits, Balances
+from bets.models import PlacedBets, AssetPrices, Deposits, Balances
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -151,26 +151,30 @@ def place_bets2(request):
 def place_bets(request):
 	if not request.user.is_authenticated():
 		return HttpResponse("Please log in")
+
+	last = AssetPrices.objects.latest('time')
 	current_user = request.user
+	timestamp = int(time.time()	)
+	expire = timestamp + 300 - (timestamp % 300)
 	if request.method == 'POST':
 		bet_form = BetForm(request.POST)
 		if bet_form.is_valid():
 			new_bet = bet_form.save(commit=False)
 
-			new_bet.bet_time = int(time.time()	)
-		
+			new_bet.bet_time = timestamp		
 			new_bet.option_asset = request.POST['asset']
 			new_bet.bet_strike=request.POST['bet_strike']
 			new_bet.bet_type=request.POST['bet_type']
 			new_bet.user = current_user.username
 			new_bet.bet_payout = request.POST['bet_payout'] 
-			new_bet.option_expire = OfferedOptions.objects.latest('open_time').expire_time
+
+			new_bet.option_expire =  expire
 			new_bet.bet_outcome = "Pending"
 			new_bet.save()
 			option_time = datetime.datetime.fromtimestamp(new_bet.bet_time)
 
 			# Update the balance of the trader
-			bal = Balances.objects.get(username = request.user.username)
+			bal = Balances.objects.get(username = current_user.username)
 			bal.balance = bal.balance - new_bet.bet_size
 			bal.save()
 
@@ -187,26 +191,16 @@ def place_bets(request):
 def update(request):
 
 	last = AssetPrices.objects.latest('time')
-	current_option = OfferedOptions.objects.latest('open_time')
-	lid = current_option.id
-
-	# Update prices in the OfferedOptions table
-#	if lid > 1:
-#		prev_option = OfferedOptions.objects.get(id=lid-1)
-#		if last.time >= prev_option.expire_time and prev_option.eurusd_close is None:
-#			prev_option.eurusd_close = tools.get_price(prev_option.expire_time)
-#			prev_option.save()
-#			print "Updated Previous Option Close Price ", prev_option.eurusd_close
-
+	
+	timestamp = int(time.time())
 
 	# Settle Bets
-	if last.time % 300 < 25: # only check in the beginning of the period (efficiency)
+	if timestamp % 300 < 280: # only check in the beginning of the period (efficiency)
 		# Add a check for not running this too often (another table in the db with the last check)
 		
 		pending = PlacedBets.objects.filter(bet_outcome="Pending")
 
 		for bet in pending:
-			#eurusd_close = OfferedOptions.objects.get(expire_time=bet.option_expire).eurusd_close
 			eurusd_close = tools.get_price(bet.option_expire)
 			if eurusd_close is not None:
 				if bet.bet_type == "CALL" and eurusd_close > bet.bet_strike:
@@ -235,24 +229,32 @@ def update(request):
 	# Update remaining prices, payous etc.
 	if request.method == 'GET':
 
-		latest_time = str(datetime.datetime.fromtimestamp(last.time))
+		
 		asset_price = last.eurusd
-		#asset_price = random.normalvariate(last.eurusd, 0.01)
-		expire = current_option.expire_time
+
+		latest_time = str(datetime.datetime.fromtimestamp(timestamp))
+
+		#latest_time = str(datetime.datetime.fromtimestamp(last.time))
+		expire =  timestamp + 300 - (timestamp % 300)
+		option_start_price = tools.get_price(expire-300)
 
 		# Calculate payouts and strikes
 		call_strike1, call_strike2,  call_strike3, call_strike4, call_strike5, \
 			call_payout1, call_payout2, call_payout3,call_payout4,call_payout5,\
 			put_strike1, put_strike2, put_strike3,put_strike4,put_strike5,\
 			put_payout1, put_payout2,put_payout3,put_payout4,put_payout5 = \
-				tools.option_params(expire, current_option.eurusd_open, last.time, asset_price)
+				tools.option_params(expire, option_start_price, timestamp, asset_price)
 
-		balance = Balances.objects.get(username = request.user.username).balance
-
+		try:	
+			balance = Balances.objects.get(username = request.user.username).balance
+		except:
+			balance = 0
 
 		# Get the last 10 bets of the trader and return them for a table in the website
 		recent_bets = PlacedBets.objects.filter(user = request.user.username)
-		recent_bets = recent_bets[len(recent_bets) - 5:]
+		if len(recent_bets) > 5:
+			recent_bets = recent_bets[len(recent_bets) - 5:]
+		
 		tb = ""
 		for bet in recent_bets[::-1]:
 			size = bet.bet_size
@@ -293,10 +295,11 @@ def deposit(request):
 		bal = Balances.objects.get(username = request.user.username)
 		bal.balance = bal.balance + entry.size
 		bal.save()
+		print "User already exists ", bal.balance
 	except: # If it doesn't exist (new user - create entry)
 		bal = Balances()
 		bal.username = request.user.username
 		bal.balance = entry.size
 		bal.save()
-		
+		print "Created a new user"
 	return HttpResponse("Deposit Successful")

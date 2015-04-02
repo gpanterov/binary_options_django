@@ -81,13 +81,6 @@ while True:
 			cur.execute("INSERT INTO bets_assetprices(time, eurusd, usdjpy) VALUES (%s, %s, %s);" % (timestamp, price_eurusd, price_usdjpy))
 			lid = cur.lastrowid
 			new_residual = timestamp % 300
-			if new_residual < old_residual: # If we passed the 5 minute
-				print "New Option ", datetime.datetime.fromtimestamp(timestamp)
-				cur = con.cursor()
-				expire = timestamp + 300 - (timestamp % 300)
-				cur.execute("INSERT INTO bets_offeredoptions(open_time, expire_time, eurusd_open, usdjpy_open) VALUES (%s, %s, %s, %s);" \
-														% (timestamp, expire, price_eurusd, price_usdjpy))
-			old_residual = new_residual
 
 		print "Time: ", datetime.datetime.fromtimestamp(timestamp), " Price: ", price_eurusd
 	except KeyboardInterrupt:

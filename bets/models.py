@@ -25,14 +25,7 @@ class AssetPrices(models.Model):
 	eurusd = models.FloatField(default=0, null=True)
 	usdjpy = models.FloatField(default=0, null=True)
 
-class OfferedOptions(models.Model):
-	open_time = models.IntegerField(default=0)
-	expire_time = models.IntegerField(default=0)
-	eurusd_open = models.FloatField()
-	usdjpy_open =  models.FloatField()
 
-	eurusd_close = models.FloatField(null=True)
-	usdjpy_close = models.FloatField(null=True)
 
 
 # Add Deposit/Funds model
