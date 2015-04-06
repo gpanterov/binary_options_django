@@ -156,6 +156,9 @@ def place_bets(request):
 	current_user = request.user
 	timestamp = int(time.time()	)
 	expire = timestamp + 300 - (timestamp % 300)
+	if expire - timestamp < 30:
+		return  HttpResponse("No Bets 30 seconds prior to expiration")
+
 	if request.method == 'POST':
 		bet_form = BetForm(request.POST)
 		if bet_form.is_valid():
