@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+	$('document').ready(function(){
+    $('#main_button').click(function(){
+	var value = $('#id_bet_size').val();	
+    $.getJSON('/bets/test_view/',{category_id:value,zzz:5 }, function(data){
+		$('h1').html(data['time']);
+		$('h2').html(data['eurusd']); } );
+}) });
+</script>
+
+
+<script>
+	var interval;
+	function update(){
+	$('h3').html('Update Runs');
+    $.ajax({
+		type: "GET",
+		url:'/bets/test_view/',
+		data: {category_id:5,zzz:5 },
+		datatype: 'json',
+		success: function(data){
+		$('h1').html(data['time']);
+		$('h2').html(data['eurusd']);
+		interval = setTimeout(update, 1000);
+			}
+		});
+	}
+</script>
+<script>
+	$('document').ready(function(){
+	update();})
+</script>
+
+<script>
+	$('document').ready(function(){
+    $('#newformup').click(function(){
+	var value = $('#newformtext').val();	
+    $.get('/bets/place_bets2/', {bet_size:value, bet_type:"UP"}, function(data){alert(data)}) }) });
+</script>
+
+<script>
+	$('document').ready(function(){
+
+    $('#newformdown').click(function(){
+
+	$('h1').html('works');
+	var value = $('#newformtext').val();	
+    $.ajax( {
+		type: "GET",
+		url: '/bets/place_bets2/',
+		data: {bet_size:value, bet_type:"DOWN"},
+		success: function(response){alert(response);}
+		});
+	});
+	});
+</script>
+
+
+
+<script>
+	$('document').ready(function(){
+
+    var form = $('#betsize');
+	$("#ajaxsubmit").click(function(){
+	var value = $('#id_bet_size').val();	
+	$('#test_id').val('zzz');
+    $.ajax( 
+		{type: "POST",
+		url:'/bets/place_bets/',
+		data: form.serialize(),
+		success: function(response) {
+		alert(response);
+		}
+		});
+});
+});
+</script>
+
+
+
+        <title>Binary Options</title>
+    </head>
+<a href="/bets/login/">Login</a>
+<a href="/bets/register/">Register</a>
+<a href="/bets/logout/">Logout</a>
+    <body>
+        <h1>Time</h1>
+		<h2>Price</h2>
+		<h3>Bet</h3>
+	<form id='betsize' name='betsize' method='post' action='/bets/place_bets/'>
+		{% csrf_token %}
+		{{ bets_form.as_p }}
+	<input type="submit" name="submit" value="UP"/>
+	<input type="submit" name="submit" value="Down" />
+	<input id="test_id" type="hidden" name="submit2" value="UP 5" />
+
+
+
+	</form>	
+
+<p> New Bets </p>
+<form id='newform'>
+
+<input id='newformtext' type="text"/>
+
+</form>
+<button id='newformup'>New UP </button>
+<button id='newformdown'> New Down</button>
+
+<button id="main_button"> click me </button>
+<button id="test_button">second test </button>
+
+<button id="ajaxsubmit"> ajax submit </button>
+    </body>
+
+</html>
+
+
