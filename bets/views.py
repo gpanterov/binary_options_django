@@ -21,7 +21,12 @@ import random
 import json
 
 def index(request):
-    current_user = request.user
+
+    if not request.user.is_authenticated():
+        current_user = None
+    else:
+        current_user = request.user
+	
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user} 
@@ -119,33 +124,6 @@ def user_login(request):
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/bets/')
-
-
-# For GET requests (probably not very safe)
-def place_bets2(request):
-	current_user = request.user
-	if not request.user.is_authenticated():
-		return HttpResponse("Please Log in")
-	
-	if request.method == 'GET':
-		new_bet = PlacedBets()
-
-		new_bet.bet_time = int(time.time())
-	
-		new_bet.bet_type = request.GET['bet_type']
-		new_bet.bet_size = request.GET['bet_size']
-		new_bet.user = current_user.username
-		new_bet.bet_payout = 1.5
-		new_bet.bet_outcome = "Pending"
-		print new_bet.bet_size
-
-		new_bet.save()
-		print "here"
-		return  HttpResponse("Bet Successful")
-	else:
-		return HttpResponse(current_user.username)
-
-
 
 # Must modify the payouts -- should be recalculated every time. Not taken from the html (possible fraud)
 def place_bets(request):

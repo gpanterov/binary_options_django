@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>INSPINIA | Dashboard v.4</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+    <!-- Morris -->
+    <link href="{% static 'css/plugins/morris/morris-0.4.3.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="wrapper">
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element"> <span>
+                            <img alt="image" class="img-circle" src="{% static 'img/profile_small.jpg' %}" />
+                             </span>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">David Williams</strong>
+                             </span> <span class="text-muted text-xs block">Art Director <b class="caret"></b></span> </span> </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a href="profile.html">Profile</a></li>
+                            <li><a href="contacts.html">Contacts</a></li>
+                            <li><a href="mailbox.html">Mailbox</a></li>
+                            <li class="divider"></li>
+                            <li><a href="login.html">Logout</a></li>
+                        </ul>
+                    </div>
+                    <div class="logo-element">
+                        IN+
+                    </div>
+                </li>
+                <li class="active">
+                    <a href="index.html"><i class="fa fa-dollar"></i> <span class="nav-label">Currencies</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li ><a href="index.html">EUR/USD</a></li>
+                        <li ><a href="dashboard_2.html">USD/JPY</a></li>
+                        <li ><a href="dashboard_3.html">EUR/CHF</a></li>
+                        <li class="active"><a href="dashboard_4_1.html">USD/CHF</a></li>
+                    </ul>
+                </li>
+              
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Commodities</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse in">
+                        <li><a href="graph_flot.html">Oil</a></li>
+                        <li><a href="graph_morris.html">Gold</a></li>
+                        
+                    </ul>
+                </li>
+                <li>
+                    <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">Indices </span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse in">
+                        <li><a href="mailbox.html">SP 500</a></li>
+                        <li><a href="mail_detail.html">FTSE 100</a></li>
+                        <li><a href="mail_compose.html">Nikkei</a></li>
+
+                    </ul>
+                </li>
+               
+               
+
+              
+              
+              
+        </div>
+    </nav>
+
+        <div id="page-wrapper" class="gray-bg">
+        <div class="row border-bottom">
+        <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+            <form role="search" class="navbar-form-custom" action="search_results.html">
+                <div class="form-group">
+                    <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                </div>
+            </form>
+        </div>
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+					{% if user %}
+                    <span class="m-r-sm text-muted welcome-message">Welcome {{ user }}</span>
+					{% else %}
+
+                    <span class="m-r-sm text-muted welcome-message"></span>
+					{% endif %}
+                </li>
+                <li class="dropdown">
+                           <li class="dropdown">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary">8</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                    </ul>
+                </li>
+
+
+                <li>
+					{% if user %}
+                    <a href="/bets/logout/">
+                        <i class="fa fa-sign-out"></i> Log out
+                    </a>
+					{% else %}
+                    <a href="/bets/login/">
+                        <i class="fa fa-sign-out"></i> Log in
+                    </a>
+					{% endif %}
+                </li>
+                <li>
+                    <a class="right-sidebar-toggle">
+                        <i class="fa fa-tasks"></i>
+                    </a>
+                </li>
+            </ul>
+
+        </nav>
+        </div>
+
+
+        <div class="wrapper wrapper-content">
+      <div class="row" >
+            <div class="col-lg-8" >
+                <div class="ibox float-e-margins" >
+                    <div class="ibox-content">
+                        <div>
+                                        <span class="pull-right text-right">
+                                        <small>Average value of sales in the past month in: <strong>United states</strong></small>
+                                            <br/>
+                                            All sales: 162,862
+                                        </span>
+                            <h3 class="font-bold no-margins">
+                                Half-year revenue margin
+                            </h3>
+                            <small>Sales marketing.</small>
+                        </div>
+
+                        <div class="m-t-sm">
+
+                            <div class="row">
+                                <div class="col-md-9">
+                         			<div class="flot-chart">
+                                		<div class="flot-chart-content" id="flot-line-chart-multi"></div>
+                            		</div>
+
+                                </div>
+                                <div class="col-md-3">
+                                    <ul class="stat-list m-t-lg">
+                                        <li>
+                                            <h2 class="no-margins" id="balance">2,346</h2>
+                                            <small>Total orders in period</small>
+                                            <div class="progress progress-mini">
+                                                <div class="progress-bar" style="width: 48%;"></div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <h2 class="no-margins " id="current_price">4,422</h2>
+                                            <small>Orders in last month</small>
+                                            <div class="progress progress-mini">
+                                                <div class="progress-bar" style="width: 60%;"></div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="m-t-md">
+                            <small class="pull-right">
+                                <i class="fa fa-clock-o"> </i>
+                                Update on 16.07.2015
+                            </small>
+                            <small>
+                                <strong>Analysis of sales:</strong> The value has been changed over time, and last month reached a level over $50,000.
+                            </small>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+                <div class="col-lg-4">
+                    <div class="ibox float-e-margins">
+                       <!-- <div class="ibox-title">
+                            <h5>Custom responsive table </h5>
+                       </div> -->
+                        <div class="ibox-content">
+                            <div class="row">
+                               <div class="col-sm-6 m-b-xs">
+                                    <div data-toggle="buttons" class="btn-group">
+
+										<label class="btn btn-sm btn-white" id ="option_calls"> 
+											<input type="radio" id="option1" name="options">Calls</label>
+                                        <label class="btn btn-sm btn-white active" id="option_puts"> 
+											<input type="radio" id="option2" name="options">Puts</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+									<form id="betsize" name='betsize' method='post' action='/bets/place_bets/'>
+											{% csrf_token %}
+											<input id="bet_size" type="hidden" name="bet_size" value="" />
+											<input id="bet_strike" type="hidden" name="bet_strike" value="" />
+											<input id="bet_type" type="hidden" name="bet_type" value="" />
+											<input id="bet_payout" type="hidden" name="bet_payout" value="" />
+											<input id="asset" type="hidden" name="asset" value="eurusd" />
+
+
+                                    <div class="input-group"><input id='bet_amount' type="text" placeholder="Enter Amount" class="input-sm form-control"> 
+										<span class="input-group-btn"></span>
+									</div>
+									</form>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+
+								<div id="table_calls">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+
+                                        <th>Type </th>
+                                        <th>Strike</th>
+                                        <th>Payout</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Call</td>
+                                        <td id="call_strike1">1.35</td>
+                                        <td id="call_payout1">2</td>
+                                        <td><button id ="call_strike1_place"><i class="fa fa-check text-navy"></i></button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Call</td>
+                                        <td id="call_strike2">1.40</td>
+                                        <td id="call_payout2">3</td>
+                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Call</td>
+                                        <td id="call_strike3">1.45</td>
+                                        <td id="call_payout3">4</td>
+                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Call</td>
+                                        <td id="call_strike4">1.5</td>
+                                        <td id="call_payout4">5</td>
+                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+								</div> <!-- div id=table_calls -->
+
+								<div id="table_puts">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+
+                                        <th>Type </th>
+                                        <th>Strike</th>
+                                        <th>Payout</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Put</td>
+                                        <td id="put_strike1">1.5</td>
+                                        <td id="put_payout1">2</td>
+                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Put</td>
+                                        <td id="put_strike2">1.45</td>
+                                        <td id="put_payout2">3</td>
+                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Put</td>
+                                        <td id="put_strike3">1.4</td>
+                                        <td id="put_payout3">4</td>
+                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Put</td>
+                                        <td id="put_strike4">1.35</td>
+                                        <td id="put_payout4">5</td>
+                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+								</div> <!-- div id=table_puts -->
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+	</div>
+        <div class="row">
+
+        <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Your Recent Transactions </h5>
+       </div>
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+
+                        <th>Type</th>
+                        <th>Size </th>
+                        <th>Payout </th>
+                        <th>Strike </th>
+                        <th>Expiration </th>
+                        <th>Outcome </th>
+                        <th>Task</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+       
+
+                    <tr>
+                        <td>2</td>
+                        <td>Alpha project</td>
+                        <td>Alice Jackson</td>
+                        <td>0500 780909</td>
+                        <td>Nec Euismod In Company</td>
+                        <td><span class="pie">6,9</span></td>
+                        <td>40%</td>
+                        <td>Jul 16, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Betha project</td>
+                        <td>John Smith</td>
+                        <td>0800 1111</td>
+                        <td>Erat Volutpat</td>
+                        <td><span class="pie">3,1</span></td>
+                        <td>75%</td>
+                        <td>Jul 18, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Gamma project</td>
+                        <td>Anna Jordan</td>
+                        <td>(016977) 0648</td>
+                        <td>Tellus Ltd</td>
+                        <td><span class="pie">4,9</span></td>
+                        <td>18%</td>
+                        <td>Jul 22, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Alpha project</td>
+                        <td>Alice Jackson</td>
+                        <td>0500 780909</td>
+                        <td>Nec Euismod In Company</td>
+                        <td><span class="pie">6,9</span></td>
+                        <td>40%</td>
+                        <td>Jul 16, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Project <small>This is example of project</small></td>
+                        <td>Patrick Smith</td>
+                        <td>0800 051213</td>
+                        <td>Inceptos Hymenaeos Ltd</td>
+                        <td><span class="pie">0.52/1.561</span></td>
+                        <td>20%</td>
+                        <td>Jul 14, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Gamma project</td>
+                        <td>Anna Jordan</td>
+                        <td>(016977) 0648</td>
+                        <td>Tellus Ltd</td>
+                        <td><span class="pie">4,9</span></td>
+                        <td>18%</td>
+                        <td>Jul 22, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        </div>
+        </div>
+
+        </div>
+
+
+        </div>
+
+
+        <div class="footer">
+            <div class="pull-right">
+                10GB of <strong>250GB</strong> Free.
+            </div>
+            <div>
+                <strong>Copyright</strong> Example Company &copy; 2014-2015
+            </div>
+        </div>
+
+        </div>
+        <div id="right-sidebar">
+            <div class="sidebar-container">
+
+                <ul class="nav nav-tabs navs-3">
+
+                    <li class="active"><a data-toggle="tab" href="#tab-1">
+                        Notes
+                    </a></li>
+                    <li><a data-toggle="tab" href="#tab-2">
+                        Projects
+                    </a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-3">
+                        <i class="fa fa-gear"></i>
+                    </a></li>
+                </ul>
+
+                <div class="tab-content">
+
+
+                    <div id="tab-1" class="tab-pane active">
+
+                        <div class="sidebar-title">
+                            <h3> <i class="fa fa-comments-o"></i> Latest Notes</h3>
+                            <small><i class="fa fa-tim"></i> You have 10 new message.</small>
+                        </div>
+
+                        <div>
+
+                            <div class="sidebar-message">
+                                <a href="#">
+                                    <div class="pull-left text-center">
+                                        <img alt="image" class="img-circle message-avatar" src="img/a1.jpg">
+
+                                        <div class="m-t-xs">
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                        </div>
+                                    </div>
+                                    <div class="media-body">
+
+                                        There are many variations of passages of Lorem Ipsum available.
+                                        <br>
+                                        <small class="text-muted">Today 4:21 pm</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="sidebar-message">
+                                <a href="#">
+                                    <div class="pull-left text-center">
+                                        <img alt="image" class="img-circle message-avatar" src="img/a2.jpg">
+                                    </div>
+                                    <div class="media-body">
+                                        The point of using Lorem Ipsum is that it has a more-or-less normal.
+                                        <br>
+                                        <small class="text-muted">Yesterday 2:45 pm</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="sidebar-message">
+                                <a href="#">
+                                    <div class="pull-left text-center">
+                                        <img alt="image" class="img-circle message-avatar" src="img/a3.jpg">
+
+                                        <div class="m-t-xs">
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                        </div>
+                                    </div>
+                                    <div class="media-body">
+                                        Mevolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                        <br>
+                                        <small class="text-muted">Yesterday 1:10 pm</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="sidebar-message">
+                                <a href="#">
+                                    <div class="pull-left text-center">
+                                        <img alt="image" class="img-circle message-avatar" src="img/a4.jpg">
+                                    </div>
+
+                                    <div class="media-body">
+                                        Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the
+                                        <br>
+                                        <small class="text-muted">Monday 8:37 pm</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="sidebar-message">
+                                <a href="#">
+                                    <div class="pull-left text-center">
+                                        <img alt="image" class="img-circle message-avatar" src="img/a8.jpg">
+                                    </div>
+                                    <div class="media-body">
+
+                                        All the Lorem Ipsum generators on the Internet tend to repeat.
+                                        <br>
+                                        <small class="text-muted">Today 4:21 pm</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="sidebar-message">
+                                <a href="#">
+                                    <div class="pull-left text-center">
+                                        <img alt="image" class="img-circle message-avatar" src="img/a7.jpg">
+                                    </div>
+                                    <div class="media-body">
+                                        Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
+                                        <br>
+                                        <small class="text-muted">Yesterday 2:45 pm</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="sidebar-message">
+                                <a href="#">
+                                    <div class="pull-left text-center">
+                                        <img alt="image" class="img-circle message-avatar" src="img/a3.jpg">
+
+                                        <div class="m-t-xs">
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                            <i class="fa fa-star text-warning"></i>
+                                        </div>
+                                    </div>
+                                    <div class="media-body">
+                                        The standard chunk of Lorem Ipsum used since the 1500s is reproduced below.
+                                        <br>
+                                        <small class="text-muted">Yesterday 1:10 pm</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="sidebar-message">
+                                <a href="#">
+                                    <div class="pull-left text-center">
+                                        <img alt="image" class="img-circle message-avatar" src="img/a4.jpg">
+                                    </div>
+                                    <div class="media-body">
+                                        Uncover many web sites still in their infancy. Various versions have.
+                                        <br>
+                                        <small class="text-muted">Monday 8:37 pm</small>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="tab-2" class="tab-pane">
+
+                        <div class="sidebar-title">
+                            <h3> <i class="fa fa-cube"></i> Latest projects</h3>
+                            <small><i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
+                        </div>
+
+                        <ul class="sidebar-list">
+                            <li>
+                                <a href="#">
+                                    <div class="small pull-right m-t-xs">9 hours ago</div>
+                                    <h4>Business valuation</h4>
+                                    It is a long established fact that a reader will be distracted.
+
+                                    <div class="small">Completion with: 22%</div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
+                                    </div>
+                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div class="small pull-right m-t-xs">9 hours ago</div>
+                                    <h4>Contract with Company </h4>
+                                    Many desktop publishing packages and web page editors.
+
+                                    <div class="small">Completion with: 48%</div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 48%;" class="progress-bar"></div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div class="small pull-right m-t-xs">9 hours ago</div>
+                                    <h4>Meeting</h4>
+                                    By the readable content of a page when looking at its layout.
+
+                                    <div class="small">Completion with: 14%</div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 14%;" class="progress-bar progress-bar-info"></div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span class="label label-primary pull-right">NEW</span>
+                                    <h4>The generated</h4>
+                                    <!--<div class="small pull-right m-t-xs">9 hours ago</div>-->
+                                    There are many variations of passages of Lorem Ipsum available.
+                                    <div class="small">Completion with: 22%</div>
+                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div class="small pull-right m-t-xs">9 hours ago</div>
+                                    <h4>Business valuation</h4>
+                                    It is a long established fact that a reader will be distracted.
+
+                                    <div class="small">Completion with: 22%</div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
+                                    </div>
+                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div class="small pull-right m-t-xs">9 hours ago</div>
+                                    <h4>Contract with Company </h4>
+                                    Many desktop publishing packages and web page editors.
+
+                                    <div class="small">Completion with: 48%</div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 48%;" class="progress-bar"></div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <div class="small pull-right m-t-xs">9 hours ago</div>
+                                    <h4>Meeting</h4>
+                                    By the readable content of a page when looking at its layout.
+
+                                    <div class="small">Completion with: 14%</div>
+                                    <div class="progress progress-mini">
+                                        <div style="width: 14%;" class="progress-bar progress-bar-info"></div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <span class="label label-primary pull-right">NEW</span>
+                                    <h4>The generated</h4>
+                                    <!--<div class="small pull-right m-t-xs">9 hours ago</div>-->
+                                    There are many variations of passages of Lorem Ipsum available.
+                                    <div class="small">Completion with: 22%</div>
+                                    <div class="small text-muted m-t-xs">Project end: 4:00 pm - 12.06.2014</div>
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    <div id="tab-3" class="tab-pane">
+
+                        <div class="sidebar-title">
+                            <h3><i class="fa fa-gears"></i> Settings</h3>
+                            <small><i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
+                        </div>
+
+                        <div class="setings-item">
+                    <span>
+                        Show notifications
+                    </span>
+                            <div class="switch">
+                                <div class="onoffswitch">
+                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example">
+                                    <label class="onoffswitch-label" for="example">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setings-item">
+                    <span>
+                        Disable Chat
+                    </span>
+                            <div class="switch">
+                                <div class="onoffswitch">
+                                    <input type="checkbox" name="collapsemenu" checked class="onoffswitch-checkbox" id="example2">
+                                    <label class="onoffswitch-label" for="example2">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setings-item">
+                    <span>
+                        Enable history
+                    </span>
+                            <div class="switch">
+                                <div class="onoffswitch">
+                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example3">
+                                    <label class="onoffswitch-label" for="example3">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setings-item">
+                    <span>
+                        Show charts
+                    </span>
+                            <div class="switch">
+                                <div class="onoffswitch">
+                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example4">
+                                    <label class="onoffswitch-label" for="example4">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setings-item">
+                    <span>
+                        Offline users
+                    </span>
+                            <div class="switch">
+                                <div class="onoffswitch">
+                                    <input type="checkbox" checked name="collapsemenu" class="onoffswitch-checkbox" id="example5">
+                                    <label class="onoffswitch-label" for="example5">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setings-item">
+                    <span>
+                        Global search
+                    </span>
+                            <div class="switch">
+                                <div class="onoffswitch">
+                                    <input type="checkbox" checked name="collapsemenu" class="onoffswitch-checkbox" id="example6">
+                                    <label class="onoffswitch-label" for="example6">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setings-item">
+                    <span>
+                        Update everyday
+                    </span>
+                            <div class="switch">
+                                <div class="onoffswitch">
+                                    <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example7">
+                                    <label class="onoffswitch-label" for="example7">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-content">
+                            <h4>Settings</h4>
+                            <div class="small">
+                                I belive that. Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                                And typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
+                                Over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+
+    <script src="{% static 'js/jquery-2.1.1.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+    <!-- Flot -->
+    <script src="{% static 'js/plugins/flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.tooltip.min.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.spline.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.resize.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.pie.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.symbol.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/curvedLines.js' %}"></script>
+
+	<!-- Additional Flot Scripts From the Flot Graphs Template -->
+    <script src="{% static 'js/plugins/flot/jquery.flot.time.js' %}"></script>
+
+
+    <!-- Peity -->
+    <script src="{% static 'js/plugins/peity/jquery.peity.min.js' %}"></script>
+    <script src="{% static 'js/demo/peity-demo.js' %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+    <!-- jQuery UI -->
+    <script src="{% static 'js/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+
+    <!-- Jvectormap -->
+    <script src="{% static 'js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
+    <script src="{% static 'js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
+
+
+    <!-- ChartJS-->
+    <script src="{% static 'js/plugins/chartJs/Chart.min.js' %}"></script>
+
+ 
+
+	<script>
+	$('#table_calls').hide();
+	$('#option_calls').click(function(){
+		$('#table_puts').hide();
+		$('#table_calls').show();
+		});
+	$('#option_puts').click(function(){
+		$('#table_calls').hide();
+		$('#table_puts').show();
+		});
+	</script>
+
+
+<script>
+    var oilprices1 = [ [1167692400000, 61.05], [1167778800000, 58.32], [1167865200000, 57.35], [1167951600000, 56.31], [1168210800000, 55.55], [1168297200000, 55.64], [1168383600000, 54.02], [1168470000000, 51.88], [1168556400000, 52.99], [1168815600000, 52.99], [1168902000000, 51.21], [1168988400000, 52.24], [1169074800000, 50.48], [1169161200000, 51.99], [1169420400000, 51.13], [1169506800000, 55.04], [1169593200000, 55.37], [1169679600000, 54.23], [1169766000000, 55.42], [1170025200000, 54.01], [1170111600000, 56.97], [1170198000000, 58.14], [1170284400000, 58.14], [1170370800000, 59.02], [1170630000000, 58.74], [1170716400000, 58.88], [1170802800000, 57.71], [1170889200000, 59.71], [1170975600000, 59.89], [1171234800000, 57.81], [1171321200000, 59.06], [1171407600000, 58.00], [1171494000000, 57.99], [1171580400000, 59.39], [1171839600000, 59.39], [1171926000000, 58.07], [1172012400000, 60.07], [1172098800000, 61.14], [1172444400000, 61.39], [1172530800000, 61.46], [1172617200000, 61.79], [1172703600000, 62.00], [1172790000000, 60.07], [1173135600000, 60.69], [1173222000000, 61.82], [1173308400000, 60.05], [1173654000000, 58.91], [1173740400000, 57.93], [1173826800000, 58.16], [1173913200000, 57.55], [1173999600000, 57.11], [1174258800000, 56.59], [1174345200000, 59.61], [1174518000000, 61.69], [1174604400000, 62.28], [1174860000000, 62.91], [1174946400000, 62.93], [1175032800000, 64.03], [1175119200000, 66.03], [1175205600000, 65.87], [1175464800000, 64.64], [1175637600000, 64.38], [1175724000000, 64.28], [1175810400000, 64.28], [1176069600000, 61.51], [1176156000000, 61.89], [1176242400000, 62.01], [1176328800000, 63.85], [1176415200000, 63.63], [1176674400000, 63.61], [1176760800000, 63.10], [1176847200000, 63.13], [1176933600000, 61.83], [1177020000000, 63.38], [1177279200000, 64.58], [1177452000000, 65.84], [1177538400000, 65.06], [1177624800000, 66.46], [1177884000000, 64.40], [1178056800000, 63.68], [1178143200000, 63.19], [1178229600000, 61.93], [1178488800000, 61.47], [1178575200000, 61.55], [1178748000000, 61.81], [1178834400000, 62.37], [1179093600000, 62.46], [1179180000000, 63.17], [1179266400000, 62.55], [1179352800000, 64.94], [1179698400000, 66.27], [1179784800000, 65.50], [1179871200000, 65.77], [1179957600000, 64.18], [1180044000000, 65.20], [1180389600000, 63.15], [1180476000000, 63.49], [1180562400000, 65.08], [1180908000000, 66.30], [1180994400000, 65.96], [1181167200000, 66.93], [1181253600000, 65.98], [1181599200000, 65.35], [1181685600000, 66.26], [1181858400000, 68.00], [1182117600000, 69.09], [1182204000000, 69.10], [1182290400000, 68.19], [1182376800000, 68.19], [1182463200000, 69.14], [1182722400000, 68.19], [1182808800000, 67.77], [1182895200000, 68.97], [1182981600000, 69.57], [1183068000000, 70.68], [1183327200000, 71.09], [1183413600000, 70.92], [1183586400000, 71.81], [1183672800000, 72.81], [1183932000000, 72.19], [1184018400000, 72.56], [1184191200000, 72.50], [1184277600000, 74.15], [1184623200000, 75.05], [1184796000000, 75.92], [1184882400000, 75.57], [1185141600000, 74.89], [1185228000000, 73.56], [1185314400000, 75.57], [1185400800000, 74.95], [1185487200000, 76.83], [1185832800000, 78.21], [1185919200000, 76.53], [1186005600000, 76.86], [1186092000000, 76.00], [1186437600000, 71.59], [1186696800000, 71.47], [1186956000000, 71.62], [1187042400000, 71.00], [1187301600000, 71.98], [1187560800000, 71.12], [1187647200000, 69.47], [1187733600000, 69.26], [1187820000000, 69.83], [1187906400000, 71.09], [1188165600000, 71.73], [1188338400000, 73.36], [1188511200000, 74.04], [1188856800000, 76.30], [1189116000000, 77.49], [1189461600000, 78.23], [1189548000000, 79.91], [1189634400000, 80.09], [1189720800000, 79.10], [1189980000000, 80.57], [1190066400000, 81.93], [1190239200000, 83.32], [1190325600000, 81.62], [1190584800000, 80.95], [1190671200000, 79.53], [1190757600000, 80.30], [1190844000000, 82.88], [1190930400000, 81.66], [1191189600000, 80.24], [1191276000000, 80.05], [1191362400000, 79.94], [1191448800000, 81.44], [1191535200000, 81.22], [1191794400000, 79.02], [1191880800000, 80.26], [1191967200000, 80.30], [1192053600000, 83.08], [1192140000000, 83.69], [1192399200000, 86.13], [1192485600000, 87.61], [1192572000000, 87.40], [1192658400000, 89.47], [1192744800000, 88.60], [1193004000000, 87.56], [1193090400000, 87.56], [1193176800000, 87.10], [1193263200000, 91.86], [1193612400000, 93.53], [1193698800000, 94.53], [1193871600000, 95.93], [1194217200000, 93.98], [1194303600000, 96.37], [1194476400000, 95.46], [1194562800000, 96.32], [1195081200000, 93.43], [1195167600000, 95.10], [1195426800000, 94.64], [1195513200000, 95.10], [1196031600000, 97.70], [1196118000000, 94.42], [1196204400000, 90.62], [1196290800000, 91.01], [1196377200000, 88.71], [1196636400000, 88.32], [1196809200000, 90.23], [1196982000000, 88.28], [1197241200000, 87.86], [1197327600000, 90.02], [1197414000000, 92.25], [1197586800000, 90.63], [1197846000000, 90.63], [1197932400000, 90.49], [1198018800000, 91.24], [1198105200000, 91.06], [1198191600000, 90.49], [1198710000000, 96.62], [1198796400000, 96.00], [1199142000000, 99.62], [1199314800000, 99.18], [1199401200000, 95.09], [1199660400000, 96.33], [1199833200000, 95.67], [1200351600000, 91.90], [1200438000000, 90.84], [1200524400000, 90.13], [1200610800000, 90.57], [1200956400000, 89.21], [1201042800000, 86.99], [1201129200000, 89.85], [1201474800000, 90.99], [1201561200000, 91.64], [1201647600000, 92.33], [1201734000000, 91.75], [1202079600000, 90.02], [1202166000000, 88.41], [1202252400000, 87.14], [1202338800000, 88.11], [1202425200000, 91.77], [1202770800000, 92.78], [1202857200000, 93.27], [1202943600000, 95.46], [1203030000000, 95.46], [1203289200000, 101.74], [1203462000000, 98.81], [1203894000000, 100.88], [1204066800000, 99.64], [1204153200000, 102.59], [1204239600000, 101.84], [1204498800000, 99.52], [1204585200000, 99.52], [1204671600000, 104.52], [1204758000000, 105.47], [1204844400000, 105.15], [1205103600000, 108.75], [1205276400000, 109.92], [1205362800000, 110.33], [1205449200000, 110.21], [1205708400000, 105.68], [1205967600000, 101.84], [1206313200000, 100.86], [1206399600000, 101.22], [1206486000000, 105.90], [1206572400000, 107.58], [1206658800000, 105.62], [1206914400000, 101.58], [1207000800000, 100.98], [1207173600000, 103.83], [1207260000000, 106.23], [1207605600000, 108.50], [1207778400000, 110.11], [1207864800000, 110.14], [1208210400000, 113.79], [1208296800000, 114.93], [1208383200000, 114.86], [1208728800000, 117.48], [1208815200000, 118.30], [1208988000000, 116.06], [1209074400000, 118.52], [1209333600000, 118.75], [1209420000000, 113.46], [1209592800000, 112.52], [1210024800000, 121.84], [1210111200000, 123.53], [1210197600000, 123.69], [1210543200000, 124.23], [1210629600000, 125.80], [1210716000000, 126.29], [1211148000000, 127.05], [1211320800000, 129.07], [1211493600000, 132.19], [1211839200000, 128.85], [1212357600000, 127.76], [1212703200000, 138.54], [1212962400000, 136.80], [1213135200000, 136.38], [1213308000000, 134.86], [1213653600000, 134.01], [1213740000000, 136.68], [1213912800000, 135.65], [1214172000000, 134.62], [1214258400000, 134.62], [1214344800000, 134.62], [1214431200000, 139.64], [1214517600000, 140.21], [1214776800000, 140.00], [1214863200000, 140.97], [1214949600000, 143.57], [1215036000000, 145.29], [1215381600000, 141.37], [1215468000000, 136.04], [1215727200000, 146.40], [1215986400000, 145.18], [1216072800000, 138.74], [1216159200000, 134.60], [1216245600000, 129.29], [1216332000000, 130.65], [1216677600000, 127.95], [1216850400000, 127.95], [1217282400000, 122.19], [1217455200000, 124.08], [1217541600000, 125.10], [1217800800000, 121.41], [1217887200000, 119.17], [1217973600000, 118.58], [1218060000000, 120.02], [1218405600000, 114.45], [1218492000000, 113.01], [1218578400000, 116.00], [1218751200000, 113.77], [1219010400000, 112.87], [1219096800000, 114.53], [1219269600000, 114.98], [1219356000000, 114.98], [1219701600000, 116.27], [1219788000000, 118.15], [1219874400000, 115.59], [1219960800000, 115.46], [1220306400000, 109.71], [1220392800000, 109.35], [1220565600000, 106.23], [1220824800000, 106.34] ];
+ 
+</script>
+
+   <!-- Flot demo data -->
+    <script src="{% static 'js/demo/my-flot-demo.js' %}"></script>
+<script>
+	var interval;
+	function update(){
+    $.ajax({
+		type: "GET",
+		url:'/bets/update/',
+		data: {category_id:5,zzz:5 },
+		datatype: 'json',
+		success: function(data){
+
+		var asset_price = data['eurusd'];
+		$('#current_price').html(asset_price);
+		$('#current_time').html(data['time']);
+		$('#expire').html(data['expire']);
+		$('#call_strike1').html(data['call_strike1']);
+		$('#call_strike2').html(data['call_strike2']);
+		$('#call_strike3').html(data['call_strike3']);
+		$('#call_strike4').html(data['call_strike4']);
+		$('#call_strike5').html(data['call_strike5']);
+
+		$('#call_payout1').html(data['call_payout1']);
+		$('#call_payout2').html(data['call_payout2']);
+		$('#call_payout3').html(data['call_payout3']);
+		$('#call_payout4').html(data['call_payout4']);
+		$('#call_payout5').html(data['call_payout5']);
+
+		$('#put_strike1').html(data['put_strike1']);
+		$('#put_strike2').html(data['put_strike2']);
+		$('#put_strike3').html(data['put_strike3']);
+		$('#put_strike4').html(data['put_strike4']);
+		$('#put_strike5').html(data['put_strike5']);
+
+		$('#put_payout1').html(data['put_payout1']);
+		$('#put_payout2').html(data['put_payout2']);
+		$('#put_payout3').html(data['put_payout3']);
+		$('#put_payout4').html(data['put_payout4']);
+		$('#put_payout5').html(data['put_payout5']);
+
+		$('#balance').html(data['balance']);
+		$('#recent_bets').html(data['tb']);
+		interval = setTimeout(update, 1000);
+			}
+		});
+	}
+</script>
+
+<script>
+	$('document').ready(function(){
+	update();})
+</script>
+
+<script>
+	$('document').ready(function(){
+    var form = $('#betsize');
+	var user = $('#user').html();
+	$("#call_strike1_place").click(function(){
+		var payout = $('#call_payout1').html();	
+		var strike = $('#call_strike1').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		
+		});
+		$("#call_strike2_place").click(function(){
+		var payout = $('#call_payout2').html();	
+		var strike = $('#call_strike2').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#call_strike3_place").click(function(){
+		var payout = $('#call_payout3').html();	
+		var strike = $('#call_strike3').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#call_strike4_place").click(function(){
+		var payout = $('#call_payout4').html();	
+		var strike = $('#call_strike4').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#call_strike5_place").click(function(){
+		var payout = $('#call_payout5').html();	
+		var strike = $('#call_strike5').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+	$("#put_strike1_place").click(function(){
+		var payout = $('#put_payout1').html();	
+		var strike = $('#put_strike1').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		
+		});
+		$("#put_strike2_place").click(function(){
+		var payout = $('#put_payout2').html();	
+		var strike = $('#put_strike2').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#put_strike3_place").click(function(){
+		var payout = $('#put_payout3').html();	
+		var strike = $('#put_strike3').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#put_strike4_place").click(function(){
+		var payout = $('#put_payout4').html();	
+		var strike = $('#put_strike4').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+		$("#put_strike5_place").click(function(){
+		var payout = $('#put_payout5').html();	
+		var strike = $('#put_strike5').html();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+	
+});
+</script>
+
+
+</body>
+</html>
