@@ -25,7 +25,7 @@ def index(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user} 
-    return render_to_response('bets/index.html', context_dict, context)
+    return render_to_response('bets/new_index.html', context_dict, context)
 
 
 def register(request):
