@@ -118,7 +118,7 @@ def user_login(request):
     else:
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
-        return render_to_response('bets/login.html', {}, context)
+        return render_to_response('bets/new_login.html', {}, context)
 
 @login_required
 def user_logout(request):
@@ -213,7 +213,7 @@ def update(request):
 		
 		asset_price = last.eurusd
 		hist_prices = AssetPrices.objects.all()
-		hist_prices = hist_prices[len(hist_prices) - 300:]
+		hist_prices = hist_prices[len(hist_prices) - 100:]
 		oilprice1 = [[x.time * 1000, x.eurusd] for x in hist_prices]
 		latest_time = str(datetime.datetime.fromtimestamp(timestamp).time())
 
