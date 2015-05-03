@@ -176,7 +176,7 @@ def update(request):
 	timestamp = int(time.time())
 
 	# Settle Bets
-	if timestamp % 300 < 280: # only check in the beginning of the period (efficiency)
+	if timestamp % 300 < 10: # only check in the beginning of the period (efficiency)
 		# Add a check for not running this too often (another table in the db with the last check)
 		
 		pending = PlacedBets.objects.filter(bet_outcome="Pending")
@@ -212,8 +212,10 @@ def update(request):
 
 		
 		asset_price = last.eurusd
-
-		latest_time = str(datetime.datetime.fromtimestamp(timestamp))
+		hist_prices = AssetPrices.objects.all()
+		hist_prices = hist_prices[len(hist_prices) - 300:]
+		oilprice1 = [[x.time * 1000, x.eurusd] for x in hist_prices]
+		latest_time = str(datetime.datetime.fromtimestamp(timestamp).time())
 
 		#latest_time = str(datetime.datetime.fromtimestamp(last.time))
 		expire =  timestamp + 300 - (timestamp % 300)
@@ -239,24 +241,30 @@ def update(request):
 		tb = ""
 		for bet in recent_bets[::-1]:
 			size = bet.bet_size
+			if bet.bet_type == "CALL":
+				ttype = "<span class = 'badge badge-primary'>Call</span>"
+			else:
+				ttype = "<span class = 'badge badge-danger'>Put</span>"
 			payout = bet.bet_payout
 			strike = bet.bet_strike
 			expiration = str(datetime.datetime.fromtimestamp(bet.option_expire))
 			outcome = bet.bet_outcome
-			tb += "<tr><td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td></tr>" % (size, payout, strike, expiration, outcome)  
+			tb += "<tr><td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td></tr>" % \
+							(ttype, size, payout, strike, expiration, outcome)  
 
 
 
 		res = json.dumps({"time":latest_time, "eurusd":round(asset_price,4), "balance":balance, "tb":tb,
 				"call_strike1":call_strike1, "call_strike2":call_strike2,"call_strike3":call_strike3,
 				"call_strike4":call_strike4,"call_strike5":call_strike5,
-				"expire":str(datetime.datetime.fromtimestamp(expire)), 
+				"expire":str(datetime.datetime.fromtimestamp(expire).time()), 
 				"call_payout1":call_payout1, "call_payout2":call_payout2,
 				"call_payout3":call_payout3, "call_payout4":call_payout4,"call_payout5":call_payout5,
 					"put_strike1":put_strike1, "put_strike2":put_strike2, 
 					"put_strike3":put_strike3, "put_strike4":put_strike4, "put_strike5":put_strike5,
 					"put_payout1":put_payout1, "put_payout2":put_payout2,
-					"put_payout3":put_payout3, "put_payout4":put_payout4, "put_payout5":put_payout5}
+					"put_payout3":put_payout3, "put_payout4":put_payout4, "put_payout5":put_payout5,
+					"oilprice1": oilprice1}
 				)
 		return HttpResponse(res, mimetype='application/json')
 	else:

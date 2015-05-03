@@ -89,7 +89,7 @@
             <ul class="nav navbar-top-links navbar-right">
                 <li>
 					{% if user %}
-                    <span class="m-r-sm text-muted welcome-message">Welcome {{ user }}</span>
+                    <span class="m-r-sm text-muted welcome-message">Welcome {{ user }} (Balance: <small id="balance">NA</small>) </span>
 					{% else %}
 
                     <span class="m-r-sm text-muted welcome-message"></span>
@@ -136,7 +136,7 @@
                                         <span class="pull-right text-right">
                                         <small>Average value of sales in the past month in: <strong>United states</strong></small>
                                             <br/>
-                                            All sales: 162,862
+                                            Current Time: <small id="current_time">NA</small>
                                         </span>
                             <h3 class="font-bold no-margins">
                                 Half-year revenue margin
@@ -156,15 +156,15 @@
                                 <div class="col-md-3">
                                     <ul class="stat-list m-t-lg">
                                         <li>
-                                            <h2 class="no-margins" id="balance">2,346</h2>
-                                            <small>Total orders in period</small>
+                                            <h2 class="no-margins" id="current_price">2,346</h2>
+                                            <small>Current Price</small>
                                             <div class="progress progress-mini">
                                                 <div class="progress-bar" style="width: 48%;"></div>
                                             </div>
                                         </li>
                                         <li>
-                                            <h2 class="no-margins " id="current_price">4,422</h2>
-                                            <small>Orders in last month</small>
+                                            <h2 class="no-margins " id="expire">4,422</h2>
+                                            <small>Options Expiration Time</small>
                                             <div class="progress progress-mini">
                                                 <div class="progress-bar" style="width: 60%;"></div>
                                             </div>
@@ -236,28 +236,28 @@
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td>Call</td>
+                                        <td><span class="label label-primary">Call</span></td>
                                         <td id="call_strike1">1.35</td>
                                         <td id="call_payout1">2</td>
-                                        <td><button id ="call_strike1_place"><i class="fa fa-check text-navy"></i></button></td>
+                                        <td><button id ="call_strike1_place">Buy</button></td>
                                     </tr>
                                     <tr>
-                                        <td>Call</td>
+                                        <td><span class="label label-primary">Call</span></td>
                                         <td id="call_strike2">1.40</td>
                                         <td id="call_payout2">3</td>
-                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                        <td><button id="call_strike2_place">Buy</button></td>
                                     </tr>
                                     <tr>
-                                        <td>Call</td>
+                                        <td><span class="label label-primary">Call</span></td>
                                         <td id="call_strike3">1.45</td>
                                         <td id="call_payout3">4</td>
-                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                        <td><button id="call_strike3_place">Buy</button></td>
                                     </tr>
                                     <tr>
-                                        <td>Call</td>
+                                        <td><span class="label label-primary">Call</span></td>
                                         <td id="call_strike4">1.5</td>
                                         <td id="call_payout4">5</td>
-                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                        <td><button id="call_strike4_place">Buy</button></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -276,28 +276,28 @@
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td>Put</td>
+                                        <td><span class="label label-danger">Put</span></td>
                                         <td id="put_strike1">1.5</td>
                                         <td id="put_payout1">2</td>
-                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                        <td><button id="put_strike1_place">Buy</button></td>
                                     </tr>
                                     <tr>
-                                        <td>Put</td>
+                                        <td><span class="label label-danger">Put</span></td>
                                         <td id="put_strike2">1.45</td>
                                         <td id="put_payout2">3</td>
-                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                        <td><button id="put_strike2_place">Buy</button></td>
                                     </tr>
                                     <tr>
-                                        <td>Put</td>
+                                        <td><span class="label label-danger">Put</span></td>
                                         <td id="put_strike3">1.4</td>
                                         <td id="put_payout3">4</td>
-                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                        <td><button id="put_strike3_place">Buy</button></td>
                                     </tr>
                                     <tr>
-                                        <td>Put</td>
+                                        <td><span class="label label-danger">Put</span></td>
                                         <td id="put_strike4">1.35</td>
                                         <td id="put_payout4">5</td>
-                                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                                        <td><button id="put_strike4_place">Buy</button></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -332,12 +332,9 @@
                         <th>Strike </th>
                         <th>Expiration </th>
                         <th>Outcome </th>
-                        <th>Task</th>
-                        <th>Date</th>
-                        <th>Action</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="recent_bets">
        
 
                     <tr>
@@ -533,8 +530,64 @@
 
 		$('#balance').html(data['balance']);
 		$('#recent_bets').html(data['tb']);
+		var oilprices1 = data['oilprice1'];
+$(function xyz() {
+
+
+    function euroFormatter(v, axis) {
+        return v.toFixed(axis.tickDecimals) + "€";
+    }
+
+    function doPlot(position) {
+        $.plot($("#flot-line-chart-multi"), [{
+            data: oilprices1,
+            label: "EUR/USD",
+			yaxis:2,
+        }, ], {
+            xaxes: [{
+                mode: 'time'
+            }],
+            yaxes: [{
+                min: 0
+            }, {
+                // align if we are to the right
+                alignTicksWithAxis: position == "right" ? 1 : null,
+                position: position,
+            }],
+            legend: {
+                position: 'nw'
+            },
+            colors: ["#1ab394"],
+            grid: {
+                color: "#999999",
+                hoverable: true,
+                clickable: true,
+                tickColor: "#D4D4D4",
+                borderWidth:0,
+                hoverable: true //IMPORTANT! this is needed for tooltip to work,
+
+            },
+            tooltip: true,
+            tooltipOpts: {
+                content: "%s for %x was %y",
+                xDateFormat: "%y-%0m-%0d",
+
+                onHover: function(flotItem, $tooltipEl) {
+                    // console.log(flotItem, $tooltipEl);
+                }
+            }
+
+        });
+    }
+			doPlot("right");
+
+
+  });
+
+
 		interval = setTimeout(update, 1000);
 			}
+
 		});
 	}
 </script>
@@ -570,9 +623,11 @@
 		$("#call_strike2_place").click(function(){
 		var payout = $('#call_payout2').html();	
 		var strike = $('#call_strike2').html();
+		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
 		$('#bet_strike').val(strike);
 		$('#bet_type').val("CALL");
+		$('#bet_size').val(amount);
     	$.ajax( 
 			{type: "POST",
 			url:'/bets/place_bets/',
@@ -588,9 +643,11 @@
 		$("#call_strike3_place").click(function(){
 		var payout = $('#call_payout3').html();	
 		var strike = $('#call_strike3').html();
+		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
 		$('#bet_strike').val(strike);
 		$('#bet_type').val("CALL");
+		$('#bet_size').val(amount);
     	$.ajax( 
 			{type: "POST",
 			url:'/bets/place_bets/',
@@ -606,9 +663,11 @@
 		$("#call_strike4_place").click(function(){
 		var payout = $('#call_payout4').html();	
 		var strike = $('#call_strike4').html();
+		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
 		$('#bet_strike').val(strike);
 		$('#bet_type').val("CALL");
+		$('#bet_size').val(amount);
     	$.ajax( 
 			{type: "POST",
 			url:'/bets/place_bets/',
@@ -624,9 +683,11 @@
 		$("#call_strike5_place").click(function(){
 		var payout = $('#call_payout5').html();	
 		var strike = $('#call_strike5').html();
+		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
 		$('#bet_strike').val(strike);
 		$('#bet_type').val("CALL");
+		$('#bet_size').val(amount);
     	$.ajax( 
 			{type: "POST",
 			url:'/bets/place_bets/',
@@ -642,9 +703,11 @@
 	$("#put_strike1_place").click(function(){
 		var payout = $('#put_payout1').html();	
 		var strike = $('#put_strike1').html();
+		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
 		$('#bet_strike').val(strike);
 		$('#bet_type').val("PUT");
+		$('#bet_size').val(amount);
     	$.ajax( 
 			{type: "POST",
 			url:'/bets/place_bets/',
@@ -660,9 +723,11 @@
 		$("#put_strike2_place").click(function(){
 		var payout = $('#put_payout2').html();	
 		var strike = $('#put_strike2').html();
+		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
 		$('#bet_strike').val(strike);
 		$('#bet_type').val("PUT");
+		$('#bet_size').val(amount);
     	$.ajax( 
 			{type: "POST",
 			url:'/bets/place_bets/',
@@ -678,9 +743,11 @@
 		$("#put_strike3_place").click(function(){
 		var payout = $('#put_payout3').html();	
 		var strike = $('#put_strike3').html();
+		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
 		$('#bet_strike').val(strike);
 		$('#bet_type').val("PUT");
+		$('#bet_size').val(amount);
     	$.ajax( 
 			{type: "POST",
 			url:'/bets/place_bets/',
@@ -696,9 +763,11 @@
 		$("#put_strike4_place").click(function(){
 		var payout = $('#put_payout4').html();	
 		var strike = $('#put_strike4').html();
+		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
 		$('#bet_strike').val(strike);
 		$('#bet_type').val("PUT");
+		$('#bet_size').val(amount);
     	$.ajax( 
 			{type: "POST",
 			url:'/bets/place_bets/',
@@ -713,9 +782,11 @@
 		$("#put_strike5_place").click(function(){
 		var payout = $('#put_payout5').html();	
 		var strike = $('#put_strike5').html();
+		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
 		$('#bet_strike').val(strike);
 		$('#bet_type').val("PUT");
+		$('#bet_size').val(amount);
     	$.ajax( 
 			{type: "POST",
 			url:'/bets/place_bets/',
