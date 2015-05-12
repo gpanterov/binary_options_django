@@ -60,7 +60,7 @@ while True:
 
 		#################
 		# Write to file #
-		#price_eurusd += random.randint(1,9) / 10000.
+		price_eurusd += random.randint(1,9) / 10000.
 		#price_usdjpy += random.randint(1,9)/100.
 
 
@@ -76,6 +76,7 @@ while True:
 #					cur = con.cursor()
 #					cur.execute("INSERT INTO bets_assetprices(time, eurusd, usdjpy) VALUES (%s, %s, %s);" % (t, _eurusd, _usdjpy))
 #
+		
 		with con:
 			cur = con.cursor()
 			cur.execute("INSERT INTO bets_assetprices(time, eurusd, usdjpy) VALUES (%s, %s, %s);" % (timestamp, price_eurusd, price_usdjpy))
