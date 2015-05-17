@@ -29,8 +29,20 @@ def index(request):
 	
     context = RequestContext(request)
     bets_form = BetForm()
-    context_dict = {'bets_form': bets_form, 'user':current_user} 
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'eurusd'} 
     return render_to_response('bets/new_index.html', context_dict, context)
+
+def usdjpy(request):
+    if not request.user.is_authenticated():
+        current_user = None
+    else:
+        current_user = request.user
+	
+    context = RequestContext(request)
+    bets_form = BetForm()
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'usdjpy'} 
+    return render_to_response('bets/new_index.html', context_dict, context)
+
 
 
 def register(request):
@@ -107,7 +119,7 @@ def user_login(request):
                 return HttpResponseRedirect('/bets/')
             else:
                 # An inactive account was used - no logging in!
-                return HttpResponse("Your Rango account is disabled.")
+                return HttpResponse("Your account is disabled.")
         else:
             # Bad login details were provided. So we can't log the user in.
             print "Invalid login details: {0}, {1}".format(username, password)

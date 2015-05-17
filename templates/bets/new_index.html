@@ -47,8 +47,8 @@
                 <li class="active">
                     <a href="index.html"><i class="fa fa-dollar"></i> <span class="nav-label">Currencies</span> <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
-                        <li ><a href="index.html">EUR/USD</a></li>
-                        <li ><a href="dashboard_2.html">USD/JPY</a></li>
+                        <li ><a href="/bets">EUR/USD</a></li>
+                        <li ><a href="/bets/usdjpy">USD/JPY</a></li>
                         <li ><a href="dashboard_3.html">EUR/CHF</a></li>
                         <li class="active"><a href="dashboard_4_1.html">USD/CHF</a></li>
                     </ul>
@@ -139,7 +139,7 @@
                                             Current Time: <strong id="current_time">NA</strong>
                                         </span>
                             <h2 class="font-bold no-margins">
-                                EUR/USD
+                                {{ asset }}
                             </h2>
                         </div>
 
@@ -211,7 +211,7 @@
 											<input id="bet_strike" type="hidden" name="bet_strike" value="" />
 											<input id="bet_type" type="hidden" name="bet_type" value="" />
 											<input id="bet_payout" type="hidden" name="bet_payout" value="" />
-											<input id="asset" type="hidden" name="asset" value="eurusd" />
+											<input id="asset" type="hidden" name="asset" value="{{ asset }}" />
 
 
                                     <div class="input-group"><input id='bet_amount' type="text" placeholder="Enter Amount" class="input-sm form-control"> 
