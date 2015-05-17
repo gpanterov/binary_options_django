@@ -1,44 +1,44 @@
-from django.db import models
+from django.db import models as mls
 from django.contrib.auth.models import User
 
-class UserProfile(models.Model):
-	user = models.OneToOneField(User)
+class UserProfile(mls.Model):
+	user = mls.OneToOneField(User)
 	def __unicode__(self):
 		return self.user.username
 
 
-class PlacedBets(models.Model):
-	user = models.CharField(max_length=30,null=True)
-	option_asset = models.CharField(max_length=10,null=True)
-	bet_type = models.CharField(max_length=10,null=True)
-	bet_time = models.IntegerField(default=0, null=True)  # Unix time for the bet
-	bet_size = models.IntegerField(default=0, null=True)  # Size of bet in satoshis
-	bet_strike = models.FloatField(default=0, null=True)
-	bet_payout = models.FloatField(default=0, null=True)
-	option_expire = models.IntegerField(default=0, null=True)
-	bet_outcome = models.CharField(max_length=10, null=True)
+class PlacedBets(mls.Model):
+	user = mls.CharField(max_length=30,null=True)
+	option_asset = mls.CharField(max_length=10,null=True)
+	bet_type = mls.CharField(max_length=10,null=True)
+	bet_time = mls.IntegerField(default=0, null=True)  # Unix time for the bet
+	bet_size = mls.IntegerField(default=0, null=True)  # Size of bet in satoshis
+	bet_strike = mls.FloatField(default=0, null=True)
+	bet_payout = mls.FloatField(default=0, null=True)
+	option_expire = mls.IntegerField(default=0, null=True)
+	bet_outcome = mls.CharField(max_length=10, null=True)
 	def __unicode__(self):
 		return self.user
 
-class AssetPrices(models.Model):
-	time = models.IntegerField(default=0)
-	eurusd = models.FloatField(default=0, null=True)
-	usdjpy = models.FloatField(default=0, null=True)
+class AssetPrices(mls.Model):
+	time = mls.IntegerField(default=0)
+	eurusd = mls.FloatField(default=0, null=True)
+	usdjpy = mls.FloatField(default=0, null=True)
 
 
 
 
 # Add Deposit/Funds model
-class Deposits(models.Model):
-	username = models.CharField(max_length=30,null=True)
-	time = models.IntegerField(default=0)
-	size = models.IntegerField(default=0, null=True)  # Size of bet in satoshis
+class Deposits(mls.Model):
+	username = mls.CharField(max_length=30,null=True)
+	time = mls.IntegerField(default=0)
+	size = mls.IntegerField(default=0, null=True)  # Size of bet in satoshis
 	def __unicode__(self):
 		return self.username
 
-class Balances(models.Model):
-	username = models.CharField(max_length=30,null=True)
-	balance = models.IntegerField(default=0)
+class Balances(mls.Model):
+	username = mls.CharField(max_length=30,null=True)
+	balance = mls.IntegerField(default=0)
 	def __unicode__(self):
 		return self.username
 
