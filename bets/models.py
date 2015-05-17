@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+# went back a commit c34222a2050b9d1f1e8b995de3058cd1ad0d4ddf
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
 	def __unicode__(self):
