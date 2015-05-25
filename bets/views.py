@@ -19,6 +19,8 @@ import time
 import datetime
 import random
 import json
+import urllib2, urllib
+
 
 def index(request):
 
@@ -30,7 +32,7 @@ def index(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'eurusd'} 
-    return render_to_response('bets/new_index.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view.html', context_dict, context)
 
 def usdjpy(request):
     if not request.user.is_authenticated():
@@ -87,7 +89,7 @@ def register(request):
 
     # Render the template depending on the context.
     return render_to_response(
-            'bets/register.html',
+            'bets/new_register.html',
             {'user_form': user_form, 'registered': registered},
             context)
 
@@ -304,3 +306,18 @@ def deposit(request):
 		bal.save()
 		print "Created a new user"
 	return HttpResponse("Deposit Successful")
+
+def deposit2(request):
+	current_user = request.user
+	callback_url = "http://gpanterov.pythonanywhere.com/bets/deposit_received"
+	my_wallet = "14AP4q8dGd3wJiuHoRqmirqctaBHjoP6GA"
+	input_url = "https://blockchain.info/api/receive?method=create&format=plain&address=%s&shared=false&callback=%s" %(my_wallet, urllib.quote_plus(callback_url))
+	r = urllib2.urlopen(input_url)
+	return HttpResponse(r.read())
+
+def deposit_received(request):
+	if request.method == "GET":
+		print "Callback initiated"
+		f = open("callback_file", 'a')
+		f.write("Callback iniated")
+		f.close()

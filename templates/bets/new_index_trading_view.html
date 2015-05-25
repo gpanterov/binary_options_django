@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cool Binary Options</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+    <!-- Morris -->
+    <link href="{% static 'css/plugins/morris/morris-0.4.3.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="wrapper">
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element"> <span>
+                           <!-- <img alt="image" class="img-circle" src="{% static 'img/profile_small.jpg' %}" /> -->
+                             </span>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Cool Binary Options</strong>
+                             </span> <span class="text-muted text-xs block">Logo <b class="caret"></b></span> </span> </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a href="profile.html">Profile</a></li>
+                            <li><a href="contacts.html">Contacts</a></li>
+                            <li><a href="mailbox.html">Mailbox</a></li>
+                            <li class="divider"></li>
+                            <li><a href="login.html">Logout</a></li>
+                        </ul>
+                    </div>
+                    <div class="logo-element">
+                        IN+
+                    </div>
+                </li>
+                <li class="active">
+                    <a href="index.html"><i class="fa fa-dollar"></i> <span class="nav-label">Currencies</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li ><a href="/bets">EUR/USD</a></li>
+                        <li ><a href="/bets/usdjpy">USD/JPY</a></li>
+                        <li ><a href="dashboard_3.html">EUR/CHF</a></li>
+                        <li class="active"><a href="dashboard_4_1.html">USD/CHF</a></li>
+                    </ul>
+                </li>
+              
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Commodities</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse in">
+                        <li><a href="graph_flot.html">Oil</a></li>
+                        <li><a href="graph_morris.html">Gold</a></li>
+                        
+                    </ul>
+                </li>
+                <li>
+                    <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">Indices </span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse in">
+                        <li><a href="mailbox.html">SP 500</a></li>
+                        <li><a href="mail_detail.html">FTSE 100</a></li>
+                        <li><a href="mail_compose.html">Nikkei</a></li>
+
+                    </ul>
+                </li>
+               
+               
+
+              
+              
+              
+        </div>
+    </nav>
+
+        <div id="page-wrapper" class="gray-bg">
+        <div class="row border-bottom">
+        <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                   </div>
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+					{% if user %}
+                    <span class="m-r-sm text-muted welcome-message">Welcome {{ user }} (Balance: <small id="balance">NA</small>) </span>
+					{% else %}
+
+                    <span class="m-r-sm text-muted welcome-message"></span>
+					{% endif %}
+                </li>
+                <li>
+					{% if user %}
+                    <a  href="/bets/deposit">
+                        <i class="fa fa-bell"></i> Deposit
+                    </a>
+					{% else %}
+					{% endif %}
+
+                </li>
+
+
+                <li>
+					{% if user %}
+                    <a href="/bets/logout/">
+                        <i class="fa fa-sign-out"></i> Log out
+                    </a>
+					{% else %}
+                    <a href="/bets/login/">
+                        <i class="fa fa-sign-out"></i> Log in
+                    </a>
+					{% endif %}
+                </li>
+                <li>
+                    <a class="right-sidebar-toggle" href="/bets/register/">
+                        <i class="fa fa-tasks"></i> Register
+                    </a>
+                </li>
+            </ul>
+
+        </nav>
+        </div>
+
+
+        <div class="wrapper wrapper-content">
+      <div class="row" >
+            <div class="col-lg-8" >
+					<!-- TradingView Widget BEGIN -->
+					<script type="text/javascript" src="https://d33t3vvu2t2yu5.cloudfront.net/tv.js"></script>
+					<script type="text/javascript">
+					new TradingView.widget({
+					  "width": 640,
+					  "height": 480,
+					  "symbol": "FX:EURUSD",
+					  "interval": "1",
+					  "timezone": "exchange",
+					  "theme": "White",
+					  "style": "3",
+					  "toolbar_bg": "#f1f3f6",
+					  "hide_top_toolbar": true,
+					  "save_image": false,
+					  "hideideas": true
+					});
+					</script>
+					<!-- TradingView Widget END -->
+
+			</div>
+                     <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Views</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">386,200</h1>
+                        <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
+                        <small>Total views</small>
+                    </div>
+                </div>
+
+
+			
+
+ 
+	                    <div class="ibox float-e-margins">
+                       <!-- <div class="ibox-title">
+                            <h5>Custom responsive table </h5>
+                       </div> -->
+                        <div class="ibox-content">
+                            <div class="row">
+                               <div class="col-sm-6 m-b-xs">
+                                    <div data-toggle="buttons" class="btn-group">
+
+										<label class="btn btn-sm btn-white" id ="option_calls"> 
+											<input type="radio" id="option1" name="options">Calls</label>
+                                        <label class="btn btn-sm btn-white active" id="option_puts"> 
+											<input type="radio" id="option2" name="options">Puts</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+									<form id="betsize" name='betsize' method='post' action='/bets/place_bets/'>
+											{% csrf_token %}
+											<input id="bet_size" type="hidden" name="bet_size" value="" />
+											<input id="bet_strike" type="hidden" name="bet_strike" value="" />
+											<input id="bet_type" type="hidden" name="bet_type" value="" />
+											<input id="bet_payout" type="hidden" name="bet_payout" value="" />
+											<input id="asset" type="hidden" name="asset" value="{{ asset }}" />
+
+
+                                    <div class="input-group"><input id='bet_amount' type="text" placeholder="Enter Amount" class="input-sm form-control"> 
+										<span class="input-group-btn"></span>
+									</div>
+									</form>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+
+								<div id="table_calls">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+
+                                        <th>Type </th>
+                                        <th>Strike</th>
+                                        <th>Payout</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td><span class="label label-primary">Call</span></td>
+                                        <td><span id="call_strike1">1.35</span><i class="fa fa-level-up" style="color:#1ab394"></i></td>
+                                        <td id="call_payout1">2</td>
+                                        <td><button id ="call_strike1_place">Buy</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="label label-primary">Call</span></td>
+                                        <td id="call_strike2">1.40</td>
+                                        <td id="call_payout2">3</td>
+                                        <td><button id="call_strike2_place">Buy</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="label label-primary">Call</span></td>
+                                        <td id="call_strike3">1.45</td>
+                                        <td id="call_payout3">4</td>
+                                        <td><button id="call_strike3_place">Buy</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="label label-primary">Call</span></td>
+                                        <td id="call_strike4">1.5</td>
+                                        <td id="call_payout4">5</td>
+                                        <td><button id="call_strike4_place">Buy</button></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+								</div> <!-- div id=table_calls -->
+
+								<div id="table_puts">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+
+                                        <th>Type </th>
+                                        <th>Strike</th>
+                                        <th>Payout</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td><span class="label label-danger">Put</span></td>
+                                        <td> <span id="put_strike1">1.5</span><i class="fa fa-level-down" style="color:#ed5565"></i></td>
+                                        <td id="put_payout1">2</td>
+                                        <td><button id="put_strike1_place">Buy</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="label label-danger">Put</span></td>
+                                        <td id="put_strike2">1.45</td>
+                                        <td id="put_payout2">3</td>
+                                        <td><button id="put_strike2_place">Buy</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="label label-danger">Put</span></td>
+                                        <td id="put_strike3">1.4</td>
+                                        <td id="put_payout3">4</td>
+                                        <td><button id="put_strike3_place">Buy</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span class="label label-danger">Put</span></td>
+                                        <td id="put_strike4">1.35</td>
+                                        <td id="put_payout4">5</td>
+                                        <td><button id="put_strike4_place">Buy</button></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+								</div> <!-- div id=table_puts -->
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+	</div>
+        <div class="row">
+
+        <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>Your Recent Transactions </h5>
+       </div>
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+
+                        <th>Type</th>
+                        <th>Size </th>
+                        <th>Payout </th>
+                        <th>Strike </th>
+                        <th>Expiration </th>
+                        <th>Outcome </th>
+                    </tr>
+                    </thead>
+                    <tbody id="recent_bets">
+       
+
+                    <tr>
+                        <td>2</td>
+                        <td>Alpha project</td>
+                        <td>Alice Jackson</td>
+                        <td>0500 780909</td>
+                        <td>Nec Euismod In Company</td>
+                        <td><span class="pie">6,9</span></td>
+                        <td>40%</td>
+                        <td>Jul 16, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Betha project</td>
+                        <td>John Smith</td>
+                        <td>0800 1111</td>
+                        <td>Erat Volutpat</td>
+                        <td><span class="pie">3,1</span></td>
+                        <td>75%</td>
+                        <td>Jul 18, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Gamma project</td>
+                        <td>Anna Jordan</td>
+                        <td>(016977) 0648</td>
+                        <td>Tellus Ltd</td>
+                        <td><span class="pie">4,9</span></td>
+                        <td>18%</td>
+                        <td>Jul 22, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Alpha project</td>
+                        <td>Alice Jackson</td>
+                        <td>0500 780909</td>
+                        <td>Nec Euismod In Company</td>
+                        <td><span class="pie">6,9</span></td>
+                        <td>40%</td>
+                        <td>Jul 16, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Project <small>This is example of project</small></td>
+                        <td>Patrick Smith</td>
+                        <td>0800 051213</td>
+                        <td>Inceptos Hymenaeos Ltd</td>
+                        <td><span class="pie">0.52/1.561</span></td>
+                        <td>20%</td>
+                        <td>Jul 14, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Gamma project</td>
+                        <td>Anna Jordan</td>
+                        <td>(016977) 0648</td>
+                        <td>Tellus Ltd</td>
+                        <td><span class="pie">4,9</span></td>
+                        <td>18%</td>
+                        <td>Jul 22, 2013</td>
+                        <td><a href="#"><i class="fa fa-check text-navy"></i></a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        </div>
+        </div>
+
+        </div>
+
+
+        </div>
+
+
+        <div class="footer">
+            <div class="pull-right">
+                10GB of <strong>250GB</strong> Free.
+            </div>
+            <div>
+                <strong>Copyright</strong> Example Company &copy; 2014-2015
+            </div>
+        </div>
+
+        </div>
+          </div>
+
+    <!-- Mainly scripts -->
+
+    <script src="{% static 'js/jquery-2.1.1.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+    <!-- Flot -->
+    <script src="{% static 'js/plugins/flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.tooltip.min.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.spline.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.resize.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.pie.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.symbol.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/curvedLines.js' %}"></script>
+
+	<!-- Additional Flot Scripts From the Flot Graphs Template -->
+    <script src="{% static 'js/plugins/flot/jquery.flot.time.js' %}"></script>
+
+
+    <!-- Peity -->
+    <script src="{% static 'js/plugins/peity/jquery.peity.min.js' %}"></script>
+    <script src="{% static 'js/demo/peity-demo.js' %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+    <!-- jQuery UI -->
+    <script src="{% static 'js/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+
+    <!-- Jvectormap -->
+    <script src="{% static 'js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
+    <script src="{% static 'js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
+
+
+    <!-- ChartJS-->
+    <script src="{% static 'js/plugins/chartJs/Chart.min.js' %}"></script>
+
+ 
+
+	<script>
+	$('#table_calls').hide();
+	$('#option_calls').click(function(){
+		$('#table_puts').hide();
+		$('#table_calls').show();
+		});
+	$('#option_puts').click(function(){
+		$('#table_calls').hide();
+		$('#table_puts').show();
+		});
+	</script>
+
+
+<script>
+    var oilprices1 = [[1214776800000, 140.00], [1214863200000, 140.97], [1214949600000, 143.57], [1215036000000, 145.29], [1215381600000, 141.37], [1215468000000, 136.04], [1215727200000, 146.40], [1215986400000, 145.18], [1216072800000, 138.74], [1216159200000, 134.60], [1216245600000, 129.29], [1216332000000, 130.65], [1216677600000, 127.95], [1216850400000, 127.95], [1217282400000, 122.19], [1217455200000, 124.08], [1217541600000, 125.10], [1217800800000, 121.41], [1217887200000, 119.17], [1217973600000, 118.58], [1218060000000, 120.02], [1218405600000, 114.45], [1218492000000, 113.01], [1218578400000, 116.00], [1218751200000, 113.77], [1219010400000, 112.87], [1219096800000, 114.53], [1219269600000, 114.98], [1219356000000, 114.98], [1219701600000, 116.27], [1219788000000, 118.15], [1219874400000, 115.59], [1219960800000, 115.46], [1220306400000, 109.71], [1220392800000, 109.35], [1220565600000, 106.23], [1220824800000, 106.34] ];
+ 
+</script>
+
+   <!-- Flot demo data -->
+<!--    <script src="{% static 'js/demo/my-flot-demo.js' %}"></script> -->
+<script>
+	var interval;
+	function update(){
+    $.ajax({
+		type: "GET",
+		url:'/bets/update/',
+		data: {category_id:5,zzz:5 },
+		datatype: 'json',
+		success: function(data){
+
+		var asset_price = data['eurusd'];
+		$('#call_strike1').html(data['call_strike1']);
+		$('#call_strike2').html(data['call_strike2']);
+		$('#call_strike3').html(data['call_strike3']);
+		$('#call_strike4').html(data['call_strike4']);
+		$('#call_strike5').html(data['call_strike5']);
+
+		$('#call_payout1').html(data['call_payout1']);
+		$('#call_payout2').html(data['call_payout2']);
+		$('#call_payout3').html(data['call_payout3']);
+		$('#call_payout4').html(data['call_payout4']);
+		$('#call_payout5').html(data['call_payout5']);
+
+		$('#put_strike1').html(data['put_strike1']);
+		$('#put_strike2').html(data['put_strike2']);
+		$('#put_strike3').html(data['put_strike3']);
+		$('#put_strike4').html(data['put_strike4']);
+		$('#put_strike5').html(data['put_strike5']);
+
+		$('#put_payout1').html(data['put_payout1']);
+		$('#put_payout2').html(data['put_payout2']);
+		$('#put_payout3').html(data['put_payout3']);
+		$('#put_payout4').html(data['put_payout4']);
+		$('#put_payout5').html(data['put_payout5']);
+
+		$('#balance').html(data['balance']);
+		$('#recent_bets').html(data['tb']);
+		var oilprices1 = data['oilprice1'];
+
+		interval = setTimeout(update, 1000);
+			}
+
+		});
+	}
+</script>
+
+<script>
+	$('document').ready(function(){
+	update();})
+</script>
+
+<script>
+	$('document').ready(function(){
+    var form = $('#betsize');
+	var user = $('#user').html();
+	$("#call_strike1_place").click(function(){
+		var payout = $('#call_payout1').html();	
+		var strike = $('#call_strike1').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		
+		});
+		$("#call_strike2_place").click(function(){
+		var payout = $('#call_payout2').html();	
+		var strike = $('#call_strike2').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#call_strike3_place").click(function(){
+		var payout = $('#call_payout3').html();	
+		var strike = $('#call_strike3').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#call_strike4_place").click(function(){
+		var payout = $('#call_payout4').html();	
+		var strike = $('#call_strike4').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#call_strike5_place").click(function(){
+		var payout = $('#call_payout5').html();	
+		var strike = $('#call_strike5').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("CALL");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+	$("#put_strike1_place").click(function(){
+		var payout = $('#put_payout1').html();	
+		var strike = $('#put_strike1').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		
+		});
+		$("#put_strike2_place").click(function(){
+		var payout = $('#put_payout2').html();	
+		var strike = $('#put_strike2').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#put_strike3_place").click(function(){
+		var payout = $('#put_payout3').html();	
+		var strike = $('#put_strike3').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+		$("#put_strike4_place").click(function(){
+		var payout = $('#put_payout4').html();	
+		var strike = $('#put_strike4').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+		$("#put_strike5_place").click(function(){
+		var payout = $('#put_payout5').html();	
+		var strike = $('#put_strike5').html();
+		var amount = $('#bet_amount').val();
+		$('#bet_payout').val(payout);
+		$('#bet_strike').val(strike);
+		$('#bet_type').val("PUT");
+		$('#bet_size').val(amount);
+    	$.ajax( 
+			{type: "POST",
+			url:'/bets/place_bets/',
+			data: form.serialize(),
+			success: function(response) {
+
+			$('#status').html(response);
+		<!--	alert(response); -->
+			}
+			});
+		});
+
+	
+});
+</script>
+
+
+</body>
+</html>
