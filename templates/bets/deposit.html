@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Is anyone getting tired of repeatedly entering the header over and over?? -->
+        <title>Cool Options</title>
+    </head>
+
+    <body>
+        <h1>Deposit Bitcoins to this address</h1>
+		<h2> {{ address }} </h2>
+        <form id="login_form" method="post" action="/bets/deposit/promo/">
+            {% csrf_token %}
+            Enter Promo Code: <input type="text" name="promo_code" value="" size="50" />
+            <br />
+
+            <input type="submit" value="submit" />
+        </form>
+
+    </body>
+</html>
+
+

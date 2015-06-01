@@ -286,38 +286,74 @@ def update(request):
 
 
 @login_required
-def deposit(request):
-	current_user = request.user
-	timestamp = int(time.time())
-	entry = Deposits()
-	entry.username = current_user.username
-	entry.time = timestamp
-	entry.size = 100
-	entry.save()
-	try: # Update balance
-		bal = Balances.objects.get(username = request.user.username)
-		bal.balance = bal.balance + entry.size
-		bal.save()
-		print "User already exists ", bal.balance
-	except: # If it doesn't exist (new user - create entry)
-		bal = Balances()
-		bal.username = request.user.username
-		bal.balance = entry.size
-		bal.save()
-		print "Created a new user"
-	return HttpResponse("Deposit Successful")
+def promo(request):
+	if request.method == "POST" and request.POST['promo_code'] == "panterov":
+		current_user = request.user
+		timestamp = int(time.time())
+		entry = Deposits()
+		entry.username = current_user.username
+		entry.time = timestamp
+		entry.size = 100
+		entry.save()
+		try: # Update balance
+			bal = Balances.objects.get(username = request.user.username)
+			bal.balance = bal.balance + entry.size
+			bal.save()
+			print "User already exists ", bal.balance
+		except: # If it doesn't exist (new user - create entry)
+			bal = Balances()
+			bal.username = request.user.username
+			bal.balance = entry.size
+			bal.save()
+			print "Created a new user"
+		return HttpResponse("Deposit Successful")
+	else:
+		print "Something went wrong with promo code"
+
+		return HttpResponse("Deposit Not Successful")
 
 def deposit2(request):
+	context = RequestContext(request)
 	current_user = request.user
-	callback_url = "http://gpanterov.pythonanywhere.com/bets/deposit_received"
+
+	print request.body
+	callback_url = "http://gpanterov.pythonanywhere.com/bets/deposit_received/parameters?secret=gogo&user=%s" % (current_user.username,)
 	my_wallet = "14AP4q8dGd3wJiuHoRqmirqctaBHjoP6GA"
 	input_url = "https://blockchain.info/api/receive?method=create&format=plain&address=%s&shared=false&callback=%s" %(my_wallet, urllib.quote_plus(callback_url))
 	r = urllib2.urlopen(input_url)
-	return HttpResponse(r.read())
+	Resp = json.loads(r.read())
+	
+	return render_to_response('bets/deposit.html', {'address':Resp['input_address']}, context)
 
 def deposit_received(request):
+	print "Attempting to access deposit_received url. Next test if secret is verified"
 	if request.method == "GET":
-		print "Callback initiated"
-		f = open("callback_file", 'a')
-		f.write("Callback iniated")
-		f.close()
+		if request.GET['secret'] == "gogo":
+			print "secret verified"
+			current_user = request.GET['user']
+			timestamp = int(time.time())
+			entry = Deposits()
+			entry.username = current_user
+			entry.time = timestamp
+			entry.size = 100
+			entry.save()
+			try:
+				bal = Balances.objects.get(username = current_user)
+				bal.balance = bal.balance + entry.size
+				bal.save()
+				print "Deposit received from blockchain notification", bal.balance
+			except: # If it doesn't exist (new user - create entry)
+				bal = Balances()
+				bal.username = current_user
+				bal.balance = entry.size
+				bal.save()
+				print "Created a new user"
+
+			return HttpResponse("Deposit Successful")
+		else:
+			print "Someone trying to hack you"
+	else:
+		print "Something went wrong with promo code"
+
+		return HttpResponse("Deposit Not Successful")
+
