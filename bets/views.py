@@ -31,7 +31,7 @@ def index(request):
 	
     context = RequestContext(request)
     bets_form = BetForm()
-    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'eurusd'} 
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'EURUSD'} 
     return render_to_response('bets/new_index_trading_view.html', context_dict, context)
 
 def usdjpy(request):
@@ -42,8 +42,8 @@ def usdjpy(request):
 	
     context = RequestContext(request)
     bets_form = BetForm()
-    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'usdjpy'} 
-    return render_to_response('bets/new_index.html', context_dict, context)
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USDJPY'} 
+    return render_to_response('bets/new_index_trading_view.html', context_dict, context)
 
 
 
@@ -186,7 +186,7 @@ def place_bets(request):
 def update(request):
 
 	last = AssetPrices.objects.latest('time')
-	
+	last_vol = Volatility.objects.latest('time')	
 	timestamp = int(time.time())
 
 	# Settle Bets

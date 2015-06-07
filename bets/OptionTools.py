@@ -2,6 +2,24 @@ import numpy as np
 import random
 from bets.models import PlacedBets, AssetPrices
 
+def cash_or_nothing(S, K, T, vol, option_type):
+	"""
+	Return the value of a cash or nothing call
+
+	References:
+	-----------
+	http://en.wikipedia.org/wiki/Binary_option#Black.E2.80.93Scholes_valuation
+	"""
+	d1 = (np.log(S/K) + T * 0.5 * vol**2) / (vol * T**0.5)
+	d2 = d1 - vol * T**0.5
+	if option_type == "call":
+		return norm.cdf(d2)
+	elif option_type == "put":
+		return norm.cdf(-d2)
+	else:
+		print "Incorrectly specifed option type. Must be either *call* or *put*"
+		return None
+
 
 def option_params(expire, option_start_price, current_time, current_price):
 	"""

@@ -42,4 +42,29 @@ class Balances(models.Model):
 	def __unicode__(self):
 		return self.username
 
+class Volatility(models.Model):
+
+	time = models.IntegerField(default=0)
+	vol_eurusd = models.FloatField(default=1, null=False)
+	vol_usdjpy = models.FloatField(default=1, null=False)
+
+	vol_eurchf = models.FloatField(default=1, null=False)
+	vol_gold = models.FloatField(default=1, null=False)
+	vol_oil = models.FloatField(default=1, null=False)
+	vol_sp500 = models.FloatField(default=1, null=False)
+	vol_nikkei = models.FloatField(default=1, null=False)
+
+
+class Average(models.Model):
+
+	time = models.IntegerField(default=0)
+	avg_eurusd = models.FloatField(default=1, null=False)
+	avg_usdjpy = models.FloatField(default=1, null=False)
+
+	avg_eurchf = models.FloatField(default=1, null=False)
+	avg_gold = models.FloatField(default=1, null=False)
+	avg_oil = models.FloatField(default=1, null=False)
+	avg_sp500 = models.FloatField(default=1, null=False)
+	avg_nikkei = models.FloatField(default=1, null=False)
+
 # Add Last time checked for settled transactions
