@@ -1,5 +1,6 @@
 import numpy as np
 import random
+from scipy.stats import norm
 from bets.models import PlacedBets, AssetPrices
 
 def cash_or_nothing(S, K, T, vol, option_type):

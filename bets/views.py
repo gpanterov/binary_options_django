@@ -2,7 +2,7 @@
 
 
 from bets.forms import UserForm, UserProfileForm, BetForm
-from bets.models import PlacedBets, AssetPrices, Deposits, Balances
+from bets.models import PlacedBets, AssetPrices, Deposits, Balances, Average, Volatility
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -32,7 +32,7 @@ def index(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'EURUSD'} 
-    return render_to_response('bets/new_index_trading_view.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
 
 def usdjpy(request):
     if not request.user.is_authenticated():
@@ -187,8 +187,19 @@ def update(request):
 
 	last = AssetPrices.objects.latest('time')
 	last_vol = Volatility.objects.latest('time')	
+	last_avg = Average.objects.latest('time')
 	timestamp = int(time.time())
 
+	alpha = 0.95
+	Avg = Average()
+	Avg.time = timestamp
+	Avg.avg_eurusud = (1 - alpha) * last.eurusd + alpha * last_avg.avg_eurusd
+	Avg.save()
+
+	Vol = Volatility()
+	Vol.time = timestamp
+	Vol.vol_eurusd = ((1 - alpha) * (last.eurusd - Avg.avg_eurusd)**2 + alpha * last_vol.vol_eurusd	)**0.5
+	Vol.save()
 	# Settle Bets
 	if timestamp % 300 < 10: # only check in the beginning of the period (efficiency)
 		# Add a check for not running this too often (another table in the db with the last check)
@@ -227,7 +238,7 @@ def update(request):
 		
 		asset_price = last.eurusd
 		hist_prices = AssetPrices.objects.all()
-		hist_prices = hist_prices[len(hist_prices) - 100:]
+		#hist_prices = hist_prices[len(hist_prices) - 100:]
 		oilprice1 = [[x.time * 1000, x.eurusd] for x in hist_prices]
 		latest_time = str(datetime.datetime.fromtimestamp(timestamp).time())
 
@@ -242,6 +253,15 @@ def update(request):
 			put_payout1, put_payout2,put_payout3,put_payout4,put_payout5 = \
 				tools.option_params(expire, option_start_price, timestamp, asset_price)
 
+
+		# Black - Scholes Option pricing test
+		time_remaining = expire - timestamp
+		call_strike1 = option_start_price
+		call_strike1 = 1.1112
+		print asset_price, call_strike1, time_remaining, Vol.vol_eurusd
+		call_payout1 = tools.cash_or_nothing(asset_price, call_strike1, time_remaining, Vol.vol_eurusd, option_type="call")
+		# Test worked !!!
+		
 		try:	
 			balance = Balances.objects.get(username = request.user.username).balance
 		except:
