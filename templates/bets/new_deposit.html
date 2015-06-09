@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cool Binary Options</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+
+                <h1 class="logo-name"><i class="fa fa-bitcoin">O</i></h1>
+
+            </div>
+            <h3>Hi <strong>{{ user }} </strong>, you can deposit funds in your trading account by sending btcoins to the following address:</h3>
+			<h4><strong> {{address}}</strong></h4>
+			<small> Please use this address only ones. Future deposits will automatically generate unique bitcoin address.</small>
+            <p class="m-t"> <small> Cool Binary Options &copy; 2015</small> </p>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="{% static 'js/jquery-2.1.1.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+</body>
+
+</html>

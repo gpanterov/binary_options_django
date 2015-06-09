@@ -154,9 +154,9 @@
                      <div class="col-lg-4">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>Remaining Time</h5>
+                        <h3>Remaining Time</h3>
                     </div>
-                    <div class="ibox-content">
+                    <div class="ibox-content text-center">
                         <h1 id="remaining_time" class="no-margins"></h1>
                     </div>
                 </div>
@@ -172,8 +172,8 @@
                         <div class="ibox-content">
                             <div class="row">
                                <div class="col-sm-6 m-b-xs">
-                                  <h3>Payout </h3>
-							<i class="fa fa-bitcoin"></i>	180	<small>(+90%)</small>
+                                  <h3>Payout: </h3>
+							<i class="fa fa-bitcoin"></i>	<strong>180</strong>	<small>(+90%)</small>
                                </div>
                                 <div class="col-sm-6">
 									<form id="betsize" name='betsize' method='post' action='/bets/place_bets/'>
@@ -198,17 +198,17 @@
 						<div class="row">
                                <div class="col-sm-6 m-b-xs">
                                   <div class="ibox-content text-center"> 
-                                	<button class="btn btn-primary dim btn-large-dim"   title="Price will close higher" type="button">
+                                	<button class="btn btn-primary dim btn-large-dim" title="Price will close higher than current" type="button">
 										<div class="row"><i class="fa fa-arrow-up"></i></div>
 										<div class="row"> <h4> call</h4> </div>
 									</button>
-
+				
 									</div>
                                 </div>
                                 <div class="col-sm-6">
 									
                                   <div class="ibox-content text-center"> 
-                                	<button class="btn btn-danger dim btn-large-dim" type="button">
+                                	<button class="btn btn-danger dim btn-large-dim" title="Price will close lower than current" type="button">
 										<div class="row"><i class="fa fa-arrow-down"></i></div>
 										<div class="row"> <h5> Put </h5> </div>
 									</button>
