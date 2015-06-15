@@ -29,7 +29,7 @@ function startTimer(duration, display) {
 
 window.onload = function () {
     var fiveMinutes = 60*5,
-        display = document.querySelector('#remaining_timex');
+        display = document.querySelector('#remaining_time');
     startTimer(fiveMinutes, display);
 };
 

@@ -183,13 +183,13 @@
 										<label>
                             				Enter Amount
 										</label> 
-									<input type="text" placeholder="($)" class="form-control"></div>
+									<input type="text" id="bet_amount" placeholder="($)" class="form-control"></div>
 
 
 									</form>
                                 </div>
 								<div class="col-sm-6 m-b-xs">
-									<div class="form-group"><label>Remaining Time:</label> <h4 id='remaining_timex' align="center"></h4></div>
+									<div class="form-group"><label>Remaining Time:</label> <h4 id='remaining_time' align="center"></h4></div>
                                	</div>
                             </div>
 
@@ -395,78 +395,16 @@
  
 
 
-<script>
-	var interval;
-	function update(){
-    $.ajax({
-		type: "GET",
-		url:'/bets/update/',
-		data: {category_id:5,zzz:5 },
-		datatype: 'json',
-		success: function(data){
 
-		var asset_price = data['eurusd'];
-
-		$('#balance').html(data['balance']);
-		$('#recent_bets').html(data['tb']);
-		$('#remaining_time').html(data['time']);
-		interval = setTimeout(update, 1000);
-			}
-
-		});
-	}
-</script>
+<script src="{% static 'tools/dj_update.js' %}"></script>
 
 <script>
 	$('document').ready(function(){
 	update();})
 </script>
 
-<script>
-	$('document').ready(function(){
-    var form = $('#betsize');
-	var user = $('#user').html();
-	$("#call_place").click(function(){
-		var payout = $('#call_payout1').html();	
-		var strike = $('#call_strike1').html();
-		var amount = $('#bet_amount').val();
-		$('#bet_payout').val(payout);
-		$('#bet_type').val("CALL");
-		$('#bet_size').val(amount);
-    	$.ajax( 
-			{type: "POST",
-			url:'/bets/place_bets/',
-			data: form.serialize(),
-			success: function(response) {
-			$('#status').html(response);
-		<!--	alert(response); -->
-			}
-			});
-		
-		});
 
-		$("#put_place").click(function(){
-		var payout = $('#put_payout5').html();	
-		var strike = $('#put_strike5').html();
-		var amount = $('#bet_amount').val();
-		$('#bet_payout').val(payout);
-		$('#bet_type').val("PUT");
-		$('#bet_size').val(amount);
-    	$.ajax( 
-			{type: "POST",
-			url:'/bets/place_bets/',
-			data: form.serialize(),
-			success: function(response) {
-
-			$('#status').html(response);
-		<!--	alert(response); -->
-			}
-			});
-		});
-
-	
-});
-</script>
+<script src="{% static 'tools/place_bets.js' %}"></script>
 <script src="{% static 'tools/countdown_timer.js' %}"></script>
 
 
