@@ -2,7 +2,7 @@
 
 
 from bets.forms import UserForm, UserProfileForm, BetForm
-from bets.models import PlacedBets, AssetPrices, Deposits, Balances, Average, Volatility
+from bets.models import PlacedBets, AssetPrices, Deposits, Balances
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -150,7 +150,7 @@ def place_bets(request):
 	expire = timestamp + 300 - (timestamp % 300)
 	if expire - timestamp < 30:
 		return  HttpResponse("No Bets 30 seconds prior to expiration")
-
+	asset_price = last.eurusd
 	if request.method == 'POST':
 		bet_form = BetForm(request.POST)
 		if bet_form.is_valid():
@@ -158,10 +158,12 @@ def place_bets(request):
 
 			new_bet.bet_time = timestamp		
 			new_bet.option_asset = request.POST['asset']
-			new_bet.bet_strike=request.POST['bet_strike']
+			#new_bet.bet_strike=request.POST['bet_strike']
+			new_bet.bet_strike = asset_price
+
 			new_bet.bet_type=request.POST['bet_type']
 			new_bet.user = current_user.username
-			new_bet.bet_payout = request.POST['bet_payout'] 
+			new_bet.bet_payout = 1.90
 
 			new_bet.option_expire =  expire
 			new_bet.bet_outcome = "Pending"
@@ -186,20 +188,8 @@ def place_bets(request):
 def update(request):
 
 	last = AssetPrices.objects.latest('time')
-	last_vol = Volatility.objects.latest('time')	
-	last_avg = Average.objects.latest('time')
 	timestamp = int(time.time())
 
-	alpha = 0.95
-	Avg = Average()
-	Avg.time = timestamp
-	Avg.avg_eurusud = (1 - alpha) * last.eurusd + alpha * last_avg.avg_eurusd
-	Avg.save()
-
-	Vol = Volatility()
-	Vol.time = timestamp
-	Vol.vol_eurusd = ((1 - alpha) * (last.eurusd - Avg.avg_eurusd)**2 + alpha * last_vol.vol_eurusd	)**0.5
-	Vol.save()
 	# Settle Bets
 	if timestamp % 300 < 10: # only check in the beginning of the period (efficiency)
 		# Add a check for not running this too often (another table in the db with the last check)
@@ -238,8 +228,6 @@ def update(request):
 		
 		asset_price = last.eurusd
 		hist_prices = AssetPrices.objects.all()
-		#hist_prices = hist_prices[len(hist_prices) - 100:]
-		oilprice1 = [[x.time * 1000, x.eurusd] for x in hist_prices]
 		latest_time = str(datetime.datetime.fromtimestamp(timestamp).time())
 
 		#latest_time = str(datetime.datetime.fromtimestamp(last.time))
@@ -247,20 +235,9 @@ def update(request):
 		option_start_price = tools.get_price(expire-300)
 
 		# Calculate payouts and strikes
-		call_strike1, call_strike2,  call_strike3, call_strike4, call_strike5, \
-			call_payout1, call_payout2, call_payout3,call_payout4,call_payout5,\
-			put_strike1, put_strike2, put_strike3,put_strike4,put_strike5,\
-			put_payout1, put_payout2,put_payout3,put_payout4,put_payout5 = \
-				tools.option_params(expire, option_start_price, timestamp, asset_price)
 
 
-		# Black - Scholes Option pricing test
-		time_remaining = expire - timestamp
-		call_strike1 = option_start_price
-		call_strike1 = 1.1112
-		print asset_price, call_strike1, time_remaining, Vol.vol_eurusd
-		call_payout1 = tools.cash_or_nothing(asset_price, call_strike1, time_remaining, Vol.vol_eurusd, option_type="call")
-		# Test worked !!!
+
 		
 		try:	
 			balance = Balances.objects.get(username = request.user.username).balance
@@ -289,16 +266,7 @@ def update(request):
 
 
 		res = json.dumps({"time":latest_time, "eurusd":round(asset_price,4), "balance":balance, "tb":tb,
-				"call_strike1":call_strike1, "call_strike2":call_strike2,"call_strike3":call_strike3,
-				"call_strike4":call_strike4,"call_strike5":call_strike5,
-				"expire":str(datetime.datetime.fromtimestamp(expire).time()), 
-				"call_payout1":call_payout1, "call_payout2":call_payout2,
-				"call_payout3":call_payout3, "call_payout4":call_payout4,"call_payout5":call_payout5,
-					"put_strike1":put_strike1, "put_strike2":put_strike2, 
-					"put_strike3":put_strike3, "put_strike4":put_strike4, "put_strike5":put_strike5,
-					"put_payout1":put_payout1, "put_payout2":put_payout2,
-					"put_payout3":put_payout3, "put_payout4":put_payout4, "put_payout5":put_payout5,
-					"oilprice1": oilprice1}
+				"expire":str(datetime.datetime.fromtimestamp(expire).time())}
 				)
 		return HttpResponse(res, mimetype='application/json')
 	else:
@@ -332,6 +300,8 @@ def promo(request):
 
 		return HttpResponse("Deposit Not Successful")
 
+
+@login_required
 def deposit2(request):
 	context = RequestContext(request)
 	current_user = request.user
@@ -343,7 +313,8 @@ def deposit2(request):
 	r = urllib2.urlopen(input_url)
 	Resp = json.loads(r.read())
 	
-	return render_to_response('bets/deposit.html', {'address':Resp['input_address']}, context)
+	return render_to_response('bets/new_deposit.html', {'address':Resp['input_address'], 'user':current_user}, context)
+
 
 def deposit_received(request):
 	print "Attempting to access deposit_received url. Next test if secret is verified"
@@ -355,8 +326,9 @@ def deposit_received(request):
 			entry = Deposits()
 			entry.username = current_user
 			entry.time = timestamp
-			entry.size = 100
+			entry.size = request['value']
 			entry.save()
+			print current_user, entry.time, entry.size
 			try:
 				bal = Balances.objects.get(username = current_user)
 				bal.balance = bal.balance + entry.size

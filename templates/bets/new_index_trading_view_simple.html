@@ -131,12 +131,13 @@
         <div class="wrapper wrapper-content">
       <div class="row" >
             <div class="col-lg-8" >
+				<div class="ibox float-e-margins">
+					<div class="ibox-content" style="height: 600px;">
 					<!-- TradingView Widget BEGIN -->
 					<script type="text/javascript" src="https://d33t3vvu2t2yu5.cloudfront.net/tv.js"></script>
 					<script type="text/javascript">
 					new TradingView.widget({
-					  "width": 640,
-					  "height": 480,
+					  "autosize": true,
 					  "symbol": "FX:{{ asset }}",
 					  "interval": "1",
 					  "timezone": "exchange",
@@ -148,8 +149,9 @@
 					  "hideideas": true
 					});
 					</script>
-					<!-- TradingView Widget END -->
-
+					<!-- TradingView Widget END -->	
+					</div>
+				</div>
 			</div>
                      <div class="col-lg-4">
                 <div class="ibox float-e-margins">
@@ -171,11 +173,10 @@
                        </div> -->
                         <div class="ibox-content">
                             <div class="row">
-                               <div class="col-sm-6 m-b-xs">
-                                  <h3>Payout: </h3>
-							<i class="fa fa-bitcoin"></i>	<strong>180</strong>	<small>(+90%)</small>
-                               </div>
-                                <div class="col-sm-6">
+
+
+
+                                <div class="col-sm-6 ">
 									<form id="betsize" name='betsize' method='post' action='/bets/place_bets/'>
 											{% csrf_token %}
 											<input id="bet_size" type="hidden" name="bet_size" value="" />
@@ -189,8 +190,14 @@
                                     <div class="input-group"><input id='bet_amount' type="text" placeholder="Enter Amount" class="input-sm form-control"> 
 										<span class="input-group-btn"></span>
 									</div>
+
+
 									</form>
                                 </div>
+								<div class="col-sm-6 m-b-xs">
+                                	  <h3>Payout: </h3>
+									<i class="fa fa-bitcoin"></i>	<strong>0</strong>	<small>(+90%)</small>
+                               	</div>
                             </div>
 
 					<!-- Test row -->
@@ -198,9 +205,9 @@
 						<div class="row">
                                <div class="col-sm-6 m-b-xs">
                                   <div class="ibox-content text-center"> 
-                                	<button class="btn btn-primary dim btn-large-dim" title="Price will close higher than current" type="button">
+                                	<button id="call_place" class="btn btn-primary dim btn-large-dim" title="Price will close higher than current" type="button">
 										<div class="row"><i class="fa fa-arrow-up"></i></div>
-										<div class="row"> <h4> call</h4> </div>
+										<div class="row"> <h4> Call</h4> </div>
 									</button>
 				
 									</div>
@@ -208,7 +215,7 @@
                                 <div class="col-sm-6">
 									
                                   <div class="ibox-content text-center"> 
-                                	<button class="btn btn-danger dim btn-large-dim" title="Price will close lower than current" type="button">
+                                	<button id="put_place" class="btn btn-danger dim btn-large-dim" title="Price will close lower than current" type="button">
 										<div class="row"><i class="fa fa-arrow-down"></i></div>
 										<div class="row"> <h5> Put </h5> </div>
 									</button>
@@ -387,18 +394,6 @@
 
  
 
-	<script>
-	$('#table_calls').hide();
-	$('#option_calls').click(function(){
-		$('#table_puts').hide();
-		$('#table_calls').show();
-		});
-	$('#option_puts').click(function(){
-		$('#table_calls').hide();
-		$('#table_puts').show();
-		});
-	</script>
-
 
 <script>
 	var interval;
@@ -411,29 +406,6 @@
 		success: function(data){
 
 		var asset_price = data['eurusd'];
-		$('#call_strike1').html(data['call_strike1']);
-		$('#call_strike2').html(data['call_strike2']);
-		$('#call_strike3').html(data['call_strike3']);
-		$('#call_strike4').html(data['call_strike4']);
-		$('#call_strike5').html(data['call_strike5']);
-
-		$('#call_payout1').html(data['call_payout1']);
-		$('#call_payout2').html(data['call_payout2']);
-		$('#call_payout3').html(data['call_payout3']);
-		$('#call_payout4').html(data['call_payout4']);
-		$('#call_payout5').html(data['call_payout5']);
-
-		$('#put_strike1').html(data['put_strike1']);
-		$('#put_strike2').html(data['put_strike2']);
-		$('#put_strike3').html(data['put_strike3']);
-		$('#put_strike4').html(data['put_strike4']);
-		$('#put_strike5').html(data['put_strike5']);
-
-		$('#put_payout1').html(data['put_payout1']);
-		$('#put_payout2').html(data['put_payout2']);
-		$('#put_payout3').html(data['put_payout3']);
-		$('#put_payout4').html(data['put_payout4']);
-		$('#put_payout5').html(data['put_payout5']);
 
 		$('#balance').html(data['balance']);
 		$('#recent_bets').html(data['tb']);
@@ -454,12 +426,11 @@
 	$('document').ready(function(){
     var form = $('#betsize');
 	var user = $('#user').html();
-	$("#call_strike1_place").click(function(){
+	$("#call_place").click(function(){
 		var payout = $('#call_payout1').html();	
 		var strike = $('#call_strike1').html();
 		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
-		$('#bet_strike').val(strike);
 		$('#bet_type').val("CALL");
 		$('#bet_size').val(amount);
     	$.ajax( 
@@ -473,171 +444,12 @@
 			});
 		
 		});
-		$("#call_strike2_place").click(function(){
-		var payout = $('#call_payout2').html();	
-		var strike = $('#call_strike2').html();
-		var amount = $('#bet_amount').val();
-		$('#bet_payout').val(payout);
-		$('#bet_strike').val(strike);
-		$('#bet_type').val("CALL");
-		$('#bet_size').val(amount);
-    	$.ajax( 
-			{type: "POST",
-			url:'/bets/place_bets/',
-			data: form.serialize(),
-			success: function(response) {
 
-			$('#status').html(response);
-		<!--	alert(response); -->
-			}
-			});
-		});
-
-		$("#call_strike3_place").click(function(){
-		var payout = $('#call_payout3').html();	
-		var strike = $('#call_strike3').html();
-		var amount = $('#bet_amount').val();
-		$('#bet_payout').val(payout);
-		$('#bet_strike').val(strike);
-		$('#bet_type').val("CALL");
-		$('#bet_size').val(amount);
-    	$.ajax( 
-			{type: "POST",
-			url:'/bets/place_bets/',
-			data: form.serialize(),
-			success: function(response) {
-
-			$('#status').html(response);
-		<!--	alert(response); -->
-			}
-			});
-		});
-
-		$("#call_strike4_place").click(function(){
-		var payout = $('#call_payout4').html();	
-		var strike = $('#call_strike4').html();
-		var amount = $('#bet_amount').val();
-		$('#bet_payout').val(payout);
-		$('#bet_strike').val(strike);
-		$('#bet_type').val("CALL");
-		$('#bet_size').val(amount);
-    	$.ajax( 
-			{type: "POST",
-			url:'/bets/place_bets/',
-			data: form.serialize(),
-			success: function(response) {
-
-			$('#status').html(response);
-		<!--	alert(response); -->
-			}
-			});
-		});
-
-		$("#call_strike5_place").click(function(){
-		var payout = $('#call_payout5').html();	
-		var strike = $('#call_strike5').html();
-		var amount = $('#bet_amount').val();
-		$('#bet_payout').val(payout);
-		$('#bet_strike').val(strike);
-		$('#bet_type').val("CALL");
-		$('#bet_size').val(amount);
-    	$.ajax( 
-			{type: "POST",
-			url:'/bets/place_bets/',
-			data: form.serialize(),
-			success: function(response) {
-
-			$('#status').html(response);
-		<!--	alert(response); -->
-			}
-			});
-		});
-
-	$("#put_strike1_place").click(function(){
-		var payout = $('#put_payout1').html();	
-		var strike = $('#put_strike1').html();
-		var amount = $('#bet_amount').val();
-		$('#bet_payout').val(payout);
-		$('#bet_strike').val(strike);
-		$('#bet_type').val("PUT");
-		$('#bet_size').val(amount);
-    	$.ajax( 
-			{type: "POST",
-			url:'/bets/place_bets/',
-			data: form.serialize(),
-			success: function(response) {
-
-			$('#status').html(response);
-		<!--	alert(response); -->
-			}
-			});
-		
-		});
-		$("#put_strike2_place").click(function(){
-		var payout = $('#put_payout2').html();	
-		var strike = $('#put_strike2').html();
-		var amount = $('#bet_amount').val();
-		$('#bet_payout').val(payout);
-		$('#bet_strike').val(strike);
-		$('#bet_type').val("PUT");
-		$('#bet_size').val(amount);
-    	$.ajax( 
-			{type: "POST",
-			url:'/bets/place_bets/',
-			data: form.serialize(),
-			success: function(response) {
-
-			$('#status').html(response);
-		<!--	alert(response); -->
-			}
-			});
-		});
-
-		$("#put_strike3_place").click(function(){
-		var payout = $('#put_payout3').html();	
-		var strike = $('#put_strike3').html();
-		var amount = $('#bet_amount').val();
-		$('#bet_payout').val(payout);
-		$('#bet_strike').val(strike);
-		$('#bet_type').val("PUT");
-		$('#bet_size').val(amount);
-    	$.ajax( 
-			{type: "POST",
-			url:'/bets/place_bets/',
-			data: form.serialize(),
-			success: function(response) {
-
-			$('#status').html(response);
-		<!--	alert(response); -->
-			}
-			});
-		});
-
-		$("#put_strike4_place").click(function(){
-		var payout = $('#put_payout4').html();	
-		var strike = $('#put_strike4').html();
-		var amount = $('#bet_amount').val();
-		$('#bet_payout').val(payout);
-		$('#bet_strike').val(strike);
-		$('#bet_type').val("PUT");
-		$('#bet_size').val(amount);
-    	$.ajax( 
-			{type: "POST",
-			url:'/bets/place_bets/',
-			data: form.serialize(),
-			success: function(response) {
-
-			$('#status').html(response);
-		<!--	alert(response); -->
-			}
-			});
-		});
-		$("#put_strike5_place").click(function(){
+		$("#put_place").click(function(){
 		var payout = $('#put_payout5').html();	
 		var strike = $('#put_strike5').html();
 		var amount = $('#bet_amount').val();
 		$('#bet_payout').val(payout);
-		$('#bet_strike').val(strike);
 		$('#bet_type').val("PUT");
 		$('#bet_size').val(amount);
     	$.ajax( 
