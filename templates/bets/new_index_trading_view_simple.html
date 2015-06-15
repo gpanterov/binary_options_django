@@ -154,30 +154,23 @@
 				</div>
 			</div>
                      <div class="col-lg-4">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h3>Remaining Time</h3>
-                    </div>
-                    <div class="ibox-content text-center">
-                        <h1 id="remaining_time" class="no-margins"></h1>
-                    </div>
-                </div>
 
 
 			
 
  
 	                    <div class="ibox float-e-margins">
-                       <!-- <div class="ibox-title">
-                            <h5>Custom responsive table </h5>
-                       </div> -->
+                        <div class="ibox-title">
+                           <h3 id="title"><strong>Binary Option<strong></h3>
+
+                       </div> 
                         <div class="ibox-content">
                             <div class="row">
 
 
 
                                 <div class="col-sm-6 ">
-									<form id="betsize" name='betsize' method='post' action='/bets/place_bets/'>
+									<form id="betsize" name='betsize' method='post' action='/bets/place_bets/' role="form">
 											{% csrf_token %}
 											<input id="bet_size" type="hidden" name="bet_size" value="" />
 											<input id="bet_strike" type="hidden" name="bet_strike" value="" />
@@ -185,18 +178,18 @@
 											<input id="bet_payout" type="hidden" name="bet_payout" value="" />
 											<input id="asset" type="hidden" name="asset" value="{{ asset }}" />
 
-									<h3> Amount:</h3>
 
-                                    <div class="input-group"><input id='bet_amount' type="text" placeholder="Enter Amount" class="input-sm form-control"> 
-										<span class="input-group-btn"></span>
-									</div>
+                                    <div class="form-group">
+										<label>
+                            				Enter Amount
+										</label> 
+									<input type="text" placeholder="($)" class="form-control"></div>
 
 
 									</form>
                                 </div>
 								<div class="col-sm-6 m-b-xs">
-                                	  <h3>Payout: </h3>
-									<i class="fa fa-bitcoin"></i>	<strong>0</strong>	<small>(+90%)</small>
+									<div class="form-group"><label>Remaining Time:</label> <h4 id='remaining_timex' align="center"></h4></div>
                                	</div>
                             </div>
 
@@ -222,6 +215,13 @@
 									</div>
                                 </div>
                             </div>
+
+					<div class = "row"> 
+								<div class="col-lg-12">
+                                <small class="stats-label">Option Payout (+90%):</small>
+                                <h5 id="payout_in_dollars"><strong>$ 135</strong></h5>
+                            </div>
+					</div>
 
 					<!-- End Test row -->
 
@@ -467,6 +467,7 @@
 	
 });
 </script>
+<script src="{% static 'tools/countdown_timer.js' %}"></script>
 
 
 </body>
