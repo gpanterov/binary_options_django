@@ -446,6 +446,11 @@ def withdraw(request):
 	if request.method == "POST":
 		to_address = request.POST['bitcoin_address']
 		amount = request.POST['withdraw_amount']
+		amount = str(int(float(amount) * 1e8))
+		r=tools.send_money(to_address, amount)
+		print to_address, type(to_address)
+		print amount, type(amount)
+		print "Sent money ", r.read()
 		withdrawn=True
 
 	return render_to_response('bets/new_withdrawal.html',

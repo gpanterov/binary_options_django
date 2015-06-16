@@ -3,6 +3,7 @@ import random
 from scipy.stats import norm
 from bets.models import PlacedBets, AssetPrices
 import time
+import urllib2
 
 def cash_or_nothing(S, K, T, vol, option_type):
 	"""
