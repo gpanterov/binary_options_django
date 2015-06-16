@@ -79,6 +79,7 @@ def register(request):
 			bal.username = user.username
 			bal.balance = 0
 			bal.save()
+
 		# Invalid form or forms - mistakes or something else?
 		# Print problems to the terminal.
 		# They'll also be shown to the user.

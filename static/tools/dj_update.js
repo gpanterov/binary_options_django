@@ -12,7 +12,7 @@
 		$('#balance').html(data['balance']);
 		$('#recent_bets').html(data['tb']);
 		$('#remaining_timex').html(data['time']);
-		interval = setTimeout(update, 1000);
+		//interval = setTimeout(update, 1000);
 			}
 
 		});
