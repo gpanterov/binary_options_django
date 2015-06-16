@@ -31,14 +31,7 @@ def get_bet_outcome(bet, timestamp):
 	if bet.option_expire > timestamp:
 		return "Pending"
 	else:
-		closest_under, closest_over = get_closest_prices(timestamp)
-		closest = closest_under  # Take the price that is the closest under the timestamp
-		if bet.option_asset == "EURUSD":
-			exp_price = closest.eurusd
-		elif bet.option_asset == "USDJPY":
-			exp_price = closest.usdjpy
-		else:
-			return "Error (Unknown asset)"
+		exp_price, latest_available_time = get_closest_prices(bet.option_asset, timestamp)
 		res = evaluate_option(bet.bet_type, exp_price, bet.bet_strike)
 		if res:
 			return "Success"
@@ -65,20 +58,28 @@ def evaluate_option(option_type, exp_price, strike_price):
 
 
 
-def get_closest_prices(timestamp):
+def get_closest_prices(asset, timestamp):
 	"""
 	Returns the two instances of the AssetPrice class that are closest
 	to timestamp (under it and over it)
 	"""
 	prices_before_timestamp = AssetPrices.objects.filter(time__lte = timestamp)
-	prices_after_timestamp = AssetPrices.objects.filter(time__gte = timestamp)
+	#prices_after_timestamp = AssetPrices.objects.filter(time__gte = timestamp)
 	if len(prices_before_timestamp)>0:
 		closest_to_timestamp_under = prices_before_timestamp[len(prices_before_timestamp)-1]
 	else:
-		c
-	closest_to_timestamp_over = prices_after_timestamp[0]
+		print "There is no data before time stamp. Possibly no price data has been collected or too low a timestamp"
+		raise
+	if asset == "EURUSD":
+		price = closest_to_timestamp_under.eurusd
+	elif asset == "USDJPY":
+		price = closest_to_timestamp_under.usdjpy
+	else:
+		print "Error (Unknown asset)"
+		raise
 
-	return closest_to_timestamp_under, closest_to_timestamp_over
+	return price, closest_to_timestamp_under.time
+
 
 def get_price(timestamp):
 	"""

@@ -43,7 +43,7 @@ def usdjpy(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USDJPY'} 
-    return render_to_response('bets/new_index_trading_view.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
 
 
 
@@ -141,26 +141,50 @@ def user_logout(request):
 	return HttpResponseRedirect('/bets/')
 
 # Must modify the payouts -- should be recalculated every time. Not taken from the html (possible fraud)
+min_bet = 2
+max_bet = 20
 def place_bets(request):
 	if not request.user.is_authenticated():
 		return HttpResponse("Please log in")
 
-	last = AssetPrices.objects.latest('time')
 	current_user = request.user
 	timestamp = int(time.time()	)
 	expire = timestamp + 300 - (timestamp % 300)
 	if expire - timestamp < 30:
 		return  HttpResponse("No Bets 30 seconds prior to expiration")
-	asset_price = last.eurusd
 	if request.method == 'POST':
+		try:
+			bet_size_int = int(request.POST['bet_size'].strip())
+		except:
+			return HttpResponse("Please enter a correct amount")
+
+
 		bet_form = BetForm(request.POST)
 		if bet_form.is_valid():
-			new_bet = bet_form.save(commit=False)
+			if bet_size_int > max_bet:
+				return HttpResponse("Bet exceeds maximum bet size. Please enter an amoung lower than %s" %(max_bet))
+			if bet_size_int < min_bet:
+				return HttpResponse("Bet size is too low. Please enter an amount greater than %s" %(min_bet))
 
+			option_asset = request.POST['asset']
+			latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
+			if timestamp - latest_available_time > 10:
+				print "Error - No price data. The latest data is more than 10 seconds older than the current time"
+				return HttpResponse("We are currently unable to accept bets. Please try again later")
+
+
+			bal = Balances.objects.get(username = current_user.username)
+			if bet_size_int > bal.balance:
+				return HttpResponse("The amount exceeds the available funds in your account")
+
+
+
+
+			new_bet = bet_form.save(commit=False)
 			new_bet.bet_time = timestamp		
-			new_bet.option_asset = request.POST['asset']
-			#new_bet.bet_strike=request.POST['bet_strike']
-			new_bet.bet_strike = asset_price
+			new_bet.option_asset = option_asset
+
+			new_bet.bet_strike = latest_price
 
 			new_bet.bet_type=request.POST['bet_type']
 			new_bet.user = current_user.username
@@ -172,7 +196,6 @@ def place_bets(request):
 			option_time = datetime.datetime.fromtimestamp(new_bet.bet_time)
 
 			# Update the balance of the trader
-			bal = Balances.objects.get(username = current_user.username)
 			bal.balance = bal.balance - new_bet.bet_size
 			bal.save()
 
@@ -210,35 +233,18 @@ def update_results(request):
 
 def update(request):
 
-	last = AssetPrices.objects.latest('time')
 	timestamp = int(time.time())
 
 
 	# Update remaining prices, payous etc.
 	if request.method == 'GET':
 		
-		asset_price = last.eurusd
-		hist_prices = AssetPrices.objects.all()
-		latest_time = str(datetime.datetime.fromtimestamp(timestamp).time())
-
-		#latest_time = str(datetime.datetime.fromtimestamp(last.time))
-		expire =  timestamp + 300 - (timestamp % 300)
-		option_start_price = tools.get_price(expire-300)
-
-		# Calculate payouts and strikes
-
-
-
-		
-		try:	
-			balance = Balances.objects.get(username = request.user.username).balance
-		except:
-			balance = 0
+		balance = Balances.objects.get(username = request.user.username).balance
 
 		# Get the last 10 bets of the trader and return them for a table in the website
 		recent_bets = PlacedBets.objects.filter(user = request.user.username)
-		if len(recent_bets) > 5:
-			recent_bets = recent_bets[len(recent_bets) - 5:]
+		if len(recent_bets) > 10:
+			recent_bets = recent_bets[len(recent_bets) - 10:]
 		
 		tb = ""
 		for bet in recent_bets[::-1]:
@@ -248,20 +254,20 @@ def update(request):
 			else:
 				ttype = "<span class = 'badge badge-danger'>Put</span>"
 			payout = bet.bet_payout
-			strike = bet.bet_strike
+			strike = round(bet.bet_strike,4)
+			time_of_bet = str(datetime.datetime.fromtimestamp(bet.bet_time))
+
 			expiration = str(datetime.datetime.fromtimestamp(bet.option_expire))
 			outcome = bet.bet_outcome
-			tb += "<tr><td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td></tr>" % \
-							(ttype, size, payout, strike, expiration, outcome)  
+			tb += "<tr><td>%s</td><td>%s</td><td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td></tr>" % \
+							(ttype,time_of_bet, bet.option_asset, size, payout, strike, expiration, outcome)  
 
 
 
-		res = json.dumps({"time":latest_time, "eurusd":round(asset_price,4), "balance":balance, "tb":tb,
-				"expire":str(datetime.datetime.fromtimestamp(expire).time())}
-				)
+		res = json.dumps({"balance":balance, "tb":tb})
 		return HttpResponse(res, mimetype='application/json')
 	else:
-		return HttpResponse('else')
+		return HttpResponse('Not a GET request')
 
 
 @login_required
