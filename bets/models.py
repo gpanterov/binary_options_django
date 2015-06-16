@@ -23,9 +23,16 @@ class AssetPrices(models.Model):
 	time = models.IntegerField(default=0)
 	eurusd = models.FloatField(default=0, null=True)
 	usdjpy = models.FloatField(default=0, null=True)
+	usdchf = models.FloatField(default=0, null=True)
+	eurchf = models.FloatField(default=0, null=True)
 
+	oil = models.FloatField(default=0, null=True)
+	gold = models.FloatField(default=0, null=True)
 
-
+	
+	spx500 = models.FloatField(default=0, null=True)
+	ftse100 = models.FloatField(default=0, null=True)
+	nikkei = models.FloatField(default=0, null=True)
 
 # Add Deposit/Funds model
 class Deposits(models.Model):
