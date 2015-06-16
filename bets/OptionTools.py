@@ -79,6 +79,20 @@ def get_closest_prices(asset, timestamp):
 		price = closest_to_timestamp_under.eurusd
 	elif asset == "USDJPY":
 		price = closest_to_timestamp_under.usdjpy
+	elif asset == "EURCHF":
+		price = closest_to_timestamp_under.eurchf
+	elif asset == "USDCHF":
+		price = closest_to_timestamp_under.usdchf
+	elif asset == "XAUUSD":
+		price = closest_to_timestamp_under.gold
+	elif asset == "USOil":
+		price = closest_to_timestamp_under.oil
+	elif asset == "SPX500":
+		price = closest_to_timestamp_under.spx500
+	elif asset == "JPN225":
+		price = closest_to_timestamp_under.nikkei
+	elif asset == "UK100":
+		price = closest_to_timestamp_under.ftse100
 	else:
 		print "Error (Unknown asset)"
 		raise

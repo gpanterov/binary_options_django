@@ -68,6 +68,63 @@ def usdchf(request):
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USDCHF'} 
     return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
 
+def gold(request):
+    if not request.user.is_authenticated():
+        current_user = None
+    else:
+        current_user = request.user
+	
+    context = RequestContext(request)
+    bets_form = BetForm()
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'XAUUSD'} 
+    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+
+def oil(request):
+    if not request.user.is_authenticated():
+        current_user = None
+    else:
+        current_user = request.user
+	
+    context = RequestContext(request)
+    bets_form = BetForm()
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USOil'} 
+    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+
+def spx500(request):
+    if not request.user.is_authenticated():
+        current_user = None
+    else:
+        current_user = request.user
+	
+    context = RequestContext(request)
+    bets_form = BetForm()
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'SPX500'} 
+    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+
+def uk100(request):
+    if not request.user.is_authenticated():
+        current_user = None
+    else:
+        current_user = request.user
+	
+    context = RequestContext(request)
+    bets_form = BetForm()
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'UK100'} 
+    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+
+def jpn225(request):
+    if not request.user.is_authenticated():
+        current_user = None
+    else:
+        current_user = request.user
+	
+    context = RequestContext(request)
+    bets_form = BetForm()
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'JPN225'} 
+    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+
+
+
 def register(request):
 	# Like before, get the request's context.
 	context = RequestContext(request)
@@ -330,31 +387,43 @@ def deposit2(request):
 
 
 def deposit_received(request):
-	print "Attempting to access deposit_received url. Next test if secret is verified"
 	if request.method == "GET":
 		if request.GET['secret'] == "gogo":
 			print "secret verified"
 			current_user = request.GET['user']
+			confirmations = int(request.GET['confirmations'])
+			transaction_hash = request.GET['input_transaction_hash']
+			input_address = request.GET['input_address']
 			timestamp = int(time.time())
-			entry = Deposits()
-			entry.username = current_user
-			entry.time = timestamp
-			entry.size = request['value']
-			entry.save()
-			print current_user, entry.time, entry.size
+			if confirmations >=5:
+				return HttpResponse("*OK*")  # Wait for 5 confirmations
+
 			try:
-				bal = Balances.objects.get(username = current_user)
+				entry=Deposits.objects.filter(transaction_hash = transaction_hash)[0]
+				entry.confirmations = confirmations
+				print "Selected old entry"
+			except:
+				entry = Deposits()
+				entry.username = current_user
+				entry.time = timestamp
+				entry.size = int(request.GET['value'])
+				entry.transaction_hash = transaction_hash
+				entry.input_address = input_address
+				entry.confirmations = confirmations
+				print "Created a new deposit entry"
+
+
+			if not entry.included:
+				bal = Balances.objects.get(username = str(current_user))
 				bal.balance = bal.balance + entry.size
 				bal.save()
-				print "Deposit received from blockchain notification", bal.balance
-			except: # If it doesn't exist (new user - create entry)
-				bal = Balances()
-				bal.username = current_user
-				bal.balance = entry.size
-				bal.save()
-				print "Created a new user"
+				entry.included = True
+				print "Counted the deposit"
 
-			return HttpResponse("Deposit Successful")
+			entry.save()
+
+
+			return HttpResponse("Deposit Received with %s confirmations" %(confirmations))
 		else:
 			print "Someone trying to hack you"
 	else:

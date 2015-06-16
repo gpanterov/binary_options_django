@@ -36,9 +36,13 @@ class AssetPrices(models.Model):
 
 # Add Deposit/Funds model
 class Deposits(models.Model):
+	transaction_hash = models.CharField(max_length=90,null=True)
+	input_address = models.CharField(max_length=50,null=True)
 	username = models.CharField(max_length=30,null=True)
+	confirmations = models.IntegerField(default=0)
 	time = models.IntegerField(default=0)
 	size = models.IntegerField(default=0, null=True)  # Size of bet in satoshis
+	included = models.BooleanField(default=False)  # Has this deposit been included towards the balance
 	def __unicode__(self):
 		return self.username
 
