@@ -237,7 +237,7 @@
 					<div class = "row"> 
 								<div class="col-lg-12">
                                 <small class="stats-label">Option Payout (+90%):</small>
-                                <h5 id="payout_in_dollars"><strong>$ 135</strong></h5>
+                                <h5><i class="fa fa-bitcoin"></i>  <strong id="payout_currency"></strong></h5>
                             </div>
 					</div>
 
@@ -395,5 +395,14 @@ update();
 });
 </script>
 
+<script>
+$('document').ready(function(){
+$('#bet_amount').keyup(function(){
+var bet_amount = $('#bet_amount').val();
+var cur_payout = 1.9 * bet_amount;
+$('#payout_currency').html(cur_payout);
+});
+});
+</script>
 </body>
 </html>

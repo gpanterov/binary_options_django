@@ -52,6 +52,16 @@ class Balances(models.Model):
 	def __unicode__(self):
 		return self.username
 
+class Promos(models.Model):
+	code = models.CharField(max_length=30,null=True)
+	used = models.BooleanField(default=False)
+	value = models.FloatField(default=0, null=True) 
+	user = models.CharField(max_length=30,null=True)
+
+	def __unicode__(self):
+		return self.code
+
+
 class Volatility(models.Model):
 
 	time = models.IntegerField(default=0)

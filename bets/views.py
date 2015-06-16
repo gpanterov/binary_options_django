@@ -2,7 +2,7 @@
 
 
 from bets.forms import UserForm, BetForm
-from bets.models import PlacedBets, AssetPrices, Deposits, Balances
+from bets.models import PlacedBets, AssetPrices, Deposits, Balances, Promos
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -353,22 +353,34 @@ def update(request):
 
 @login_required
 def promo(request):
-	if request.method == "POST" and request.POST['promo_code'] == "panterov":
+	if request.method == "POST":
+
+		context = RequestContext(request)
 		current_user = request.user
 		timestamp = int(time.time())
-		entry = Deposits()
-		entry.username = current_user.username
-		entry.time = timestamp
-		entry.size = 100
-		entry.save()
-		bal = Balances.objects.get(username = request.user.username)
-		bal.balance = bal.balance + entry.size
-		bal.save()
-		return HttpResponse("Deposit Successful")
+
+		promo_code = request.POST['promo_code']
+		code_db = Promos.objects.filter(code=promo_code)
+		promo_successful = False
+		if len(code_db)==1 and not code_db[0].used:
+			bal = Balances.objects.get(username = request.user.username)
+			bal.balance = bal.balance + code_db[0].value
+			bal.save()
+			code_db[0].used = True
+			code_db[0].user = request.user.username
+			code_db[0].save()
+			promo_successful = True
+		else:
+			print "Promo code is invalid"
+
+
+		return render_to_response('bets/new_promos.html',
+		{'promo_successful': promo_successful, 'user':current_user.username, 'amount':code_db[0].value},	context)
+
 	else:
 		print "Something went wrong with promo code"
 
-		return HttpResponse("Deposit Not Successful")
+		return HttpResponse("Error. Please go back!")
 
 
 @login_required
