@@ -2,6 +2,7 @@ import numpy as np
 import random
 from scipy.stats import norm
 from bets.models import PlacedBets, AssetPrices
+import time
 
 def cash_or_nothing(S, K, T, vol, option_type):
 	"""
@@ -22,16 +23,20 @@ def cash_or_nothing(S, K, T, vol, option_type):
 		return None
 
 
-def get_bet_outcome(bet, timestamp):
+def get_bet_outcome(bet):
 	"""
 	Return the outcome of a bet at a given timestamp
 	"""
+	timestamp = int(time.time())
 	if bet.bet_time > timestamp:
 		return "Error (Bet made after timestamp)"
 	if bet.option_expire > timestamp:
 		return "Pending"
 	else:
 		exp_price, latest_available_time = get_closest_prices(bet.option_asset, bet.option_expire)
+		if bet.option_expire - latest_available_time > 10:
+			print "The latest available price is at least 10 seconds before the option expiration time"
+			return "Unknown"
 		res = evaluate_option(bet.bet_type, exp_price, bet.bet_strike)
 		if res:
 			return "Success"

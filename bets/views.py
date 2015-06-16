@@ -212,9 +212,8 @@ def update_results(request):
 	if request.method == "GET":
 		pending = PlacedBets.objects.filter(bet_outcome="Pending")
 		all_results = ""
-		timestamp = int(time.time())
 		for bet in pending:
-			outcome= tools.get_bet_outcome(bet, timestamp)
+			outcome= tools.get_bet_outcome(bet)
 			bet.bet_outcome = outcome
 			bet.save()
 
