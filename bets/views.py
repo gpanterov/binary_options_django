@@ -284,17 +284,9 @@ def promo(request):
 		entry.time = timestamp
 		entry.size = 100
 		entry.save()
-		try: # Update balance
-			bal = Balances.objects.get(username = request.user.username)
-			bal.balance = bal.balance + entry.size
-			bal.save()
-			print "User already exists ", bal.balance
-		except: # If it doesn't exist (new user - create entry)
-			bal = Balances()
-			bal.username = request.user.username
-			bal.balance = entry.size
-			bal.save()
-			print "Created a new user"
+		bal = Balances.objects.get(username = request.user.username)
+		bal.balance = bal.balance + entry.size
+		bal.save()
 		return HttpResponse("Deposit Successful")
 	else:
 		print "Something went wrong with promo code"
