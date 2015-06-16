@@ -431,3 +431,23 @@ def deposit_received(request):
 
 		return HttpResponse("Deposit Not Successful")
 
+
+
+
+@login_required
+def withdraw(request):
+	withdrawn = False
+	to_address = ""
+	amount = ""
+	context = RequestContext(request)
+	balance = Balances.objects.get(username = request.user.username).balance
+
+
+	if request.method == "POST":
+		to_address = request.POST['bitcoin_address']
+		amount = request.POST['withdraw_amount']
+		withdrawn=True
+
+	return render_to_response('bets/new_withdrawal.html',
+	{'withdrawn': withdrawn, 'balance':balance, 'to_address':to_address, 'amount':amount},	context)
+
