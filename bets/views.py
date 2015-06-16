@@ -185,47 +185,37 @@ def place_bets(request):
 
 
 
+def update_results(request):
+	if request.method == "GET":
+		pending = PlacedBets.objects.filter(bet_outcome="Pending")
+		all_results = ""
+		timestamp = int(time.time())
+		for bet in pending:
+			outcome= tools.get_bet_outcome(bet, timestamp)
+			bet.bet_outcome = outcome
+			bet.save()
+
+			# Update Funds
+			if bet.bet_outcome == "Success":
+				profit = bet.bet_size * bet.bet_payout
+				# Update the balance of the trader
+				bal = Balances.objects.get(username = bet.user)
+				bal.balance = bal.balance + profit
+				bal.save()
+			all_results += "<h3>User: %s, Type: %s, Outcome: %s </h3>" %(bet.user, bet.bet_type, bet.bet_outcome)
+		
+	return HttpResponse(all_results)
+
+
 
 def update(request):
 
 	last = AssetPrices.objects.latest('time')
 	timestamp = int(time.time())
 
-	# Settle Bets
-	if timestamp % 300 < 10: # only check in the beginning of the period (efficiency)
-		# Add a check for not running this too often (another table in the db with the last check)
-		
-		pending = PlacedBets.objects.filter(bet_outcome="Pending")
-
-		for bet in pending:
-			eurusd_close = tools.get_price(bet.option_expire)
-			if eurusd_close is not None:
-				if bet.bet_type == "CALL" and eurusd_close > bet.bet_strike:
-					bet.bet_outcome = "Success"
-				elif bet.bet_type == "CALL" and eurusd_close < bet.bet_strike:
-					bet.bet_outcome = "Loss"
-				elif bet.bet_type == "PUT" and eurusd_close < bet.bet_strike:
-					bet.bet_outcome = "Success"
-				elif bet.bet_type == "PUT" and eurusd_close > bet.bet_strike:
-					bet.bet_outcome = "Loss"
-				else:
-					print "Error"
-				bet.save()
-
-				# Update Funds
-				if bet.bet_outcome == "Success":
-					profit = bet.bet_size * bet.bet_payout
-					# Update the balance of the trader
-					bal = Balances.objects.get(username = bet.user)
-					bal.balance = bal.balance + profit
-					bal.save()
-					print "Updated balance due to succesful bet"
-
-
 
 	# Update remaining prices, payous etc.
 	if request.method == 'GET':
-
 		
 		asset_price = last.eurusd
 		hist_prices = AssetPrices.objects.all()

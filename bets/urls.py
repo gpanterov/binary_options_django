@@ -14,4 +14,5 @@ urlpatterns = patterns('',
 	url(r'^deposit/promo/$', views.promo, name='promo'),	
 	url(r'^deposit/', views.deposit2, name='deposit'),
 	url(r'^deposit_received/', views.deposit_received, name='deposit_receieved'),
+	url(r'^update_results/$', views.update_results, name='update_results'),
 	)

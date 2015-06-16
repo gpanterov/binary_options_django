@@ -22,50 +22,63 @@ def cash_or_nothing(S, K, T, vol, option_type):
 		return None
 
 
-def option_params(expire, option_start_price, current_time, current_price):
+def get_bet_outcome(bet, timestamp):
 	"""
-	Calculates and returns some useful parameters of the options like strike prices (fixed for the life of the option)
-	and the payouts, given the time and prices
+	Return the outcome of a bet at a given timestamp
 	"""
-
-	time_remaining = expire - current_time
-	if option_start_price == 0 or option_start_price is None:
-		print "Problem with Option Price", option_start_price
-		option_start_price = current_price
-
-
-	print "Option Start Price is: ", option_start_price
-	call_strike1 = round(option_start_price - 0.0002, 4)
-	call_strike2 = round(option_start_price, 4)
-	call_strike3 = round(option_start_price + 0.0002, 4)
-	call_strike4 = round(option_start_price + 0.0005, 4)
-	call_strike5 = round(option_start_price + 0.0010, 4)
-
-	call_payout1 = round(1 + random.random(),2)
-	call_payout2 = round(random.random() + call_payout1,2)
-	call_payout3 = round(random.random() + call_payout2,2)
-	call_payout4 = round(random.random() + call_payout3,2)
-	call_payout5 = round(random.random() + call_payout4,2)
-
-	put_strike1 = round(option_start_price + 0.0002, 4)
-	put_strike2 = round(option_start_price, 4)
-	put_strike3 = round(option_start_price - 0.0002, 4)
-	put_strike4 = round(option_start_price - 0.0005, 4)
-	put_strike5 = round(option_start_price - 0.0010, 4)
+	if bet.bet_time > timestamp:
+		return "Error (Bet made after timestamp)"
+	if bet.option_expire > timestamp:
+		return "Pending"
+	else:
+		closest_under, closest_over = get_closest_prices(timestamp)
+		closest = closest_under  # Take the price that is the closest under the timestamp
+		if bet.option_asset == "EURUSD":
+			exp_price = closest.eurusd
+		elif bet.option_asset == "USDJPY":
+			exp_price = closest.usdjpy
+		else:
+			return "Error (Unknown asset)"
+		res = evaluate_option(bet.bet_type, exp_price, bet.bet_strike)
+		if res:
+			return "Success"
+		else:
+			return "Loss"
 
 
-	put_payout1 = round(1 + random.random(),2)
-	put_payout2 = round(random.random() + put_payout1,2)
-	put_payout3 = round(random.random() + put_payout2,2)
-	put_payout4 = round(random.random() + put_payout3,2)
-	put_payout5 = round(random.random() + put_payout4,2)
+def evaluate_option(option_type, exp_price, strike_price):
+	"""
+	Find out if an option is success or loss for a given type,
+	price and strike
+	"""
+	if option_type == "CALL" and exp_price > strike_price:
+		return True
+	elif option_type == "CALL" and exp_price <= strike_price:
+		return False
+	elif option_type == "PUT" and exp_price >= strike_price:
+		return False
+	elif option_type == "PUT" and exp_price < strike_price:
+		return True
 
 
 
-	return call_strike1, call_strike2,  call_strike3, call_strike4, call_strike5, \
-			call_payout1, call_payout2, call_payout3,call_payout4,call_payout5,\
-			put_strike1, put_strike2, put_strike3,put_strike4,put_strike5,\
-			put_payout1, put_payout2,put_payout3,put_payout4,put_payout5
+
+
+
+def get_closest_prices(timestamp):
+	"""
+	Returns the two instances of the AssetPrice class that are closest
+	to timestamp (under it and over it)
+	"""
+	prices_before_timestamp = AssetPrices.objects.filter(time__lte = timestamp)
+	prices_after_timestamp = AssetPrices.objects.filter(time__gte = timestamp)
+	if len(prices_before_timestamp)>0:
+		closest_to_timestamp_under = prices_before_timestamp[len(prices_before_timestamp)-1]
+	else:
+		c
+	closest_to_timestamp_over = prices_after_timestamp[0]
+
+	return closest_to_timestamp_under, closest_to_timestamp_over
 
 def get_price(timestamp):
 	"""
