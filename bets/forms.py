@@ -1,5 +1,5 @@
 from django import forms
-from bets.models import PlacedBets, UserProfile
+from bets.models import PlacedBets
 from django.contrib.auth.models import User
 
 class UserForm(forms.ModelForm):
@@ -9,9 +9,7 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('username', 'email', 'password')
 
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
+
 
 class BetForm(forms.ModelForm):
 	bet_size = forms.IntegerField()

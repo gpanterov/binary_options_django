@@ -1,7 +1,7 @@
 # Create your views here.a
 
 
-from bets.forms import UserForm, UserProfileForm, BetForm
+from bets.forms import UserForm, BetForm
 from bets.models import PlacedBets, AssetPrices, Deposits, Balances
 from django.http import HttpResponse
 from django.template import RequestContext
