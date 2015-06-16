@@ -213,8 +213,9 @@ def update_results(request):
 		pending = PlacedBets.objects.filter(bet_outcome="Pending")
 		all_results = ""
 		for bet in pending:
-			outcome= tools.get_bet_outcome(bet)
+			outcome, price_at_expiration= tools.get_bet_outcome(bet)
 			bet.bet_outcome = outcome
+			bet.price_at_expiration = price_at_expiration
 			bet.save()
 
 			# Update Funds
@@ -258,8 +259,11 @@ def update(request):
 
 			expiration = str(datetime.datetime.fromtimestamp(bet.option_expire))
 			outcome = bet.bet_outcome
-			tb += "<tr><td>%s</td><td>%s</td><td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td></tr>" % \
-							(ttype,time_of_bet, bet.option_asset, size, payout, strike, expiration, outcome)  
+			price_at_exp = round(bet.price_at_expiration,4)
+			if price_at_exp == 0:
+				price_at_exp = "N/A"
+			tb += "<tr><td>%s</td><td>%s</td><td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td><td>%s</td></tr>" % \
+							(ttype,time_of_bet, bet.option_asset, size, payout, strike, expiration, price_at_exp, outcome)  
 
 
 

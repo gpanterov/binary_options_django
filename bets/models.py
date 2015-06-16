@@ -14,6 +14,8 @@ class PlacedBets(models.Model):
 	bet_payout = models.FloatField(default=0, null=True)
 	option_expire = models.IntegerField(default=0, null=True)
 	bet_outcome = models.CharField(max_length=10, null=True)
+
+	price_at_expiration = models.FloatField(default=0, null=True)
 	def __unicode__(self):
 		return self.user
 

@@ -29,9 +29,9 @@ def get_bet_outcome(bet):
 	"""
 	timestamp = int(time.time())
 	if bet.bet_time > timestamp:
-		return "Error (Bet made after timestamp)"
+		return "Error (Bet made after timestamp)", 0
 	if bet.option_expire > timestamp:
-		return "Pending"
+		return "Pending", 0
 	else:
 		exp_price, latest_available_time = get_closest_prices(bet.option_asset, bet.option_expire)
 		if bet.option_expire - latest_available_time > 10:
@@ -39,9 +39,9 @@ def get_bet_outcome(bet):
 			return "Unknown"
 		res = evaluate_option(bet.bet_type, exp_price, bet.bet_strike)
 		if res:
-			return "Success"
+			return "Success", exp_price
 		else:
-			return "Loss"
+			return "Loss", exp_price
 
 
 def evaluate_option(option_type, exp_price, strike_price):
