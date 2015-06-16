@@ -31,7 +31,7 @@ def get_bet_outcome(bet, timestamp):
 	if bet.option_expire > timestamp:
 		return "Pending"
 	else:
-		exp_price, latest_available_time = get_closest_prices(bet.option_asset, timestamp)
+		exp_price, latest_available_time = get_closest_prices(bet.option_asset, bet.option_expire)
 		res = evaluate_option(bet.bet_type, exp_price, bet.bet_strike)
 		if res:
 			return "Success"
