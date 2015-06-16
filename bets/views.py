@@ -45,7 +45,28 @@ def usdjpy(request):
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USDJPY'} 
     return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
 
+def eurchf(request):
+    if not request.user.is_authenticated():
+        current_user = None
+    else:
+        current_user = request.user
+	
+    context = RequestContext(request)
+    bets_form = BetForm()
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'EURCHF'} 
+    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
 
+
+def usdchf(request):
+    if not request.user.is_authenticated():
+        current_user = None
+    else:
+        current_user = request.user
+	
+    context = RequestContext(request)
+    bets_form = BetForm()
+    context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USDCHF'} 
+    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
 
 def register(request):
 	# Like before, get the request's context.
