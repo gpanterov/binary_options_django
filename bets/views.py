@@ -219,8 +219,8 @@ def user_logout(request):
 	return HttpResponseRedirect('/bets/')
 
 # Must modify the payouts -- should be recalculated every time. Not taken from the html (possible fraud)
-min_bet = 2
-max_bet = 20
+min_bet = 0
+max_bet = 0.3
 def place_bets(request):
 	if not request.user.is_authenticated():
 		return HttpResponse("Please log in")
@@ -232,16 +232,16 @@ def place_bets(request):
 		return  HttpResponse("No Bets 30 seconds prior to expiration")
 	if request.method == 'POST':
 		try:
-			bet_size_int = int(request.POST['bet_size'].strip())
+			bet_size_float = float(request.POST['bet_size'].strip())
 		except:
 			return HttpResponse("Please enter a correct amount")
 
 
 		bet_form = BetForm(request.POST)
 		if bet_form.is_valid():
-			if bet_size_int > max_bet:
+			if bet_size_float > max_bet:
 				return HttpResponse("Bet exceeds maximum bet size. Please enter an amoung lower than %s" %(max_bet))
-			if bet_size_int < min_bet:
+			if bet_size_float < min_bet:
 				return HttpResponse("Bet size is too low. Please enter an amount greater than %s" %(min_bet))
 
 			option_asset = request.POST['asset']
@@ -252,7 +252,7 @@ def place_bets(request):
 
 
 			bal = Balances.objects.get(username = current_user.username)
-			if bet_size_int > bal.balance:
+			if bet_size_float > bal.balance:
 				return HttpResponse("The amount exceeds the available funds in your account")
 
 
@@ -318,7 +318,7 @@ def update(request):
 	if request.method == 'GET':
 		
 		balance = Balances.objects.get(username = request.user.username).balance
-
+		balance = round(balance, 4)
 		# Get the last 10 bets of the trader and return them for a table in the website
 		recent_bets = PlacedBets.objects.filter(user = request.user.username)
 		if len(recent_bets) > 10:
@@ -406,7 +406,7 @@ def deposit_received(request):
 				entry = Deposits()
 				entry.username = current_user
 				entry.time = timestamp
-				entry.size = int(request.GET['value'])
+				entry.size = int(request.GET['value']) / 1e8
 				entry.transaction_hash = transaction_hash
 				entry.input_address = input_address
 				entry.confirmations = confirmations

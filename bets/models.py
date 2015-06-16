@@ -9,7 +9,7 @@ class PlacedBets(models.Model):
 	option_asset = models.CharField(max_length=10,null=True)
 	bet_type = models.CharField(max_length=10,null=True)
 	bet_time = models.IntegerField(default=0, null=True)  # Unix time for the bet
-	bet_size = models.IntegerField(default=0, null=True)  # Size of bet in satoshis
+	bet_size = models.FloatField(default=0, null=True)  # Size of bet in satoshis
 	bet_strike = models.FloatField(default=0, null=True)
 	bet_payout = models.FloatField(default=0, null=True)
 	option_expire = models.IntegerField(default=0, null=True)
@@ -41,14 +41,14 @@ class Deposits(models.Model):
 	username = models.CharField(max_length=30,null=True)
 	confirmations = models.IntegerField(default=0)
 	time = models.IntegerField(default=0)
-	size = models.IntegerField(default=0, null=True)  # Size of bet in satoshis
+	size = models.FloatField(default=0, null=True)  # Size of bet in bitcoins
 	included = models.BooleanField(default=False)  # Has this deposit been included towards the balance
 	def __unicode__(self):
 		return self.username
 
 class Balances(models.Model):
 	username = models.CharField(max_length=30,null=True)
-	balance = models.IntegerField(default=0)
+	balance = models.FloatField(default=0)
 	def __unicode__(self):
 		return self.username
 

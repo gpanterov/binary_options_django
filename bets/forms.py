@@ -12,7 +12,7 @@ class UserForm(forms.ModelForm):
 
 
 class BetForm(forms.ModelForm):
-	bet_size = forms.IntegerField()
+	bet_size = forms.FloatField()
 	class Meta:
 		model = PlacedBets
 		fields=('bet_size',)
