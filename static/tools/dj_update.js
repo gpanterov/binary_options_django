@@ -3,7 +3,7 @@
     $.ajax({
 		type: "GET",
 		url:'/bets/update/',
-		data: {category_id:5,zzz:5 },
+		data: {},
 		datatype: 'json',
 		success: function(data){
 
