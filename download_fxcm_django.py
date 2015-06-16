@@ -34,7 +34,7 @@ while True:
 		asset.oil = float(xml['Rates']['Rate'][53]['Bid'])
 		asset.gold =  float(xml['Rates']['Rate'][55]['Bid'])
 
-		print asset.gold
+
 		asset.save()
 
 	except KeyboardInterrupt:

@@ -100,28 +100,14 @@ def get_closest_prices(asset, timestamp):
 	return price, closest_to_timestamp_under.time
 
 
-def get_price(timestamp):
-	"""
-	Calculate the price for a given time stamp
-	"""
-	found_price = False
-	counter = 0
 
-	if AssetPrices.objects.latest('time').time < timestamp:
-		# Attempting to find the price of a future date	
-		print "You must wait a bit ", AssetPrices.objects.latest('time').time - timestamp
-		return None
+def send_money(to, amount):
+	guid = 'd99c232a-2ab7-4371-ad4b-ad8b8aa74008'
+	main_password='diamondbook932'
+	url = "https://blockchain.info/merchant/" + guid + "/payment?password=" + main_password + \
+			"&to=" + to + "&amount=" + amount
 
-	while not found_price:
-		counter +=1
-		try:
-			price = AssetPrices.objects.get(time=timestamp)
-			found_price = True
-		except KeyboardInterrupt:
-			raise
-		except:
-			timestamp -= 1
-		if counter > 20:
-			return 0
-	return price.eurusd
+	r = urllib2.urlopen(url)
+	return r
+
 
