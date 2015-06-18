@@ -453,9 +453,10 @@ def withdraw(request):
 	amount = ""
 	form_valid = True
 	context = RequestContext(request)
-	balance = Balances.objects.get(username = request.user.username).balance
+
 	current_user = request.user.username
 	bal = Balances.objects.get(username = str(current_user))
+	balance = bal.balance
 
 	if request.method == "POST":
 		to_address = request.POST['bitcoin_address']
