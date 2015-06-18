@@ -32,7 +32,7 @@ def index(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'EURUSD'} 
-    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_custom.html', context_dict, context)
 
 def usdjpy(request):
     if not request.user.is_authenticated():

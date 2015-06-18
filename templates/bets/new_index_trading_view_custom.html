@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cool Binary Options</title>
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+    <!-- Morris -->
+    <link href="{% static 'css/plugins/morris/morris-0.4.3.min.css' %}" rel="stylesheet">
+
+    <link href="{% static 'css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="wrapper">
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element"> <span>
+                           <!-- <img alt="image" class="img-circle" src="{% static 'img/profile_small.jpg' %}" /> -->
+                             </span>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Cool Binary Options</strong>
+                             </span> <span class="text-muted text-xs block">Logo <b class="caret"></b></span> </span> </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a href="profile.html">Profile</a></li>
+                            <li><a href="contacts.html">Contacts</a></li>
+                            <li><a href="mailbox.html">Mailbox</a></li>
+                            <li class="divider"></li>
+                            <li><a href="login.html">Logout</a></li>
+                        </ul>
+                    </div>
+                    <div class="logo-element">
+                        GT
+                    </div>
+                </li>
+                <li class="active">
+                    <a href="index.html"><i class="fa fa-dollar"></i> <span class="nav-label">Currencies</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li ><a href="/bets">EUR/USD</a></li>
+                        <li ><a href="/bets/usdjpy">USD/JPY</a></li>
+                        <li ><a href="/bets/eurchf">EUR/CHF</a></li>
+                        <li><a href="/bets/usdchf">USD/CHF</a></li>
+                    </ul>
+                </li>
+              
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label">Commodities</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse in">
+                        <li><a href="/bets/oil">Oil</a></li>
+                        <li><a href="/bets/gold">Gold</a></li>
+                        
+                    </ul>
+                </li>
+                <li>
+                    <a href=""><i class="fa fa-envelope"></i> <span class="nav-label">Indices </span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse in">
+                        <li><a href="/bets/spx500">SP 500</a></li>
+                        <li><a href="/bets/uk100">FTSE 100</a></li>
+                        <li><a href="/bets/jpn225">Nikkei</a></li>
+
+                    </ul>
+                </li>
+               
+               
+
+              
+              
+              
+        </div>
+    </nav>
+
+        <div id="page-wrapper" class="gray-bg">
+        <div class="row border-bottom">
+        <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                   </div>
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+					{% if user %}
+                    <span class="m-r-sm text-muted welcome-message">Welcome {{ user }} (Balance: <i class="fa fa-bitcoin"> </i> <small id="balance">NA</small>) </span>
+					{% else %}
+
+                    <span class="m-r-sm text-muted welcome-message"></span>
+					{% endif %}
+                </li>
+                <li>
+					{% if user %}
+                    <a  href="/bets/deposit">
+                        <i class="fa fa-bell"></i> Deposit
+                    </a>
+					{% else %}
+					{% endif %}
+
+                </li>
+
+                <li>
+					{% if user %}
+                    <a  href="/bets/withdraw">
+                        <i class="fa fa-bell"></i> Withdraw
+                    </a>
+					{% else %}
+					{% endif %}
+
+                </li>
+
+                <li>
+					{% if user %}
+                    <a href="/bets/logout/">
+                        <i class="fa fa-sign-out"></i> Log out
+                    </a>
+					{% else %}
+                    <a href="/bets/login/">
+                        <i class="fa fa-sign-out"></i> Log in
+                    </a>
+					{% endif %}
+                </li>
+                <li>
+                    <a class="right-sidebar-toggle" href="/bets/register/">
+                        <i class="fa fa-tasks"></i> Register
+                    </a>
+                </li>
+            </ul>
+
+        </nav>
+        </div>
+
+
+        <div class="wrapper wrapper-content">
+      <div class="row" >
+            <div class="col-lg-8" >
+				<div class="ibox float-e-margins">
+					<div class="ibox-content" style="height: 600px;">
+					<!-- TradingView Widget BEGIN -->
+					<script type="text/javascript" src="https://d33t3vvu2t2yu5.cloudfront.net/tv.js"></script>
+					<script type="text/javascript">
+					new TradingView.widget({
+					  "autosize": true,
+					  "symbol": "FX:{{ asset }}",
+					  "interval": "1",
+					  "timezone": "exchange",
+					  "theme": "White",
+					  "style": "3",
+					  "toolbar_bg": "#f1f3f6",
+					  "hide_top_toolbar": true,
+					  "save_image": false,
+					  "hideideas": true
+					});
+					</script>
+					<!-- TradingView Widget END -->	
+					</div>
+				</div>
+			</div>
+                     <div class="col-lg-4">
+
+
+			
+
+ 
+	                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+							<div class="row">
+								<div class="col-md-10">
+                           			<h3 id="title"><strong>Binary Option <small>({{asset}})</small><strong></h3>
+								</div>
+								<div class="col-md-2">
+						
+                                <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#myModal">
+                                    <i class="fa fa-question"> </i>
+                                </button>
+								</div>
+							</div>
+                       </div> 
+                        <div class="ibox-content">
+                            <div class="row">
+
+
+
+                                <div class="col-sm-6 ">
+									<form id="betsize" name='betsize' method='post' action='/bets/place_bets/' role="form">
+											{% csrf_token %}
+											<input id="bet_size" type="hidden" name="bet_size" value="" />
+											<input id="bet_strike" type="hidden" name="bet_strike" value="" />
+											<input id="bet_type" type="hidden" name="bet_type" value="" />
+											<input id="bet_payout" type="hidden" name="bet_payout" value="" />
+											<input id="asset" type="hidden" name="asset" value="{{ asset }}" />
+
+
+                                    <div class="form-group">
+										<label>
+                            				Enter Amount (<i class = "fa fa-bitcoin"> </i>):
+										</label> 
+									<input type="text" id="bet_amount" placeholder="" class="form-control"></div>
+
+
+									</form>
+                                </div>
+								<div class="col-sm-6 m-b-xs">
+									<div class="form-group"><label>Remaining Time:</label> <h4 id='remaining_time' align="center"></h4></div>
+                               	</div>
+                            </div>
+
+					<!-- Test row -->
+
+						<div class="row">
+                               <div class="col-sm-6 m-b-xs">
+                                  <div class="ibox-content text-center"> 
+                                	<button id="call_place" class="btn btn-primary dim btn-large-dim" title="Price will close higher than current" type="button">
+										<div class="row"><i class="fa fa-arrow-up"></i></div>
+										<div class="row"> <h4> Call</h4> </div>
+									</button>
+				
+									</div>
+                                </div>
+                                <div class="col-sm-6">
+									
+                                  <div class="ibox-content text-center"> 
+                                	<button id="put_place" class="btn btn-danger dim btn-large-dim" title="Price will close lower than current" type="button">
+										<div class="row"><i class="fa fa-arrow-down"></i></div>
+										<div class="row"> <h5> Put </h5> </div>
+									</button>
+									</div>
+                                </div>
+                            </div>
+
+					<div class = "row"> 
+								<div class="col-lg-12">
+                                <small class="stats-label">Option Payout (+91%):</small>
+                                <h5><i class="fa fa-bitcoin"></i>  <strong id="payout_currency"></strong></h5>
+                            </div>
+					</div>
+
+					<!-- End Test row -->
+
+
+
+
+                            
+                        </div>
+                    </div> <!-- End of ifloat-emargins tag -->
+               <div class="ibox float-e-margins">
+
+
+			<div class="ibox-title">
+                        <h5>Custom Binary Options</h5>
+          
+            </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-6 b-r">
+                                <form role="form">
+                                    <div class="form-group"><label><small>Option Type</small></label> 
+										<select class="form-control m-b" name="option_type">
+                                        <option>Call</option>
+                                        <option>Put</option>
+                                    	</select>
+
+									</div>
+                                    <div class="form-group">
+											<label>
+												<small>Expiration</small>
+											</label>
+									 <input type="text" placeholder="minutes" class="form-control">
+									</div>
+
+
+                                    <div class="form-group">
+											<label>
+												<small>Amount:</small>
+											</label>
+									 <input type="text" placeholder="" class="form-control">
+									</div>
+
+
+                                </form>
+
+                            </div>
+                            <div class="col-sm-6">
+					
+					<div class="row" align="center">
+                                <large class="stats-label">Option Payout:</large>
+                                <h5 align="center"><i class="fa fa-bitcoin"></i> N/A  <strong id="custom_payout"></strong></h5>
+					</div>
+
+					<div class="row" align="center">
+
+					<button id="custom_request_quote" class="btn btn-primary" title="Purchase Option" type="button">Refresh Quote</button>
+					</div>
+
+                            </div>
+
+                        </div>
+                    </div>
+              </div>
+
+
+
+
+
+
+
+                </div>  <!-- ENd of column tag -->
+
+
+
+
+	</div>
+        <div class="row">
+
+        <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+        <div class="ibox-title">
+			<div class="row">
+				<div class="col-lg-11">
+            <h3>Your Recent Transactions </h3>
+				</div>
+				<div class="col-lg-1">
+					<button id="refresh_transactions" class="btn btn-info btn-circle" title="Refresh" type="button"><i class="fa fa-refresh"></i></button>
+					
+				</div>
+			</div>
+       </div>
+        <div class="ibox-content">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+
+                        <th>Type</th>
+						<th>Time</th>
+						<th>Asset</th>
+                        <th>Size </th>
+                        <th>Payout </th>
+                        <th>Strike </th>
+                        <th>Expiration </th>
+                        <th>Price @ Expiration </th>
+                        <th>Outcome </th>
+                    </tr>
+                    </thead>
+                    <tbody id="recent_bets">
+					</tbody>
+               </table>
+            </div>
+
+        </div>
+        </div>
+        </div>
+
+        </div>
+
+
+        </div>
+
+
+        <div class="footer">
+            <div class="pull-right">
+                10GB of <strong>250GB</strong> Free.
+            </div>
+            <div>
+                <strong>Copyright</strong> Example Company &copy; 2014-2015
+            </div>
+        </div>
+
+        </div>
+          </div>
+
+
+
+
+
+                            <div class="modal inmodal fade" id="myModal" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                            <h4 class="modal-title">What are binary options?</h4>
+                                            <small class="font-bold"></small>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Binary options</strong> can be tought of as a "bet" on 
+												whether the price of a financial asset will end up above or below a certain threshold. 
+												The threshold, which the price needs to cross is called a <strong> strike price </strong>. 
+												The payout of a binary options is always the same multiple
+												regardless of by how much or how little the strike price was crossed. </p>
+                                            <p><strong>Call option</strong> is successful if the price of the asset is 
+												<strong>above</strong> the strike 
+												when the option expires. On the other hand, a <strong>Put option</strong> is successful 
+												if the price is <strong>below</strong> the strike price at expiration.</p>
+ 											<p>With the <strong>simple binary options</strong>, the strike price is 
+												the current market price at the time the option was purchased and the 
+												payout is always the same - 91% on top of the initial amount. 
+												Please see <strong>Custom binary options</strong> for setting an arbitrary strike price and 
+												getting different payouts. </p>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+    <!-- Mainly scripts -->
+
+    <script src="{% static 'js/jquery-2.1.1.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static 'js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+    <!-- Flot -->
+    <script src="{% static 'js/plugins/flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.tooltip.min.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.spline.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.resize.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.pie.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/jquery.flot.symbol.js' %}"></script>
+    <script src="{% static 'js/plugins/flot/curvedLines.js' %}"></script>
+
+	<!-- Additional Flot Scripts From the Flot Graphs Template -->
+    <script src="{% static 'js/plugins/flot/jquery.flot.time.js' %}"></script>
+
+
+    <!-- Peity -->
+    <script src="{% static 'js/plugins/peity/jquery.peity.min.js' %}"></script>
+    <script src="{% static 'js/demo/peity-demo.js' %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static 'js/inspinia.js' %}"></script>
+    <script src="{% static 'js/plugins/pace/pace.min.js' %}"></script>
+
+    <!-- jQuery UI -->
+    <script src="{% static 'js/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+
+    <!-- Jvectormap -->
+    <script src="{% static 'js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js' %}"></script>
+    <script src="{% static 'js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js' %}"></script>
+
+
+    <!-- ChartJS-->
+    <script src="{% static 'js/plugins/chartJs/Chart.min.js' %}"></script>
+
+ 
+
+<!-- Tools scripts -->
+
+<script src="{% static 'tools/dj_update.js' %}"></script>
+
+
+<script>
+	$('document').ready(function(){
+	update();})
+</script>
+
+
+<script src="{% static 'tools/place_bets.js' %}"></script>
+<script src="{% static 'tools/countdown_timer.js' %}"></script>
+<script>
+$('document').ready(function(){
+$('#refresh_transactions').click(function(){
+update();
+});
+});
+</script>
+
+<script>
+$('document').ready(function(){
+$('#bet_amount').keyup(function(){
+var bet_amount = $('#bet_amount').val();
+var cur_payout = Math.round(1.91 * bet_amount * 10000)/10000;
+$('#payout_currency').html(cur_payout);
+});
+});
+</script>
+
+</body>
+</html>
