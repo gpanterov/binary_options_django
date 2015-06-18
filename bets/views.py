@@ -479,6 +479,7 @@ def withdraw(request):
 								'amount':amount, 'form_valid':form_valid},	context)
 		amount = str(int(amount_float * 1e8))
 		bal.balance -= float(amount) / 1e8
+		balance = bal.balance
 		bal.save()
 
 		#r=tools.send_money(to_address, amount)
