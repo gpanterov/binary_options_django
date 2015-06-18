@@ -176,7 +176,7 @@
 								</div>
 								<div class="col-md-2">
 						
-                                <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#myModal6">
+                                <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#myModal">
                                     <i class="fa fa-question"> </i>
                                 </button>
 								</div>
@@ -236,7 +236,7 @@
 
 					<div class = "row"> 
 								<div class="col-lg-12">
-                                <small class="stats-label">Option Payout (+90%):</small>
+                                <small class="stats-label">Option Payout (+91%):</small>
                                 <h5><i class="fa fa-bitcoin"></i>  <strong id="payout_currency"></strong></h5>
                             </div>
 					</div>
@@ -314,24 +314,45 @@
         </div>
           </div>
 
-<div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
-                                <div class="modal-dialog modal-sm">
+
+
+
+
+                            <div class="modal inmodal fade" id="myModal" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                                            <h4 class="modal-title">How to trade ?</h4>
+                                            <h4 class="modal-title">What are binary options?</h4>
+                                            <small class="font-bold"></small>
                                         </div>
                                         <div class="modal-body">
-                                            <p><strong>aasaa</strong> text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown
-                                                printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-                                                remaining essentially unchanged.</p>
+                                            <p><strong>Binary options</strong> can be tought of as a "bet" on 
+												whether the price of a financial asset will end up above or below a certain threshold. 
+												The threshold, which the price needs to cross is called a <strong> strike price </strong>. 
+												The payout of a binary options is always the same multiple
+												regardless of by how much or how little the strike price was crossed. </p>
+                                            <p><strong>Call option</strong> is successful if the price of the asset is 
+												<strong>above</strong> the strike 
+												when the option expires. On the other hand, a <strong>Put option</strong> is successful 
+												if the price is <strong>below</strong> the strike price at expiration.</p>
+ 											<p>With the <strong>simple binary options</strong>, the strike price is 
+												the current market price at the time the option was purchased and the 
+												payout is always the same - 91% on top of the initial amount. 
+												Please see <strong>Custom binary options</strong> for setting an arbitrary strike price and 
+												getting different payouts. </p>
                                         </div>
+
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+
+
+
 
     <!-- Mainly scripts -->
 
@@ -399,7 +420,7 @@ update();
 $('document').ready(function(){
 $('#bet_amount').keyup(function(){
 var bet_amount = $('#bet_amount').val();
-var cur_payout = 1.9 * bet_amount;
+var cur_payout = Math.round(1.91 * bet_amount * 10000)/10000;
 $('#payout_currency').html(cur_payout);
 });
 });

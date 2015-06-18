@@ -451,20 +451,39 @@ def withdraw(request):
 	withdrawn = False
 	to_address = ""
 	amount = ""
+	form_valid = True
 	context = RequestContext(request)
 	balance = Balances.objects.get(username = request.user.username).balance
-
+	current_user = request.user.username
+	bal = Balances.objects.get(username = str(current_user))
 
 	if request.method == "POST":
 		to_address = request.POST['bitcoin_address']
 		amount = request.POST['withdraw_amount']
-		amount = str(int(float(amount) * 1e8))
+		try:
+			amount_float = float(amount)
+			if amount_float > bal.balance:
+				form_valid = False
+				withdrawn=False
+
+		except:
+			form_valid = False
+			withdrawn=False
+			print "Invalid withdrawal amount"
+
+		if not form_valid:
+			print "No money was sent. Exiting. Form was invalid"
+			return render_to_response('bets/new_withdrawal.html',
+				{'withdrawn': withdrawn, 'balance':balance, 'to_address':to_address, 
+								'amount':amount, 'form_valid':form_valid},	context)
+		amount = str(int(amount_float * 1e8))
+		bal.balance -= float(amount) / 1e8
+		bal.save()
+
 		#r=tools.send_money(to_address, amount)
-		print to_address, type(to_address)
-		print amount, type(amount)
-		print "Sent money ", r.read()
+		#print "Sent %s bitcoins to %s. Output from blockchain: %s" %(amount, to_address , r.read())
 		withdrawn=True
 
 	return render_to_response('bets/new_withdrawal.html',
-	{'withdrawn': withdrawn, 'balance':balance, 'to_address':to_address, 'amount':amount},	context)
+	{'withdrawn': withdrawn, 'balance':balance, 'to_address':to_address, 'amount':amount, 'form_valid':form_valid},	context)
 

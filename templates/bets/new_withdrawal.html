@@ -27,7 +27,13 @@
                 <h1 class="logo-name"><i class="fa fa-bitcoin"></i></h1>
 
             </div>
-		{% if not withdrawn %}
+
+		{% if not form_valid %}
+           <h3>There was a problem with the withdrawal form</h3>
+			<p>Please enter a proper bitcoin amount that does not exceed your balance and provide a valid bitcoin address. </p>
+		{% else %}
+
+			{% if not withdrawn %}
             <h3>Withdrawing your profits is hassle-free.</h3>
 			<p>You can withdraw the full balance from your account ({{balance}}) or a fraction of it. </p>
         <form id="login_form" method="post" action="/bets/withdraw/" role="form">
@@ -38,16 +44,20 @@
 
                                     <div class="form-group">
 										<label>Enter amount you wish to withdraw</label> 
-									<input type="text" name="withdraw_amount" placeholder="{{balance}}" class="form-control"></div>
+									<input type="text" name="withdraw_amount" placeholder="{{balance}}" class="form-control" value="{{balance}}"></div>
 
 
 
             <input type="submit" value="submit" />
         </form>
 
-		{% else %}
+			{% else %}
            <h3>Thank you for trading with us! We hope to see you soon</h3>
-			<p>We sent <strong>{{amount}}</strong> to the following bitcoin address <h5>{{to_address}}</h5> </p>
+			<p>We sent <strong>{{amount}}</strong> (satoshis) to the following bitcoin address <h5>{{to_address}}</h5> </p>
+
+			{% endif %}
+
+
 
 		{% endif %}
             <p class="m-t"> <small> Gosu Trader &copy; 2015</small> </p>
