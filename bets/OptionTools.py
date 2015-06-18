@@ -104,8 +104,8 @@ def get_closest_prices(asset, timestamp):
 
 def send_money(to, amount):
 	guid = 'd99c232a-2ab7-4371-ad4b-ad8b8aa74008'
-	main_password='Never_the_s4am3_aga1n'
-	url = "https://blockchain.info/merchant/" + guid + "/payment?password=" + main_password + \
+	main_parola='Never_the_s4am3_aga1n'
+	url = "https://blockchain.info/merchant/" + guid + "/payment?password=" + main_parola + \
 			"&to=" + to + "&amount=" + amount
 
 	r = urllib2.urlopen(url)
