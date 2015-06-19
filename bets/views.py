@@ -415,9 +415,9 @@ def update_quote_custom(request):
 
 	# Calculate Option Payout
 #	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
-#	vol = tools.calculate_asset_vol(option_asset)
+	vol = tools.calculate_asset_vol(option_asset)
 	latest_price = tools.scrape_price_now(option_asset)
-	vol = 2.51e-5
+#	vol = 2.51e-5
 	payout = tools.calculate_option_payout(latest_price, strike, expiration, vol, option_type)
 
 
@@ -455,9 +455,9 @@ def place_custom_bet(request):
 
 	# Calculate Option Payout
 #	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
-#	vol = tools.calculate_asset_vol(option_asset)
+	vol = tools.calculate_asset_vol(option_asset)
 	latest_price = tools.scrape_price_now(option_asset)
-	vol = 2.51e-5
+#	vol = 2.51e-5
 
 	remaining_time = expiration - timestamp
 	payout = tools.calculate_option_payout(latest_price, strike, remaining_time, vol, option_type)
