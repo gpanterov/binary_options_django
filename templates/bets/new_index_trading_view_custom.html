@@ -172,7 +172,7 @@
                         <div class="ibox-title">
 							<div class="row">
 								<div class="col-md-10">
-                           			<h3 id="title"><strong>Binary Option <small>({{asset}})</small><strong></h3>
+                           			<h3 id="title"><strong>Simple Binary Options <small>({{asset}})</small><strong></h3>
 								</div>
 								<div class="col-md-2">
 						
@@ -251,12 +251,21 @@
                             
                         </div>
                     </div> <!-- End of ifloat-emargins tag -->
-               <div class="ibox float-e-margins">
+               <div id="custom_binary_options" class="ibox float-e-margins">
 
 
 			<div class="ibox-title">
+			<div class="row">
+         		<div class="col-md-10">
                         <h3 id="title_custom"><strong>Custom Binary Options</strong> <small>({{asset}})</small></h3>
-          
+				</div>
+         		<div class="col-md-2">
+						
+                                <button type="button" class="btn btn-info btn-circle" data-toggle="modal" data-target="#myModal">
+                                    <i class="fa fa-question"> </i>
+                                </button>
+								</div> 
+				</div>
             </div>
                     <div class="ibox-content">
                         <div class="row">
@@ -355,7 +364,20 @@
 
               </div>  <!-- Closing ibox-float margin tag -->
 
+			<div class="ibox-title text-center">
+	<a  class="btn btn-info btn-rounded btn-outline" href="#" id="switch_to_custom" style="font-size:17px;">
+				<i class="fa fa-exchange"> </i> Switch</a>
+					<div class="row" align="center" id="custom_description">
+					<small > Go to custom options</small>
+					</div>
+					<a class="btn btn-info btn-rounded btn-outline" href="#" id="switch_to_simple" style="font-size:17px;">
+					<i class="fa fa-exchange"> </i> Switch</a>
+					<div class="row" align="center" id="simple_description">
+					<small > Go to simple options</small>
+					</div>
 
+
+			</div>
 
 
 
@@ -541,7 +563,32 @@ $('#payout_currency').html(cur_payout);
 </script>
 <script>
 $('document').ready(function(){
+$('#custom_binary_options').hide();
+$('#switch_to_simple').hide();
+$('#simple_description').hide();
+$('#switch_to_custom').click(function(){
 $('#simple_binary_options').hide();
+$('#custom_binary_options').show();
+
+$('#simple_description').show();
+$('#custom_description').hide();
+
+$('#switch_to_custom').hide();
+$('#switch_to_simple').show();
+
+});
+
+
+$('#switch_to_simple').click(function(){
+$('#simple_binary_options').show();
+$('#custom_binary_options').hide();
+$('#switch_to_custom').show();
+$('#switch_to_simple').hide();
+
+$('#simple_description').hide();
+$('#custom_description').show();
+
+});
 });
 
 </script>

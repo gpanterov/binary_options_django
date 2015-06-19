@@ -52,7 +52,7 @@ def usdjpy(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USDJPY'} 
-    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_custom.html', context_dict, context)
 
 
 
@@ -65,7 +65,7 @@ def eurchf(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'EURCHF'} 
-    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_custom.html', context_dict, context)
 
 
 
@@ -79,7 +79,7 @@ def usdchf(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USDCHF'} 
-    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_custom.html', context_dict, context)
 
 
 
@@ -93,7 +93,7 @@ def gold(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'XAUUSD'} 
-    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_custom.html', context_dict, context)
 
 
 
@@ -106,7 +106,7 @@ def oil(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USOil'} 
-    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_custom.html', context_dict, context)
 
 
 
@@ -120,7 +120,7 @@ def spx500(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'SPX500'} 
-    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_custom.html', context_dict, context)
 
 
 
@@ -134,7 +134,7 @@ def uk100(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'UK100'} 
-    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_custom.html', context_dict, context)
 
 
 
@@ -148,7 +148,7 @@ def jpn225(request):
     context = RequestContext(request)
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'JPN225'} 
-    return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+    return render_to_response('bets/new_index_trading_view_custom.html', context_dict, context)
 
 
 
