@@ -23,6 +23,63 @@ def cash_or_nothing(S, K, T, vol, option_type):
 		print "Incorrectly specifed option type. Must be either *call* or *put*"
 		return None
 
+def calculate_asset_vol(asset):
+	Nshort = 50
+	min_vol = 1e-6
+
+
+	all_asset_prices = AssetPrices.objects.all()
+	if asset == "EURUSD":
+		price = [i.eurusd for i in all_asset_prices]
+	elif asset == "USDJPY":
+		price = [i.usdjpy for i in all_asset_prices]
+
+	elif asset == "EURCHF":
+		price = [i.eurchf for i in all_asset_prices]
+	elif asset == "USDCHF":
+		price = [i.usdchf for i in all_asset_prices]
+	elif asset == "XAUUSD":
+		price = [i.gold for i in all_asset_prices]
+	elif asset == "USOil":
+		price = [i.oil for i in all_asset_prices]
+	elif asset == "SPX500":
+		price = [i.spx500 for i in all_asset_prices]
+	elif asset == "JPN225":
+		price = [i.nikkei for i in all_asset_prices]
+	elif asset == "UK100":
+		price = [i.ftse100 for i in all_asset_prices]
+	else:
+		print "Error (Unknown asset)"
+		raise
+	if len(price) > 100:
+		price = np.log(price)
+		price_delta = price[1:] - price[:-1]
+
+		longterm_vol = np.std(price_delta)
+		shorterm_vol = np.std(price_delta[-Nshort:])
+		vol = max(longterm_vol, shorterm_vol)
+		vol = max(min_vol, vol)
+	else:
+		vol = min_vol * 10
+		print "Price History too short. Volatility set to minimum volatility %s" %(vol)
+	
+	return vol
+
+
+
+def calculate_option_payout(latest_price, strike, expiration, volatility, option_type):
+	prob = cash_or_nothing(latest_price, strike, expiration, volatility, option_type)
+
+	payout = 1/prob
+	print "True payout is ", payout
+	if payout <2.1 and payout>1.9:
+		payout_profit_adj = payout - 0.06 * payout
+		return round(payout_profit_adj,3)
+	payout_profit_adj = payout - 0.15 * payout
+	payout_profit_adj = min(payout_profit_adj, 10.)
+	payout_profit_adj = max(payout_profit_adj, 1.)
+	return round(payout_profit_adj, 3)
+
 
 def get_bet_outcome(bet):
 	"""
@@ -34,10 +91,13 @@ def get_bet_outcome(bet):
 	if bet.option_expire > timestamp:
 		return "Pending", 0
 	else:
-		exp_price, latest_available_time = get_closest_prices(bet.option_asset, bet.option_expire)
+		try:
+			exp_price, latest_available_time = get_closest_prices(bet.option_asset, bet.option_expire)
+		except:
+			return "Pending", 0
 		if bet.option_expire - latest_available_time > 10:
 			print "The latest available price is at least 10 seconds before the option expiration time"
-			return "Unknown"
+			return "Unknown", 0
 		res = evaluate_option(bet.bet_type, exp_price, bet.bet_strike)
 		if res:
 			return "Success", exp_price

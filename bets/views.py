@@ -21,6 +21,13 @@ import random
 import json
 import urllib2, urllib
 
+##############
+# Parameters #
+##############
+
+min_bet = 0
+max_bet = 0.3
+
 
 def index(request):
 
@@ -34,6 +41,8 @@ def index(request):
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'EURUSD'} 
     return render_to_response('bets/new_index_trading_view_custom.html', context_dict, context)
 
+
+
 def usdjpy(request):
     if not request.user.is_authenticated():
         current_user = None
@@ -44,6 +53,8 @@ def usdjpy(request):
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USDJPY'} 
     return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+
+
 
 def eurchf(request):
     if not request.user.is_authenticated():
@@ -57,6 +68,8 @@ def eurchf(request):
     return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
 
 
+
+
 def usdchf(request):
     if not request.user.is_authenticated():
         current_user = None
@@ -67,6 +80,9 @@ def usdchf(request):
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USDCHF'} 
     return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+
+
+
 
 def gold(request):
     if not request.user.is_authenticated():
@@ -79,6 +95,8 @@ def gold(request):
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'XAUUSD'} 
     return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
 
+
+
 def oil(request):
     if not request.user.is_authenticated():
         current_user = None
@@ -89,6 +107,9 @@ def oil(request):
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'USOil'} 
     return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+
+
+
 
 def spx500(request):
     if not request.user.is_authenticated():
@@ -101,6 +122,9 @@ def spx500(request):
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'SPX500'} 
     return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
 
+
+
+
 def uk100(request):
     if not request.user.is_authenticated():
         current_user = None
@@ -112,6 +136,9 @@ def uk100(request):
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'UK100'} 
     return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
 
+
+
+
 def jpn225(request):
     if not request.user.is_authenticated():
         current_user = None
@@ -122,6 +149,19 @@ def jpn225(request):
     bets_form = BetForm()
     context_dict = {'bets_form': bets_form, 'user':current_user, 'asset':'JPN225'} 
     return render_to_response('bets/new_index_trading_view_simple.html', context_dict, context)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -173,6 +213,19 @@ def register(request):
 	{'registered': registered},	context)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 def user_login(request):
     # Like before, obtain the context for the user's request.
     context = RequestContext(request)
@@ -213,14 +266,30 @@ def user_login(request):
         # blank dictionary object...
         return render_to_response('bets/new_login.html', {}, context)
 
+
+
+
+
+
+
+
+
 @login_required
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/bets/')
 
+
+
+
+
+
+
+
+
+
+
 # Must modify the payouts -- should be recalculated every time. Not taken from the html (possible fraud)
-min_bet = 0
-max_bet = 0.3
 def place_bets(request):
 	if not request.user.is_authenticated():
 		return HttpResponse("Please log in")
@@ -240,7 +309,7 @@ def place_bets(request):
 		bet_form = BetForm(request.POST)
 		if bet_form.is_valid():
 			if bet_size_float > max_bet:
-				return HttpResponse("Bet exceeds maximum bet size. Please enter an amoung lower than %s" %(max_bet))
+				return HttpResponse("Bet exceeds maximum bet size. Please enter an amount lower than %s" %(max_bet))
 			if bet_size_float < min_bet:
 				return HttpResponse("Bet size is too low. Please enter an amount greater than %s" %(min_bet))
 
@@ -286,6 +355,15 @@ def place_bets(request):
 
 
 
+
+
+
+
+
+
+
+
+
 def update_results(request):
 	if request.method == "GET":
 		pending = PlacedBets.objects.filter(bet_outcome="Pending")
@@ -307,6 +385,127 @@ def update_results(request):
 		
 	return HttpResponse(all_results)
 
+
+
+
+
+
+
+
+
+
+
+
+def update_quote_custom(request):
+
+	timestamp = time.time()
+	current_user = request.user
+	try:
+		option_asset = request.GET['asset']
+
+		option_type = request.GET['option_type_c'].lower()
+		expiration = float(request.GET['expiration_c']) * 60
+		strike = float(request.GET['strike_price_c'])
+		amount = float(request.GET['amount_c'])
+	except:
+		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
+
+	# Calculate Option Payout
+	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
+	vol = tools.calculate_asset_vol(option_asset)
+	payout = tools.calculate_option_payout(latest_price, strike, expiration, vol, option_type)
+	print "Quote Requested"
+	print "Latest price: %s, Strike: %s, Volatility: %s, Expiration (seconds): %s, Payout: %s" \
+													% (latest_price, strike, vol, expiration, payout)
+	bal = Balances.objects.get(username = current_user.username)
+	if request.method=="GET":
+		payout_pct = int(round((payout - 1) * 100, 0))
+		payout_amount = round((1 + payout_pct/100.) * amount, 4)
+		res = json.dumps({"payout":payout_pct, "payout_amount":payout_amount})
+		return HttpResponse(res, mimetype='application/json')
+
+
+
+
+
+
+
+
+
+def place_custom_bet(request):
+	timestamp = time.time()
+	current_user = request.user
+	try:
+		option_asset = request.POST['asset']
+
+		option_type = request.POST['option_type_c'].lower()
+		expiration = timestamp + float(request.POST['expiration_c']) * 60
+		strike = float(request.POST['strike_price_c'])
+		amount = float(request.POST['amount_c'])
+	except:
+		
+		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
+
+	# Calculate Option Payout
+	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
+	vol = tools.calculate_asset_vol(option_asset)
+	remaining_time = expiration - timestamp
+	payout = tools.calculate_option_payout(latest_price, strike, remaining_time, vol, option_type)
+	bal = Balances.objects.get(username = current_user.username)
+
+	if request.method=="POST":
+		if expiration - timestamp < 30:
+			return  HttpResponse("Select time to expiration longer than 30 seconds. No option purchased.")
+
+		if amount < min_bet or amount >max_bet:
+			return HttpResponse("Please select amount which is between %s and %s" %(min_bet, max_bet))
+		if amount > bal.balance:
+				return HttpResponse("The amount exceeds the available funds in your account")
+
+
+		shown_payout = request.POST['shown_payout']
+		payout_pct = int(round((payout - 1) * 100, 0))
+
+
+		# If there was a big market move, prompt the user to update again. Otherwise give him the payout that was shown to him.
+		print "The current price is %s || The payout seen by the user is: %s ||| The current payout is: %s " % (latest_price, shown_payout, payout_pct)
+		if (int(shown_payout) - int(payout_pct)) / float(shown_payout) > 0.025:
+			return HttpResponse("The market has moved! The quoted price is no longer accurate. Please update the quote and purchase again")
+		else:
+			payout_pct = int(shown_payout)
+
+		payout_rounded = (1 + payout_pct/100.)
+
+
+
+		new_bet = PlacedBets()
+		new_bet.bet_time = timestamp		
+		new_bet.option_asset = option_asset
+		new_bet.bet_size = amount
+		new_bet.bet_strike = strike
+
+		new_bet.bet_type=option_type.upper()
+		new_bet.user = current_user.username
+
+		new_bet.bet_payout = payout_rounded
+
+		new_bet.option_expire =  expiration
+
+		new_bet.bet_outcome = "Pending"
+		new_bet.save()
+		option_time = datetime.datetime.fromtimestamp(new_bet.bet_time)
+
+		# Update the balance of the trader
+		bal.balance = bal.balance - new_bet.bet_size
+		bal.save()
+		print "Placing a Custom Bet"
+		print "Latest price: %s, Strike: %s, Volatility: %s, Expiration (seconds): %s, Payout: %s" \
+													% (latest_price, strike, vol, remaining_time, payout_rounded)
+
+
+		option_time = datetime.datetime.fromtimestamp(new_bet.bet_time)
+		return  HttpResponse("Succesfully purchased the following option: \nType: %s \nStrike: %s \nPayout: %s \nTime: %s" \
+								%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout, str(option_time)))
 
 
 def update(request):

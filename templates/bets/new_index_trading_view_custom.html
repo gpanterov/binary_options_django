@@ -168,7 +168,7 @@
 			
 
  
-	                    <div class="ibox float-e-margins">
+	                    <div id="simple_binary_options" class="ibox float-e-margins">
                         <div class="ibox-title">
 							<div class="row">
 								<div class="col-md-10">
@@ -235,10 +235,12 @@
                             </div>
 
 					<div class = "row"> 
+							<div class="ibox-content text-left">
 								<div class="col-lg-12">
                                 <small class="stats-label">Option Payout (+91%):</small>
                                 <h5><i class="fa fa-bitcoin"></i>  <strong id="payout_currency"></strong></h5>
-                            </div>
+                            	</div>
+							</div>
 					</div>
 
 					<!-- End Test row -->
@@ -253,15 +255,21 @@
 
 
 			<div class="ibox-title">
-                        <h5>Custom Binary Options</h5>
+                        <h3 id="title_custom"><strong>Custom Binary Options</strong> <small>({{asset}})</small></h3>
           
             </div>
                     <div class="ibox-content">
                         <div class="row">
                             <div class="col-sm-6 b-r">
-                                <form role="form">
+					<form id="custom_binary_form" name='custom_binary_form' method='post' action='/bets/place_custom_bet/' role="form">
+
+											{% csrf_token %}
+
+										<input id="asset" type="hidden" name="asset" value="{{ asset }}" />
+
+										<input id="shown_payout" type="hidden" name="shown_payout" value="" />
                                     <div class="form-group"><label><small>Option Type</small></label> 
-										<select class="form-control m-b" name="option_type">
+										<select class="form-control m-b" name="option_type_c" id="option_type_c">
                                         <option>Call</option>
                                         <option>Put</option>
                                     	</select>
@@ -269,9 +277,23 @@
 									</div>
                                     <div class="form-group">
 											<label>
-												<small>Expiration</small>
+												<small>Strike</small>
 											</label>
-									 <input type="text" placeholder="minutes" class="form-control">
+									 <input type="text" placeholder="" class="form-control" name="strike_price_c" id="strike_price_c">
+									</div>
+
+
+
+
+
+                            </div>
+                            <div class="col-sm-6">
+					
+									<div class="form-group">
+											<label>
+												<small>Expiration <small>(minutes)</small></small>
+											</label>
+									 <input type="text" placeholder="" class="form-control" name="expiration_c" id="expiration_c">
 									</div>
 
 
@@ -279,30 +301,59 @@
 											<label>
 												<small>Amount:</small>
 											</label>
-									 <input type="text" placeholder="" class="form-control">
+									 <input type="text" placeholder="" class="form-control" name="amount_c" id="amount_c">
 									</div>
 
 
-                                </form>
-
-                            </div>
-                            <div class="col-sm-6">
-					
-					<div class="row" align="center">
-                                <large class="stats-label">Option Payout:</large>
-                                <h5 align="center"><i class="fa fa-bitcoin"></i> N/A  <strong id="custom_payout"></strong></h5>
-					</div>
-
-					<div class="row" align="center">
-
-					<button id="custom_request_quote" class="btn btn-primary" title="Purchase Option" type="button">Refresh Quote</button>
-					</div>
-
                             </div>
 
-                        </div>
+                         </form>
+
+                        </div> <!-- End of row tag under the ibox-content -->
+					<div class="row">
+					<div class="col-sm-6 b-r">
+
+
+						<div class="widget  p-sm text-center">	
+<button class="btn btn-info  dim btn-large-dim btn-outline" type="button" style="font-size:10px;" id="update_quote_c">
+					<div class="row"><i class="fa fa-refresh"></i> </div>
+					<div class="row">Update</div> 
+					<div class="row">Quote</div>
+						</button>
+						</div>
+
+					</div>
+								<div class="col-sm-6">
+						<div class="widget  p-sm text-center">
+                        		<div class="m-b-md">
+
+                            	<!--<i class="fa fa-trophy fa-4x"></i> -->
+                            	<h3 class="font-bold no-margins">
+                                <strong>Payout</strong>
+                            	</h3>
+
+								<h4 class="m-xs"><i class="fa fa-bitcoin"></i><strong id="custom_payout_amount">0</strong></h4>
+                            	<h5 class="m-xs"><strong>(+</strong><strong id="custom_payout">0</strong><strong>%)</strong></h5>
+
+                       	 	</div>
+                    	</div>
+
+								</div>
+
+					</div> <!-- End of subrow -->
+					<div class="row">
+							<div class="ibox-content text-center">
+								<button type="button" class="btn btn-primary btn-lg" id="purchase_c">Purchase Option</button>
+								<br>
+								<small><small> <small>Please update the quote 
+									right before you purchase to ensure the best available payout
+								</small></small></small>
+							</div>
+					</div>
+
                     </div>
-              </div>
+
+              </div>  <!-- Closing ibox-float margin tag -->
 
 
 
@@ -469,6 +520,8 @@
 
 <script src="{% static 'tools/place_bets.js' %}"></script>
 <script src="{% static 'tools/countdown_timer.js' %}"></script>
+
+<script src="{% static 'tools/place_custom_bet.js' %}"></script>
 <script>
 $('document').ready(function(){
 $('#refresh_transactions').click(function(){
@@ -486,6 +539,21 @@ $('#payout_currency').html(cur_payout);
 });
 });
 </script>
+<script>
+$('document').ready(function(){
+$('#simple_binary_options').hide();
+});
 
+</script>
+
+
+<script src="{% static 'tools/dj_update_quote_custom.js' %}"></script>
+<script>
+$('document').ready(function(){
+$('#update_quote_c').click(function(){
+update_quote_custom();
+});
+});
+</script>
 </body>
 </html>

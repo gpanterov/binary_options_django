@@ -23,4 +23,6 @@ urlpatterns = patterns('',
 	url(r'^deposit_received/', views.deposit_received, name='deposit_receieved'),
 	url(r'^update_results/$', views.update_results, name='update_results'),
 	url(r'^withdraw/$', views.withdraw, name='withdraw'),
+	url(r'^update_quote_custom/$', views.update_quote_custom, name='update_quote_custom'),
+	url(r'^place_custom_bet/$', views.place_custom_bet, name='place_custom_bet'),
 	)

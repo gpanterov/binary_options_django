@@ -14,12 +14,12 @@ url = "http://rates.fxcm.com/RatesXML"
 
 while True:
 	try:
-		asset = AssetPrices()
 		time.sleep(0.9)
+		asset = AssetPrices()
 		r = urllib2.urlopen(url)
+		timestamp = time.time()
 		data = r.read()
 		xml = xmltodict.parse(data)
-		timestamp = time.time()
 		asset.time = timestamp
 		asset.eurusd = float(xml['Rates']['Rate'][0]['Bid'])
 		asset.usdjpy = float(xml['Rates']['Rate'][1]['Bid'])
@@ -34,7 +34,8 @@ while True:
 		asset.oil = float(xml['Rates']['Rate'][53]['Bid'])
 		asset.gold =  float(xml['Rates']['Rate'][55]['Bid'])
 
-		print os.getpid()
+		print time.time() - timestamp
+	
 		asset.save()
 
 	except KeyboardInterrupt:
