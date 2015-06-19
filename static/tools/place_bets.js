@@ -12,6 +12,8 @@
 //			$('#alert_message').html(response);
 //			jQuery('#alert_modal').modal('show');
 			alert(response);
+			//$('#bet_size').val('');
+			//$('#bet_amount').val('');
 			update();
 			}
 			});
@@ -30,6 +32,8 @@
 			data: form.serialize(),
 			success: function(response) {
 			alert(response); 
+			//$('#bet_size').val('');
+			//$('#bet_amount').val('');
 			update();
 			}
 			});

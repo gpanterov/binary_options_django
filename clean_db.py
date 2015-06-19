@@ -31,6 +31,8 @@ while True:
 
 			#AssetPrices.objects.filter(time__lte = latest_time - Nrecent).delete()
 			prices_for_deletion.delete()
+		else:
+			time.sleep((t%3600) / 2)
 	except KeyboardInterrupt:
 		raise
 	except:

@@ -314,11 +314,14 @@ def place_bets(request):
 				return HttpResponse("Bet size is too low. Please enter an amount greater than %s" %(min_bet))
 
 			option_asset = request.POST['asset']
-			latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
-			if timestamp - latest_available_time > 10:
-				print "Error - No price data. The latest data is more than 10 seconds older than the current time"
-				return HttpResponse("We are currently unable to accept bets. Please try again later")
+#			latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
+#			if timestamp - latest_available_time > 10:
+#				print "Error - No price data. The latest data is more than 10 seconds older than the current time"
+#				return HttpResponse("We are currently unable to accept bets. Please try again later")
 
+			latest_price = tools.scrape_price_now(option_asset)
+			if latest_price is None:
+				return HttpResponse("We are currently unable to accept bets. Please try again later")
 
 			bal = Balances.objects.get(username = current_user.username)
 			if bet_size_float > bal.balance:
@@ -411,9 +414,13 @@ def update_quote_custom(request):
 		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
 
 	# Calculate Option Payout
-	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
-	vol = tools.calculate_asset_vol(option_asset)
+#	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
+#	vol = tools.calculate_asset_vol(option_asset)
+	latest_price = tools.scrape_price_now(option_asset)
+	vol = 2.51e-5
 	payout = tools.calculate_option_payout(latest_price, strike, expiration, vol, option_type)
+
+
 	print "Quote Requested"
 	print "Latest price: %s, Strike: %s, Volatility: %s, Expiration (seconds): %s, Payout: %s" \
 													% (latest_price, strike, vol, expiration, payout)
@@ -447,8 +454,11 @@ def place_custom_bet(request):
 		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
 
 	# Calculate Option Payout
-	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
-	vol = tools.calculate_asset_vol(option_asset)
+#	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
+#	vol = tools.calculate_asset_vol(option_asset)
+	latest_price = tools.scrape_price_now(option_asset)
+	vol = 2.51e-5
+
 	remaining_time = expiration - timestamp
 	payout = tools.calculate_option_payout(latest_price, strike, remaining_time, vol, option_type)
 	bal = Balances.objects.get(username = current_user.username)
@@ -462,8 +472,7 @@ def place_custom_bet(request):
 		if amount > bal.balance:
 				return HttpResponse("The amount exceeds the available funds in your account")
 
-		if timestamp - latest_available_time > 10:
-			print "Error - No price data. The latest data is more than 10 seconds older than the current time"
+		if latest_price is None:
 			return HttpResponse("We are currently unable to accept bets. Please try again later")
 
 		shown_payout = request.POST['shown_payout']

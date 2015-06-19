@@ -10,6 +10,8 @@
 			success: function(response) {
 //			$.notify(response);
 			alert(response);
+			//$('#strike_price_c').val("");
+			//$('#amount_c').val("");
 			update();
 			}
 			});

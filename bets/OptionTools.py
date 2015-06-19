@@ -4,6 +4,7 @@ from scipy.stats import norm
 from bets.models import PlacedBets, AssetPrices
 import time
 import urllib2
+import xmltodict
 
 def cash_or_nothing(S, K, T, vol, option_type):
 	"""
@@ -60,7 +61,7 @@ def calculate_asset_vol(asset):
 		vol = max(longterm_vol, shorterm_vol)
 		vol = max(min_vol, vol)
 	else:
-		vol = min_vol * 10
+		vol = min_vol 
 		print "Price History too short. Volatility set to minimum volatility %s" %(vol)
 	
 	return vol
@@ -79,6 +80,44 @@ def calculate_option_payout(latest_price, strike, expiration, volatility, option
 	payout_profit_adj = min(payout_profit_adj, 10.)
 	payout_profit_adj = max(payout_profit_adj, 1.)
 	return round(payout_profit_adj, 3)
+
+
+
+def scrape_price_now(asset):
+
+	url = "http://rates.fxcm.com/RatesXML"
+	try:
+		r = urllib2.urlopen(url)
+		timestamp = time.time()
+		data = r.read()
+		timestamp = time.time()
+		xml = xmltodict.parse(data)
+		if asset == "EURUSD":
+			price = float(xml['Rates']['Rate'][0]['Bid'])
+		elif asset == "USDJPY":
+			price =float(xml['Rates']['Rate'][1]['Bid'])
+		elif asset == "EURCHF":
+			price = 	float(xml['Rates']['Rate'][4]['Bid'])
+		elif asset == "USDCHF":
+			price = float(xml['Rates']['Rate'][3]['Bid'])
+		elif asset == "XAUUSD":
+			price = float(xml['Rates']['Rate'][55]['Bid'])
+		elif asset == "USOil":
+			price = float(xml['Rates']['Rate'][53]['Bid'])
+		elif asset == "SPX500":
+			price = float(xml['Rates']['Rate'][43]['Bid'])
+		elif asset == "JPN225":
+			price = float(xml['Rates']['Rate'][51]['Bid'])
+		elif asset == "UK100":
+			price = float(xml['Rates']['Rate'][45]['Bid'])
+		else:
+			print "Error (Unknown asset)"
+		return float(price)
+	except:
+		return None
+
+
+
 
 
 def get_bet_outcome(bet):
