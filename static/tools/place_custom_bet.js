@@ -8,6 +8,7 @@
 			url:'/bets/place_custom_bet/',
 			data: form.serialize(),
 			success: function(response) {
+//			$.notify(response);
 			alert(response);
 			update();
 			}

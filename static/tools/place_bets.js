@@ -9,6 +9,8 @@
 			url:'/bets/place_bets/',
 			data: form.serialize(),
 			success: function(response) {
+//			$('#alert_message').html(response);
+//			jQuery('#alert_modal').modal('show');
 			alert(response);
 			update();
 			}

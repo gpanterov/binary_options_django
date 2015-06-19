@@ -27,7 +27,7 @@ import urllib2, urllib
 
 min_bet = 0
 max_bet = 0.3
-
+my_timezone_offset = 300
 
 def index(request):
 
@@ -346,8 +346,8 @@ def place_bets(request):
 			bal.balance = bal.balance - new_bet.bet_size
 			bal.save()
 
-			return  HttpResponse("Succesfully purchased a %s option with strike %s and a payout of %s at %s" \
-							%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout, str(option_time)))
+			return  HttpResponse("Succesfully purchased a %s option with strike %s and a payout of %s" \
+							%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout))
 		else:
 			return HttpResponse(bet_form.errors)
 	else:
@@ -462,6 +462,9 @@ def place_custom_bet(request):
 		if amount > bal.balance:
 				return HttpResponse("The amount exceeds the available funds in your account")
 
+		if timestamp - latest_available_time > 10:
+			print "Error - No price data. The latest data is more than 10 seconds older than the current time"
+			return HttpResponse("We are currently unable to accept bets. Please try again later")
 
 		shown_payout = request.POST['shown_payout']
 		payout_pct = int(round((payout - 1) * 100, 0))
@@ -504,8 +507,8 @@ def place_custom_bet(request):
 
 
 		option_time = datetime.datetime.fromtimestamp(new_bet.bet_time)
-		return  HttpResponse("Succesfully purchased the following option: \nType: %s \nStrike: %s \nPayout: %s \nTime: %s" \
-								%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout, str(option_time)))
+		return  HttpResponse("Succesfully purchased the following option: \nType: %s \nStrike: %s \nPayout: %s " \
+								%(new_bet.bet_type, new_bet.bet_strike, new_bet.bet_payout))
 
 
 def update(request):
@@ -515,7 +518,7 @@ def update(request):
 
 	# Update remaining prices, payous etc.
 	if request.method == 'GET':
-		
+		user_timezone_offset= int(request.GET['offset'])
 		balance = Balances.objects.get(username = request.user.username).balance
 		balance = round(balance, 4)
 		# Get the last 10 bets of the trader and return them for a table in the website
@@ -532,9 +535,10 @@ def update(request):
 				ttype = "<span class = 'badge badge-danger'>Put</span>"
 			payout = bet.bet_payout
 			strike = round(bet.bet_strike,4)
-			time_of_bet = str(datetime.datetime.fromtimestamp(bet.bet_time))
+			offset = (my_timezone_offset - user_timezone_offset) * 60
+			time_of_bet = str(datetime.datetime.fromtimestamp(bet.bet_time + offset))
 
-			expiration = str(datetime.datetime.fromtimestamp(bet.option_expire))
+			expiration = str(datetime.datetime.fromtimestamp(bet.option_expire + offset))
 			outcome = bet.bet_outcome
 			price_at_exp = round(bet.price_at_expiration,4)
 			if price_at_exp == 0:
