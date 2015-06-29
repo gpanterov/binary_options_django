@@ -612,7 +612,7 @@ def deposit2(request):
 
 def deposit_received(request):
 	if request.method == "GET":
-		if request.GET['secret'] == "gogo":
+		if request.GET['secret'] == "gogo":  #THIS MUST BE CHANGED WHEN UPLOADED TO SERVER
 			print "secret verified"
 			current_user = request.GET['user']
 			confirmations = int(request.GET['confirmations'])
@@ -668,7 +668,7 @@ def withdraw(request):
 
 	current_user = request.user.username
 	bal = Balances.objects.get(username = str(current_user))
-	balance = bal.balance
+	balance = bal.balance - 0.0001  # Make the balance slihgtly smaller so that the user can automatically withdraw the entire sum
 
 	if request.method == "POST":
 		to_address = request.POST['bitcoin_address']

@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Cool Binary Options</title>
+    <title>Deposits - Gosu Trader</title>
 
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
@@ -24,24 +24,26 @@
         <div>
             <div>
 
-                <h1 class="logo-name"><i class="fa fa-bitcoin">O</i></h1>
+              <h1 class="logo-name"><i class="fa fa-bitcoin"></i></h1>
 
             </div>
             <h3>Hi <strong>{{ user }} </strong>, you can deposit funds in your trading account by sending btcoins to the following address:</h3>
-			<h4><strong> {{address}}</strong></h4>
-			<small> Please use this address only ones. Future deposits will automatically generate unique bitcoin address.</small>
+			<h3><strong> {{address}}</strong></h3>
+			<small> Please use this address only once. For future deposits we will provide you with a new bitcoin address.</small>
         <form id="login_form" method="post" action="/bets/deposit/promo/" role="form">
             {% csrf_token %}
                                     <div class="form-group">
 										<label>
-                            				Enter Pomo Code
+											<br>
+											<br>
+                            				<h3>If you have a <strong>promo code</strong>, please enter it below: </h3>
 										</label> 
-									<input type="text" name="promo_code" placeholder="" class="form-control"></div>
+									<input type="text" name="promo_code" placeholder="Enter Promo Code" class="form-control"></div>
 
             <input type="submit" value="submit" />
         </form>
 
-            <p class="m-t"> <small> Cool Binary Options &copy; 2015</small> </p>
+            <p class="m-t"> <small> Gosu Trader &copy; 2015</small> </p>
         </div>
     </div>
 
