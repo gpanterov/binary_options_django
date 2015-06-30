@@ -411,11 +411,15 @@ def update_quote_custom(request):
 		strike = float(request.GET['strike_price_c'])
 		amount = float(request.GET['amount_c'])
 	except:
+		print "Error with form. Please enter correct values for expiration, strike and amount"
 		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
 
 	# Calculate Option Payout
 #	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
 	vol = tools.calculate_asset_vol(option_asset)
+	if vol is None:
+		return HttpResponse("Trading for this asset is currently disabled. Please try again later.")
+
 	latest_price = tools.scrape_price_now(option_asset)
 #	vol = 2.51e-5
 	payout = tools.calculate_option_payout(latest_price, strike, expiration, vol, option_type)
@@ -456,6 +460,8 @@ def place_custom_bet(request):
 	# Calculate Option Payout
 #	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
 	vol = tools.calculate_asset_vol(option_asset)
+	if vol is None:
+		return HttpResponse("Trading for this asset is currently disabled. Please try again later.")
 	latest_price = tools.scrape_price_now(option_asset)
 #	vol = 2.51e-5
 
@@ -584,6 +590,8 @@ def promo(request):
 			promo_successful = True
 		else:
 			print "Promo code is invalid"
+			return render_to_response('bets/new_promos.html',
+				{'promo_successful': promo_successful, 'user':current_user.username, 'amount':0},	context)
 
 
 		return render_to_response('bets/new_promos.html',

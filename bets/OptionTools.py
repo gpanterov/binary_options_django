@@ -25,11 +25,14 @@ def cash_or_nothing(S, K, T, vol, option_type):
 		return None
 
 def calculate_asset_vol(asset):
-	Nshort = 300
+	Nshort = 90
 	default_vol = 1e-6
 
 	
-	all_asset_prices = AssetPrices.objects.filter(time__lte=time.time() - Nshort)
+	all_asset_prices = AssetPrices.objects.filter(time__gte=time.time() - Nshort)
+	if len(all_asset_prices) < 20:
+		print "There are too few observations in the last %s seconds to calculate the volatility" %(Nshort)
+		return None
 	if asset == "EURUSD":
 		price = [i.eurusd for i in all_asset_prices]
 	elif asset == "USDJPY":
@@ -52,14 +55,10 @@ def calculate_asset_vol(asset):
 	else:
 		print "Error (Unknown asset)"
 		raise
-	if len(price) > 100:
-		price = np.log(price)
-		price_delta = price[1:] - price[:-1]
+	price = np.log(price)
+	price_delta = price[1:] - price[:-1]
 
-		vol = np.std(price_delta)
-	else:
-		vol = default_vol 
-		print "Price History too short. Volatility set to minimum volatility %s" %(vol)
+	vol = np.std(price_delta)
 	
 	return vol
 
