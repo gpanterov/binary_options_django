@@ -419,6 +419,7 @@ def update_quote_custom(request):
 		expiration = timestamp + float(request.GET['expiration_c']) * 60
 		strike = float(request.GET['strike_price_c'])
 		amount = float(request.GET['amount_c'])
+		assert (expiration - timestamp) > 0
 	except:
 		print "Error with form. Please enter correct values for expiration, strike and amount"
 		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
@@ -463,6 +464,8 @@ def place_custom_bet(request):
 		expiration = timestamp + float(request.POST['expiration_c']) * 60
 		strike = float(request.POST['strike_price_c'])
 		amount = float(request.POST['amount_c'])
+		assert (expiration - timestamp) > 0
+
 	except:
 		
 		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
