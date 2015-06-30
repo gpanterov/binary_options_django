@@ -384,7 +384,9 @@ def update_results(request):
 				bal = Balances.objects.get(username = bet.user)
 				bal.balance = bal.balance + profit
 				bal.save()
-			all_results += "<h3>User: %s, Type: %s, Outcome: %s </h3>" %(bet.user, bet.bet_type, bet.bet_outcome)
+			
+			expiration = str(datetime.datetime.fromtimestamp(bet.option_expire))
+			all_results += "<h3>User: %s, Type: %s, Expiraton: %s, Outcome: %s </h3>" %(bet.user, bet.bet_type, expiration, bet.bet_outcome)
 		
 	return HttpResponse(all_results)
 
@@ -415,13 +417,11 @@ def update_quote_custom(request):
 		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
 
 	# Calculate Option Payout
-#	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
 	vol = tools.calculate_asset_vol(option_asset)
 	if vol is None:
 		return HttpResponse("Trading for this asset is currently disabled. Please try again later.")
 
 	latest_price = tools.scrape_price_now(option_asset)
-#	vol = 2.51e-5
 	payout = tools.calculate_option_payout(latest_price, strike, expiration, vol, option_type)
 
 
@@ -458,14 +458,12 @@ def place_custom_bet(request):
 		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
 
 	# Calculate Option Payout
-#	latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
 	vol = tools.calculate_asset_vol(option_asset)
 	if vol is None:
+		print "Volatility couldn't be calculated"
 		return HttpResponse("Trading for this asset is currently disabled. Please try again later.")
 	latest_price = tools.scrape_price_now(option_asset)
-#	vol = 2.51e-5
 
-	remaining_time = expiration - timestamp
 	payout = tools.calculate_option_payout(latest_price, strike, remaining_time, vol, option_type)
 	bal = Balances.objects.get(username = current_user.username)
 
