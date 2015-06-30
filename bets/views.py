@@ -631,7 +631,7 @@ def deposit_received(request):
 			timestamp = int(time.time())
 			if confirmations >=5:
 				print "Had 5 confirmations for hash: %s and \ninput address: %s" %(transaction_hash, input_address)
-				return HttpResponse("*OK*")  # Wait for 5 confirmations
+				return HttpResponse("*ok*")  # Wait for 5 confirmations
 
 			try:
 				entry=Deposits.objects.filter(transaction_hash = transaction_hash)[0]
