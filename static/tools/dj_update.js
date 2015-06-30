@@ -10,7 +10,7 @@
 		success: function(data){
 		$('#balance').html(data['balance']);
 		$('#recent_bets').html(data['tb']);
-		//interval = setTimeout(update, 1000);
+		interval = setTimeout(update, 3000);
 			}
 
 		});

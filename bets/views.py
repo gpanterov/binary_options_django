@@ -556,7 +556,8 @@ def update(request):
 		recent_bets = PlacedBets.objects.filter(user = request.user.username)
 		if len(recent_bets) > 10:
 			recent_bets = recent_bets[len(recent_bets) - 10:]
-		
+
+		latest = AssetPrices.objects.latest('time')
 		tb = ""
 		for bet in recent_bets[::-1]:
 			size = bet.bet_size
@@ -570,12 +571,41 @@ def update(request):
 			time_of_bet = str(datetime.datetime.fromtimestamp(bet.bet_time + offset))
 
 			expiration = str(datetime.datetime.fromtimestamp(bet.option_expire + offset))
+			remaining_time= bet.option_expire - timestamp
+
+
 			outcome = bet.bet_outcome
 			price_at_exp = round(bet.price_at_expiration,4)
 			if price_at_exp == 0:
 				price_at_exp = "N/A"
-			tb += "<tr><td>%s</td><td>%s</td><td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td><td>%s</td></tr>" % \
-							(ttype,time_of_bet, bet.option_asset, size, payout, strike, expiration, price_at_exp, outcome)  
+				latest_price = tools.get_latest_price_from_db(bet.option_asset, latest)
+			else:
+				latest_price = price_at_exp
+
+			if remaining_time < 0:
+				remaining_time = "Expired"
+
+		
+			distance = tools.transform_in_pips(latest_price-strike, bet.option_asset)
+			if bet.bet_type == "CALL" and distance > 0: # in the money
+				strike_distance ="<span class='label label-primary'>+%s</span>" %( abs(distance))
+			elif bet.bet_type == "CALL" and distance <= 0: # out of the money
+				strike_distance ="<span class='label label-danger'>-%s</span>" %( abs(distance))
+			elif bet.bet_type == "PUT" and distance < 0: # in the money
+				strike_distance ="<span class='label label-primary'>+%s</span>" %( abs(distance))
+			elif bet.bet_type == "PUT" and distance >= 0: # out of the money
+				strike_distance ="<span class='label label-danger'>-%s</span>" %( abs(distance))
+			else:
+				print "wrong bet_type or smth else - raise"
+				raise
+
+			if remaining_time == "Expired" and price_at_exp == "N/A":
+				strike_distance = "N/A"
+
+		
+			tb += "<tr><td>%s</td><td>%s</td><td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td>  <td>%s</td><td>%s</td></tr>" % \
+							(ttype,time_of_bet, bet.option_asset, size, payout, strike, 
+									remaining_time,strike_distance, price_at_exp, outcome)  
 
 
 

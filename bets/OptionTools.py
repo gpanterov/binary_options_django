@@ -253,3 +253,58 @@ def check_open_markets(asset):
 			return False, "Nikkei closed"
 	return False, "None"
 
+
+
+def get_latest_price_from_db(asset, latest):
+	"""
+	"""
+	#prices_after_timestamp = AssetPrices.objects.filter(time__gte = timestamp)
+	if asset == "EURUSD":
+		price = latest.eurusd
+	elif asset == "USDJPY":
+		price = latest.usdjpy
+	elif asset == "EURCHF":
+		price = latest.eurchf
+	elif asset == "USDCHF":
+		price = latest.usdchf
+	elif asset == "XAUUSD":
+		price = latest.gold
+	elif asset == "USOil":
+		price = latest.oil
+	elif asset == "SPX500":
+		price = latest.spx500
+	elif asset == "JPN225":
+		price = latest.nikkei
+	elif asset == "UK100":
+		price = latest.ftse100
+	else:
+		print "Error (Unknown asset)"
+		raise
+
+	return price
+
+def transform_in_pips(val, asset):
+	if asset == "EURUSD":
+		price = val * 10000
+	elif asset == "USDJPY":
+		price = val * 100
+	elif asset == "EURCHF":
+		price = val * 10000
+	elif asset == "USDCHF":
+		price = val * 10000
+	elif asset == "XAUUSD":
+		price = val * 100
+	elif asset == "USOil":
+		price = val * 100
+	elif asset == "SPX500":
+		price = val * 10
+	elif asset == "JPN225":
+		price = val
+	elif asset == "UK100":
+		price = val
+	else:
+		print "Error (Unknown asset)"
+		raise
+
+	return round(price)
+

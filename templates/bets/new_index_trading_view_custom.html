@@ -163,7 +163,7 @@
 					<!-- TradingView Widget BEGIN -->
 					<script type="text/javascript" src="https://d33t3vvu2t2yu5.cloudfront.net/tv.js"></script>
 					<script type="text/javascript">
-					new TradingView.widget({
+					 new TradingView.widget({
 					  "autosize": true,
 					  "symbol": "FX:{{ asset }}",
 					  "interval": "1",
@@ -436,7 +436,8 @@
                         <th>Size </th>
                         <th>Payout </th>
                         <th>Strike </th>
-                        <th>Expiration </th>
+                        <th>Time to Expiration <small>(seconds)</small> </th>
+						<th>Distance from Strike <small>(pips)</small>  </th>
                         <th>Price @ Expiration </th>
                         <th>Outcome </th>
                     </tr>
@@ -654,5 +655,6 @@ update_quote_custom();
 });
 });
 </script>
+
 </body>
 </html>
