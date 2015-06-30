@@ -57,9 +57,7 @@ def calculate_asset_vol(asset):
 		raise
 	price = np.log(price)
 	price_delta = price[1:] - price[:-1]
-
 	vol = np.std(price_delta)
-	
 	return vol
 
 

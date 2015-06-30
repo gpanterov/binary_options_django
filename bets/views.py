@@ -409,7 +409,7 @@ def update_quote_custom(request):
 		option_asset = request.GET['asset']
 
 		option_type = request.GET['option_type_c'].lower()
-		expiration = float(request.GET['expiration_c']) * 60
+		expiration = timestamp + float(request.GET['expiration_c']) * 60
 		strike = float(request.GET['strike_price_c'])
 		amount = float(request.GET['amount_c'])
 	except:
@@ -421,13 +421,14 @@ def update_quote_custom(request):
 	if vol is None:
 		return HttpResponse("Trading for this asset is currently disabled. Please try again later.")
 
+	remaining_time = expiration - timestamp
 	latest_price = tools.scrape_price_now(option_asset)
-	payout = tools.calculate_option_payout(latest_price, strike, expiration, vol, option_type)
+	payout = tools.calculate_option_payout(latest_price, strike, remaining_time, vol, option_type)
 
 
 	print "Quote Requested"
 	print "Latest price: %s, Strike: %s, Volatility: %s, Expiration (seconds): %s, Payout: %s" \
-													% (latest_price, strike, vol, expiration, payout)
+													% (latest_price, strike, vol, remaining_time, payout)
 	bal = Balances.objects.get(username = current_user.username)
 	if request.method=="GET":
 		payout_pct = int(round((payout - 1) * 100, 0))
@@ -444,6 +445,8 @@ def update_quote_custom(request):
 
 
 def place_custom_bet(request):
+	print "Starting a custom bet"
+
 	timestamp = time.time()
 	current_user = request.user
 	try:
@@ -456,14 +459,15 @@ def place_custom_bet(request):
 	except:
 		
 		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
+	print "Placing a custom bet. Form is in order"
 
 	# Calculate Option Payout
 	vol = tools.calculate_asset_vol(option_asset)
 	if vol is None:
 		print "Volatility couldn't be calculated"
 		return HttpResponse("Trading for this asset is currently disabled. Please try again later.")
+	remaining_time = expiration - timestamp
 	latest_price = tools.scrape_price_now(option_asset)
-
 	payout = tools.calculate_option_payout(latest_price, strike, remaining_time, vol, option_type)
 	bal = Balances.objects.get(username = current_user.username)
 
