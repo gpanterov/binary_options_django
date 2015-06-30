@@ -626,12 +626,13 @@ def deposit_received(request):
 			input_address = request.GET['input_address']
 			timestamp = int(time.time())
 			if confirmations >=5:
+				print "Had 5 confirmations for hash: %s and \ninput address: %s" %(transaction_hash, input_address)
 				return HttpResponse("*OK*")  # Wait for 5 confirmations
 
 			try:
 				entry=Deposits.objects.filter(transaction_hash = transaction_hash)[0]
 				entry.confirmations = confirmations
-				print "Selected old entry"
+				print "New confirmation (%s) for old transaction %s\ninput address: %s" %(confirmations, transaction_hash, input_address)
 			except:
 				entry = Deposits()
 				entry.username = current_user
@@ -640,7 +641,7 @@ def deposit_received(request):
 				entry.transaction_hash = transaction_hash
 				entry.input_address = input_address
 				entry.confirmations = confirmations
-				print "Created a new deposit entry"
+				print "Created a new deposit entry for transaction %s\ninput address: %s" %(transaction_hash, input_address)
 
 
 			if not entry.included:
@@ -648,7 +649,7 @@ def deposit_received(request):
 				bal.balance = bal.balance + entry.size
 				bal.save()
 				entry.included = True
-				print "Counted the deposit"
+				print "Counted the deposit for transaction %s\ninput address: %s" %(transaction_hash, input_address)
 
 			entry.save()
 
