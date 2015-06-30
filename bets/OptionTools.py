@@ -2,7 +2,7 @@ import numpy as np
 import random
 from scipy.stats import norm
 from bets.models import PlacedBets, AssetPrices
-import time
+import time, datetime
 import urllib2
 import xmltodict
 
@@ -204,4 +204,52 @@ def send_money(to, amount):
 	r = urllib2.urlopen(url)
 	return r
 
+def check_open_markets(asset):
+	if asset == "EURUSD" or asset=="EURCHF" or asset == "USDJPY" or asset=="USDCHF" or asset == "USOil" or asset =="XAUUSD":
+		is_forex = True
+	else:
+		is_forex = False
+
+	utc_now = datetime.datetime.utcnow()
+	weekday = utc_now.weekday()
+	hour = utc_now.hour
+	minute = utc_now.minute
+	if weekday >=5:
+		msg = "Saturday and Sunday- markets are closed. All assets"
+		return False, msg
+
+	if is_forex:
+		if weekday <4:
+			msg = "Forex markets are open during the weekdays"
+			return True, msg
+		elif weekday == 4 and hour < 21:
+			msg = "Forex. Friday before 4 EST"
+			return True, msg
+		else:
+			msg = "Weekend - no trades. SHouldn't see this message"
+			return False, msg
+
+	if asset =="SPX500":
+		if hour >= 13 and hour < 21:
+			msg = "SPX500 is open"
+			return True, msg
+		else:
+			return False, "SPX500 is closed"
+
+	if asset == "UK100":
+		if hour >= 8 and hour < 16:
+			msg = "UK100 is open"
+			return True, msg
+		else:
+			msg = "UK100 is closed"
+			return False, msg
+
+		pass
+	if asset == "JPN225":
+		if hour >=0 and hour < 7:
+			msg = "JPN225 is open"
+			return True, msg
+		else:
+			return False, "Nikkei closed"
+	return False, "None"
 

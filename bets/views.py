@@ -299,6 +299,8 @@ def place_bets(request):
 	expire = timestamp + 300 - (timestamp % 300)
 	if expire - timestamp < 30:
 		return  HttpResponse("No Bets 30 seconds prior to expiration")
+
+
 	if request.method == 'POST':
 		try:
 			bet_size_float = float(request.POST['bet_size'].strip())
@@ -314,6 +316,11 @@ def place_bets(request):
 				return HttpResponse("Bet size is too low. Please enter an amount greater than %s" %(min_bet))
 
 			option_asset = request.POST['asset']
+
+			mkt_open, msg = tools.check_open_markets(option_asset)
+			print msg
+			if not mkt_open:
+				return HttpResponse("This market is currently closed. Please try again later.")
 #			latest_price, latest_available_time = tools.get_closest_prices(option_asset, timestamp)
 #			if timestamp - latest_available_time > 10:
 #				print "Error - No price data. The latest data is more than 10 seconds older than the current time"
@@ -459,7 +466,11 @@ def place_custom_bet(request):
 	except:
 		
 		return HttpResponse("Error with form. Please enter correct values for expiration, strike and amount")
-	print "Placing a custom bet. Form is in order"
+
+	mkt_open, msg = tools.check_open_markets(option_asset)
+	print msg
+	if not mkt_open:
+		return HttpResponse("This market is currently closed. Please try again later.")
 
 	# Calculate Option Payout
 	vol = tools.calculate_asset_vol(option_asset)
@@ -700,15 +711,20 @@ def withdraw(request):
 			return render_to_response('bets/new_withdrawal.html',
 				{'withdrawn': withdrawn, 'balance':balance, 'to_address':to_address, 
 								'amount':amount, 'form_valid':form_valid},	context)
+
 		amount = str(int(amount_float * 1e8))
-		bal.balance -= float(amount) / 1e8
-		balance = bal.balance
-		bal.save()
+		r=tools.send_money(to_address, amount)
+		x = r.read()
+		if "tx_hash" in x: # successful transaction
+			#print "Sent %s bitcoins to %s. Output from blockchain: %s" %(amount, to_address , r.read())
 
-		#r=tools.send_money(to_address, amount)
-		#print "Sent %s bitcoins to %s. Output from blockchain: %s" %(amount, to_address , r.read())
-		withdrawn=True
-
+			bal.balance -= float(amount) / 1e8
+			balance = bal.balance
+			bal.save()
+			withdrawn=True
+		else:
+			withdrawn = False
+	
 	return render_to_response('bets/new_withdrawal.html',
 	{'withdrawn': withdrawn, 'balance':balance, 'to_address':to_address, 'amount':amount, 'form_valid':form_valid},	context)
 
